@@ -1,0 +1,20 @@
+C:\Users\Matheus\source\repos\VirtualMachine\VirtualMachine\bin\Debug\VirtualMachine.exe.config
+C:\Users\Matheus\source\repos\VirtualMachine\VirtualMachine\bin\Debug\VirtualMachine.exe
+C:\Users\Matheus\source\repos\VirtualMachine\VirtualMachine\bin\Debug\VirtualMachine.pdb
+C:\Users\Matheus\source\repos\VirtualMachine\VirtualMachine\obj\Debug\VirtualMachine.csprojAssemblyReference.cache
+C:\Users\Matheus\source\repos\VirtualMachine\VirtualMachine\obj\Debug\VirtualMachine.Form1.resources
+C:\Users\Matheus\source\repos\VirtualMachine\VirtualMachine\obj\Debug\VirtualMachine.Properties.Resources.resources
+C:\Users\Matheus\source\repos\VirtualMachine\VirtualMachine\obj\Debug\VirtualMachine.csproj.GenerateResource.cache
+C:\Users\Matheus\source\repos\VirtualMachine\VirtualMachine\obj\Debug\VirtualMachine.csproj.CoreCompileInputs.cache
+C:\Users\Matheus\source\repos\VirtualMachine\VirtualMachine\obj\Debug\VirtualMachine.exe
+C:\Users\Matheus\source\repos\VirtualMachine\VirtualMachine\obj\Debug\VirtualMachine.pdb
+C:\Users\Matheus\Documents\Visual Studio 2017\Projects\VirtualMachine\VirtualMachine\bin\Debug\VirtualMachine.exe.config
+C:\Users\Matheus\Documents\Visual Studio 2017\Projects\VirtualMachine\VirtualMachine\bin\Debug\VirtualMachine.exe
+C:\Users\Matheus\Documents\Visual Studio 2017\Projects\VirtualMachine\VirtualMachine\bin\Debug\VirtualMachine.pdb
+C:\Users\Matheus\Documents\Visual Studio 2017\Projects\VirtualMachine\VirtualMachine\obj\Debug\VirtualMachine.csprojAssemblyReference.cache
+C:\Users\Matheus\Documents\Visual Studio 2017\Projects\VirtualMachine\VirtualMachine\obj\Debug\VirtualMachine.InterfaceVM.resources
+C:\Users\Matheus\Documents\Visual Studio 2017\Projects\VirtualMachine\VirtualMachine\obj\Debug\VirtualMachine.Properties.Resources.resources
+C:\Users\Matheus\Documents\Visual Studio 2017\Projects\VirtualMachine\VirtualMachine\obj\Debug\VirtualMachine.csproj.GenerateResource.cache
+C:\Users\Matheus\Documents\Visual Studio 2017\Projects\VirtualMachine\VirtualMachine\obj\Debug\VirtualMachine.csproj.CoreCompileInputs.cache
+C:\Users\Matheus\Documents\Visual Studio 2017\Projects\VirtualMachine\VirtualMachine\obj\Debug\VirtualMachine.exe
+C:\Users\Matheus\Documents\Visual Studio 2017\Projects\VirtualMachine\VirtualMachine\obj\Debug\VirtualMachine.pdb
