@@ -13,6 +13,7 @@ namespace VirtualMachine
 {
     public partial class InterfaceVM : Form
     {
+        string[] values;
         public InterfaceVM()
         {
             InitializeComponent();
@@ -20,28 +21,46 @@ namespace VirtualMachine
 
         private void arquivoToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            Stream verificator;
-            OpenFileDialog file = new OpenFileDialog();
-         
-            if(file.ShowDialog() == System.Windows.Forms.DialogResult.OK)
+            int i, j = 1;
+
+            OpenFileDialog openFile = new OpenFileDialog();
+
+            if (openFile.ShowDialog() == DialogResult.OK)
             {
-                if ((verificator = file.OpenFile()) != null)
+                StreamReader file = new StreamReader(openFile.FileName);
+
+                DataTable dt = new DataTable();
+
+                dt.Columns.Add("I");
+                dt.Columns.Add("Instrução");
+                dt.Columns.Add("Atributo #1");
+                dt.Columns.Add("Atributo #2");
+
+                string newline;
+
+                while ((newline = file.ReadLine()) != null)
                 {
-                    string fileName = file.FileName;
-                    string fileText = File.ReadAllText(fileName);
-                    richTextBox1.Text = fileText;
+                    DataRow dr = dt.NewRow();
+                    values = newline.Split(' ');
+
+                    
+                    for (i = 0; i < values.Length; i++)
+                    {
+                        dr[0] = j;
+                        dr[i+1] = values[i];
+                    }
+                    dt.Rows.Add(dr);
+                    j++;
                 }
+                file.Close();
+                dataGridView1.DataSource = dt;
             }
+
         }
 
         private void label1_Click(object sender, EventArgs e)
         {
 
-        }
-
-        private void richTextBox1_TextChanged(object sender, EventArgs e)
-        {
-        
         }
 
         private void label2_Click(object sender, EventArgs e)
@@ -63,5 +82,21 @@ namespace VirtualMachine
         {
 
         }
+
+        private void startToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            //Seleciona a linha toda
+            //dataGridView1.Rows[2].Selected = true;
+
+            int j = 0;
+            
+            /*while (j < values.Length)
+            {
+                MessageBox.Show(dataGridView1.Rows[0].Cells[j].Value.ToString());
+                j++;
+            }*/
+
+        }
+
     }
 }
