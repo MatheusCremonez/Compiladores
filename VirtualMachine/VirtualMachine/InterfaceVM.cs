@@ -87,16 +87,16 @@ namespace VirtualMachine
         {
             //Seleciona a linha toda
             //dataGridView1.Rows[2].Selected = true;
-
-            int j = 0;
-            
-            /*while (j < values.Length)
-            {
-                MessageBox.Show(dataGridView1.Rows[0].Cells[j].Value.ToString());
-                j++;
-            }*/
-
         }
 
+        private void startStepToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            int i = 0, j = 0;
+            while (i < dataGridView1.Rows.Count)
+            {
+                MessageBox.Show(dataGridView1.Rows[i].Cells[j].Value.ToString());
+                i++;
+            }
+        }
     }
 }

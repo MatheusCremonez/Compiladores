@@ -39,13 +39,13 @@
             this.label2 = new System.Windows.Forms.Label();
             this.label3 = new System.Windows.Forms.Label();
             this.label4 = new System.Windows.Forms.Label();
-            this.splitter1 = new System.Windows.Forms.Splitter();
             this.label7 = new System.Windows.Forms.Label();
             this.richTextBox6 = new System.Windows.Forms.RichTextBox();
             this.listView1 = new System.Windows.Forms.ListView();
             this.columnHeader1 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.columnHeader2 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.dataGridView1 = new System.Windows.Forms.DataGridView();
+            this.startStepToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.menuStrip1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).BeginInit();
             this.SuspendLayout();
@@ -55,6 +55,7 @@
             this.menuStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.arquivoToolStripMenuItem,
             this.startToolStripMenuItem,
+            this.startStepToolStripMenuItem,
             this.continueToolStripMenuItem});
             this.menuStrip1.Location = new System.Drawing.Point(0, 0);
             this.menuStrip1.Name = "menuStrip1";
@@ -67,7 +68,7 @@
             this.arquivoToolStripMenuItem.Name = "arquivoToolStripMenuItem";
             this.arquivoToolStripMenuItem.ShortcutKeyDisplayString = "";
             this.arquivoToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.O)));
-            this.arquivoToolStripMenuItem.Size = new System.Drawing.Size(56, 20);
+            this.arquivoToolStripMenuItem.Size = new System.Drawing.Size(61, 20);
             this.arquivoToolStripMenuItem.Text = "Arquivo";
             this.arquivoToolStripMenuItem.Click += new System.EventHandler(this.arquivoToolStripMenuItem_Click);
             // 
@@ -81,7 +82,7 @@
             // continueToolStripMenuItem
             // 
             this.continueToolStripMenuItem.Name = "continueToolStripMenuItem";
-            this.continueToolStripMenuItem.Size = new System.Drawing.Size(62, 20);
+            this.continueToolStripMenuItem.Size = new System.Drawing.Size(68, 20);
             this.continueToolStripMenuItem.Text = "Continue";
             // 
             // openFileDialog1
@@ -102,7 +103,7 @@
             // 
             this.richTextBox3.Location = new System.Drawing.Point(468, 290);
             this.richTextBox3.Name = "richTextBox3";
-            this.richTextBox3.Size = new System.Drawing.Size(175, 155);
+            this.richTextBox3.Size = new System.Drawing.Size(175, 140);
             this.richTextBox3.TabIndex = 4;
             this.richTextBox3.Text = "";
             // 
@@ -110,7 +111,8 @@
             // 
             this.richTextBox4.Location = new System.Drawing.Point(650, 290);
             this.richTextBox4.Name = "richTextBox4";
-            this.richTextBox4.Size = new System.Drawing.Size(175, 155);
+            this.richTextBox4.ReadOnly = true;
+            this.richTextBox4.Size = new System.Drawing.Size(175, 140);
             this.richTextBox4.TabIndex = 5;
             this.richTextBox4.Text = "";
             // 
@@ -143,14 +145,6 @@
             this.label4.TabIndex = 8;
             this.label4.Text = "Conteúdo da Pilha";
             this.label4.Click += new System.EventHandler(this.label4_Click);
-            // 
-            // splitter1
-            // 
-            this.splitter1.Location = new System.Drawing.Point(0, 24);
-            this.splitter1.Name = "splitter1";
-            this.splitter1.Size = new System.Drawing.Size(3, 433);
-            this.splitter1.TabIndex = 10;
-            this.splitter1.TabStop = false;
             // 
             // label7
             // 
@@ -204,19 +198,25 @@
             this.dataGridView1.Location = new System.Drawing.Point(12, 45);
             this.dataGridView1.Name = "dataGridView1";
             this.dataGridView1.ReadOnly = true;
-            this.dataGridView1.Size = new System.Drawing.Size(449, 400);
+            this.dataGridView1.Size = new System.Drawing.Size(449, 385);
             this.dataGridView1.TabIndex = 17;
+            // 
+            // startStepToolStripMenuItem
+            // 
+            this.startStepToolStripMenuItem.Name = "startStepToolStripMenuItem";
+            this.startStepToolStripMenuItem.Size = new System.Drawing.Size(69, 20);
+            this.startStepToolStripMenuItem.Text = "Start Step";
+            this.startStepToolStripMenuItem.Click += new System.EventHandler(this.startStepToolStripMenuItem_Click);
             // 
             // InterfaceVM
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(838, 457);
+            this.ClientSize = new System.Drawing.Size(838, 439);
             this.Controls.Add(this.dataGridView1);
             this.Controls.Add(this.listView1);
             this.Controls.Add(this.richTextBox6);
             this.Controls.Add(this.label7);
-            this.Controls.Add(this.splitter1);
             this.Controls.Add(this.label4);
             this.Controls.Add(this.label3);
             this.Controls.Add(this.label2);
@@ -247,7 +247,6 @@
         private System.Windows.Forms.Label label2;
         private System.Windows.Forms.Label label3;
         private System.Windows.Forms.Label label4;
-        private System.Windows.Forms.Splitter splitter1;
         private System.Windows.Forms.Label label7;
         private System.Windows.Forms.RichTextBox richTextBox6;
         private System.Windows.Forms.ListView listView1;
@@ -255,6 +254,7 @@
         private System.Windows.Forms.ColumnHeader columnHeader2;
         private System.Windows.Forms.ToolStripMenuItem continueToolStripMenuItem;
         private System.Windows.Forms.DataGridView dataGridView1;
+        private System.Windows.Forms.ToolStripMenuItem startStepToolStripMenuItem;
     }
 }
 
