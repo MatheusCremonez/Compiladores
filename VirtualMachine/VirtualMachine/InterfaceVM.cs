@@ -91,12 +91,31 @@ namespace VirtualMachine
 
         private void startStepToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            int i = 0, j = 0;
+            int i = 0, j = 1;
             while (i < dataGridView1.Rows.Count)
             {
                 MessageBox.Show(dataGridView1.Rows[i].Cells[j].Value.ToString());
+
+                if (dataGridView1.Rows[i].Cells[j].Value.ToString() == "LDV")
+                {
+                    listView1.Items.Add(dataGridView1.Rows[i].Cells[j + 1].Value.ToString());
+                }
+                if (dataGridView1.Rows[i].Cells[j].Value.ToString() == "ADD")
+                {
+                    //var valor1 = listView1.Items.ToString();
+                    //var valor2 = listView1.Items.ToString();
+
+                    //var conta = valor2 - valor1;
+
+                    //richTextBox4.Text = conta;
+                }
                 i++;
             }
+        }
+
+        private void listView1_SelectedIndexChanged(object sender, EventArgs e)
+        {
+
         }
     }
 }

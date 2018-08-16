@@ -31,6 +31,7 @@
             this.menuStrip1 = new System.Windows.Forms.MenuStrip();
             this.arquivoToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.startToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.startStepToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.continueToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.openFileDialog1 = new System.Windows.Forms.OpenFileDialog();
             this.label1 = new System.Windows.Forms.Label();
@@ -45,7 +46,6 @@
             this.columnHeader1 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.columnHeader2 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.dataGridView1 = new System.Windows.Forms.DataGridView();
-            this.startStepToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.menuStrip1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).BeginInit();
             this.SuspendLayout();
@@ -79,6 +79,13 @@
             this.startToolStripMenuItem.Text = "Start";
             this.startToolStripMenuItem.Click += new System.EventHandler(this.startToolStripMenuItem_Click);
             // 
+            // startStepToolStripMenuItem
+            // 
+            this.startStepToolStripMenuItem.Name = "startStepToolStripMenuItem";
+            this.startStepToolStripMenuItem.Size = new System.Drawing.Size(69, 20);
+            this.startStepToolStripMenuItem.Text = "Start Step";
+            this.startStepToolStripMenuItem.Click += new System.EventHandler(this.startStepToolStripMenuItem_Click);
+            // 
             // continueToolStripMenuItem
             // 
             this.continueToolStripMenuItem.Name = "continueToolStripMenuItem";
@@ -103,6 +110,7 @@
             // 
             this.richTextBox3.Location = new System.Drawing.Point(468, 290);
             this.richTextBox3.Name = "richTextBox3";
+            this.richTextBox3.ReadOnly = true;
             this.richTextBox3.Size = new System.Drawing.Size(175, 140);
             this.richTextBox3.TabIndex = 4;
             this.richTextBox3.Text = "";
@@ -160,6 +168,7 @@
             // 
             this.richTextBox6.Location = new System.Drawing.Point(650, 64);
             this.richTextBox6.Name = "richTextBox6";
+            this.richTextBox6.ReadOnly = true;
             this.richTextBox6.Size = new System.Drawing.Size(175, 207);
             this.richTextBox6.TabIndex = 15;
             this.richTextBox6.Text = "";
@@ -170,7 +179,7 @@
             this.listView1.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
             this.columnHeader1,
             this.columnHeader2});
-            this.listView1.ForeColor = System.Drawing.SystemColors.Window;
+            this.listView1.ForeColor = System.Drawing.SystemColors.WindowText;
             this.listView1.FullRowSelect = true;
             this.listView1.GridLines = true;
             this.listView1.Location = new System.Drawing.Point(470, 61);
@@ -179,6 +188,7 @@
             this.listView1.TabIndex = 16;
             this.listView1.UseCompatibleStateImageBehavior = false;
             this.listView1.View = System.Windows.Forms.View.Details;
+            this.listView1.SelectedIndexChanged += new System.EventHandler(this.listView1_SelectedIndexChanged);
             // 
             // columnHeader1
             // 
@@ -200,13 +210,6 @@
             this.dataGridView1.ReadOnly = true;
             this.dataGridView1.Size = new System.Drawing.Size(449, 385);
             this.dataGridView1.TabIndex = 17;
-            // 
-            // startStepToolStripMenuItem
-            // 
-            this.startStepToolStripMenuItem.Name = "startStepToolStripMenuItem";
-            this.startStepToolStripMenuItem.Size = new System.Drawing.Size(69, 20);
-            this.startStepToolStripMenuItem.Text = "Start Step";
-            this.startStepToolStripMenuItem.Click += new System.EventHandler(this.startStepToolStripMenuItem_Click);
             // 
             // InterfaceVM
             // 
