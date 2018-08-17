@@ -155,4 +155,39 @@ namespace VirtualMachine
 
         }
     }
+
+    public class Instruction
+    {
+        public String instruction;
+        public String firstAttribute;
+        public String secondAttribute;
+        public Instruction(String instruction, String firstAttribute, String secondAttribute)
+        {
+            this.instruction = instruction;
+            this.firstAttribute = firstAttribute;
+            this.secondAttribute = secondAttribute;
+
+            if(String.IsNullOrEmpty(instruction))
+            {
+                throw new Exception("Instruction not provided");
+            } else {
+                executeInstruction();
+            }
+            
+        }
+
+        public void executeInstruction()
+        {
+            //TODO
+            switch (instruction) {
+                case "LDV":
+                    break;
+                case "ADD":
+                    break;
+                default:
+                    break;
+
+            }
+        }
+    }
 }

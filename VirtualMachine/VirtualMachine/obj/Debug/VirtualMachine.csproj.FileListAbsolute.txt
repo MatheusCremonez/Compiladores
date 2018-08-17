@@ -38,3 +38,13 @@ C:\Users\15004336\Downloads\VirtualMachine\VirtualMachine\obj\Debug\VirtualMachi
 C:\Users\15004336\Downloads\VirtualMachine\VirtualMachine\obj\Debug\VirtualMachine.csproj.CoreCompileInputs.cache
 C:\Users\15004336\Downloads\VirtualMachine\VirtualMachine\obj\Debug\VirtualMachine.exe
 C:\Users\15004336\Downloads\VirtualMachine\VirtualMachine\obj\Debug\VirtualMachine.pdb
+C:\Users\Leonardo\Desktop\compiladores\VirtualMachine\VirtualMachine\bin\Debug\VirtualMachine.exe.config
+C:\Users\Leonardo\Desktop\compiladores\VirtualMachine\VirtualMachine\bin\Debug\VirtualMachine.exe
+C:\Users\Leonardo\Desktop\compiladores\VirtualMachine\VirtualMachine\bin\Debug\VirtualMachine.pdb
+C:\Users\Leonardo\Desktop\compiladores\VirtualMachine\VirtualMachine\obj\Debug\VirtualMachine.csprojAssemblyReference.cache
+C:\Users\Leonardo\Desktop\compiladores\VirtualMachine\VirtualMachine\obj\Debug\VirtualMachine.InterfaceVM.resources
+C:\Users\Leonardo\Desktop\compiladores\VirtualMachine\VirtualMachine\obj\Debug\VirtualMachine.Properties.Resources.resources
+C:\Users\Leonardo\Desktop\compiladores\VirtualMachine\VirtualMachine\obj\Debug\VirtualMachine.csproj.GenerateResource.cache
+C:\Users\Leonardo\Desktop\compiladores\VirtualMachine\VirtualMachine\obj\Debug\VirtualMachine.csproj.CoreCompileInputs.cache
+C:\Users\Leonardo\Desktop\compiladores\VirtualMachine\VirtualMachine\obj\Debug\VirtualMachine.exe
+C:\Users\Leonardo\Desktop\compiladores\VirtualMachine\VirtualMachine\obj\Debug\VirtualMachine.pdb
