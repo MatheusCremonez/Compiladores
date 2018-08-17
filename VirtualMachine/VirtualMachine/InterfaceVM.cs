@@ -73,31 +73,6 @@ namespace VirtualMachine
 
         }
 
-        private void label1_Click(object sender, EventArgs e)
-        {
-
-        }
-
-        private void label2_Click(object sender, EventArgs e)
-        {
-
-        }
-
-        private void label4_Click(object sender, EventArgs e)
-        {
-
-        }
-
-        private void Form1_Load(object sender, EventArgs e)
-        {
-
-        }
-
-        private void label7_Click(object sender, EventArgs e)
-        {
-
-        }
-
         private void startToolStripMenuItem_Click(object sender, EventArgs e)
         {
             //Aqui irá ocorrer a execução de uma vez
@@ -108,29 +83,57 @@ namespace VirtualMachine
         private void startStepToolStripMenuItem_Click(object sender, EventArgs e)
         {
             //Variaveis Gerais
-            int i = 0, j = 1, endereco = 0;
+            int linha = 0, atributo = 1;
 
-            while (i < dataGridView1.Rows.Count)
+            while (linha < dataGridView1.Rows.Count)
             {
-                //Debug
-                //MessageBox.Show(dataGridView1.Rows[i].Cells[j].Value.ToString());
+                Instruction instruction = new Instruction(dataGridView1.Rows[linha].Cells[atributo].Value.ToString(), dataGridView1.Rows[linha].Cells[atributo + 1].Value.ToString(), dataGridView1.Rows[linha].Cells[atributo + 2].Value.ToString());
+                linha++;
+            }
+        }
 
-                //Funcionando, acredito que seja isso que tem que fazer
-                //LDV -- Carrega um valor
-                if (dataGridView1.Rows[i].Cells[j].Value.ToString() == "LDV")
-                {
-                    //Adiciona na listView, o interessante é que o primeiro item (primeira Coluna), é um item e tem que ser passado na criação da linha
-                    //e o segundo item (Segunda Coluna) em diante são SubItems
+    }
+
+    public class Instruction
+    {
+        public String instruction;
+        public String firstAttribute;
+        public String secondAttribute;
+
+        public Instruction(String instruction, String firstAttribute, String secondAttribute)
+        {
+            this.instruction = instruction;
+            this.firstAttribute = firstAttribute;
+            this.secondAttribute = secondAttribute;
+
+            if(String.IsNullOrEmpty(instruction))
+            {
+                throw new Exception("Instruction not provided");
+            } else {
+                executeInstruction();
+            }
+
+        }
+
+        public void executeInstruction()
+        {
+            //Nao funciona este objeto, nao sei porque
+            InterfaceVM interfaceVM = new InterfaceVM();
+
+            int endereco = 0;
+            
+            switch (instruction) {
+                case "LDV":
                     ListViewItem item = new ListViewItem(endereco.ToString());
-                    item.SubItems.Add(dataGridView1.Rows[i].Cells[j + 1].Value.ToString());
-                    listView1.Items.Add(item);
+                    item.SubItems.Add(firstAttribute);
+                    interfaceVM.listView1.Items.Add(item);
                     endereco++;
-                }
-                
-                //Ainda não está funcionando este código abaixo, não sei porque mas não consigo pegar a linha para poder pegar os valores que tem nela
-                if (dataGridView1.Rows[i].Cells[j].Value.ToString() == "ADD")
-                {
-                    //Debug
+                    break;
+
+                case "ADD":
+
+                    //Codigo quebrado, ainda precisa arrumar
+                    /*//Debug
                     MessageBox.Show(listView1.SelectedItems.Count.ToString());
 
                     //Essa verificação é para ver se tem linha selecionada
@@ -144,45 +147,7 @@ namespace VirtualMachine
                     }
 
                     //Após pegar os dois valores, tem que fazer a soma e então adicionar o richTextBox4
-                    //richTextBox4.Text = contaFeita;
-                }
-                i++;
-            }
-        }
-
-        private void listView1_SelectedIndexChanged(object sender, EventArgs e)
-        {
-
-        }
-    }
-
-    public class Instruction
-    {
-        public String instruction;
-        public String firstAttribute;
-        public String secondAttribute;
-        public Instruction(String instruction, String firstAttribute, String secondAttribute)
-        {
-            this.instruction = instruction;
-            this.firstAttribute = firstAttribute;
-            this.secondAttribute = secondAttribute;
-
-            if(String.IsNullOrEmpty(instruction))
-            {
-                throw new Exception("Instruction not provided");
-            } else {
-                executeInstruction();
-            }
-            
-        }
-
-        public void executeInstruction()
-        {
-            //TODO
-            switch (instruction) {
-                case "LDV":
-                    break;
-                case "ADD":
+                    //richTextBox4.Text = contaFeita; */
                     break;
                 default:
                     break;

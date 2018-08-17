@@ -104,7 +104,6 @@
             this.label1.Size = new System.Drawing.Size(196, 13);
             this.label1.TabIndex = 2;
             this.label1.Text = "Instruções a serem executadas pela MV";
-            this.label1.Click += new System.EventHandler(this.label1_Click);
             // 
             // richTextBox3
             // 
@@ -132,7 +131,6 @@
             this.label2.Size = new System.Drawing.Size(31, 13);
             this.label2.TabIndex = 6;
             this.label2.Text = "Input";
-            this.label2.Click += new System.EventHandler(this.label2_Click);
             // 
             // label3
             // 
@@ -152,7 +150,6 @@
             this.label4.Size = new System.Drawing.Size(94, 13);
             this.label4.TabIndex = 8;
             this.label4.Text = "Conteúdo da Pilha";
-            this.label4.Click += new System.EventHandler(this.label4_Click);
             // 
             // label7
             // 
@@ -162,7 +159,6 @@
             this.label7.Size = new System.Drawing.Size(69, 13);
             this.label7.TabIndex = 14;
             this.label7.Text = "Break Point\'s";
-            this.label7.Click += new System.EventHandler(this.label7_Click);
             // 
             // richTextBox6
             // 
@@ -188,7 +184,6 @@
             this.listView1.TabIndex = 16;
             this.listView1.UseCompatibleStateImageBehavior = false;
             this.listView1.View = System.Windows.Forms.View.Details;
-            this.listView1.SelectedIndexChanged += new System.EventHandler(this.listView1_SelectedIndexChanged);
             // 
             // columnHeader1
             // 
@@ -229,7 +224,6 @@
             this.Controls.Add(this.menuStrip1);
             this.Name = "InterfaceVM";
             this.Text = "Virtual Machine v0.1";
-            this.Load += new System.EventHandler(this.Form1_Load);
             this.menuStrip1.ResumeLayout(false);
             this.menuStrip1.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).EndInit();
@@ -246,18 +240,18 @@
         private System.Windows.Forms.OpenFileDialog openFileDialog1;
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.RichTextBox richTextBox3;
-        private System.Windows.Forms.RichTextBox richTextBox4;
         private System.Windows.Forms.Label label2;
         private System.Windows.Forms.Label label3;
         private System.Windows.Forms.Label label4;
         private System.Windows.Forms.Label label7;
         private System.Windows.Forms.RichTextBox richTextBox6;
-        private System.Windows.Forms.ListView listView1;
         private System.Windows.Forms.ColumnHeader columnHeader1;
         private System.Windows.Forms.ColumnHeader columnHeader2;
         private System.Windows.Forms.ToolStripMenuItem continueToolStripMenuItem;
-        private System.Windows.Forms.DataGridView dataGridView1;
         private System.Windows.Forms.ToolStripMenuItem startStepToolStripMenuItem;
+        public System.Windows.Forms.ListView listView1;
+        public System.Windows.Forms.DataGridView dataGridView1;
+        public System.Windows.Forms.RichTextBox richTextBox4;
     }
 }
 
