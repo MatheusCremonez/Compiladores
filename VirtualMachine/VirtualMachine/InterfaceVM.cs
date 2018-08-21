@@ -8,6 +8,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.IO;
+using System.Collections;
 
 namespace VirtualMachine
 {
@@ -31,11 +32,11 @@ namespace VirtualMachine
             //Verifica se o arquivo foi selecionado corretamente
             if (openFile.ShowDialog() == DialogResult.OK)
             {
-                //Coloca o arquivo em uma variavel
-                StreamReader file = new StreamReader(openFile.FileName);
-
                 //Cria a dataTable para adicionarmos os valores na lista
                 DataTable dt = new DataTable();
+
+                //Adiciona a tabela ano dataGrid
+                dataGridView1.DataSource = dt;
 
                 //Colunas da tabela
                 dt.Columns.Add("I");
@@ -43,6 +44,14 @@ namespace VirtualMachine
                 dt.Columns.Add("Atributo #1");
                 dt.Columns.Add("Atributo #2");
 
+                //Preenche as colunas para caber no espaço do dataGrid
+                dataGridView1.Columns[0].AutoSizeMode = DataGridViewAutoSizeColumnMode.DisplayedCells;
+                dataGridView1.Columns[1].AutoSizeMode = DataGridViewAutoSizeColumnMode.DisplayedCells;
+                dataGridView1.Columns[2].AutoSizeMode = DataGridViewAutoSizeColumnMode.DisplayedCells;
+                dataGridView1.Columns[3].AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
+
+                //Coloca o arquivo em uma variavel
+                StreamReader file = new StreamReader(openFile.FileName);
 
                 //Enquanto a tiver linha no arquivo le
                 while ((newline = file.ReadLine()) != null)
@@ -67,91 +76,87 @@ namespace VirtualMachine
 
                 file.Close();
 
-                //Adiciona a tabela ano dataGrid
-                dataGridView1.DataSource = dt;
             }
 
         }
 
+        //Executa o código direto, sem passar linha a linha
         private void startToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            //Aqui irá ocorrer a execução de uma vez
-        }
+            //Cria a dataTable para adicionarmos colunas e linhas na lista
+            DataTable dt = new DataTable();
+            //Coloca no dataGrid as colunas criadas
+            dataGridView2.DataSource = dt;
 
-        //VALE RESSALTAR QUE AINDA NAO ESTA FAZENDO LINHA APOS LINHA POIS ESTOU CORRIGINDO OS ERROS ANTES DE FICAR TRAVANDO LINHA A LINHA
-        //Executa o código linha por linha carregado
+            //Colunas da tabela
+            dt.Columns.Add("Endereço(s):");
+            dt.Columns.Add("Valor:");
+
+            //Preenche as colunas para caber no espaço do dataGrid
+            dataGridView2.Columns[0].AutoSizeMode = DataGridViewAutoSizeColumnMode.DisplayedCells;
+            dataGridView2.Columns[1].AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
+
+            //Linhas da tabela
+            DataRow dr = dt.NewRow();
+
+            //Variaveis Gerais
+            int linhaInstrucao = 0, atributo = 1, endereco = 0;
+            int topoDaPilha = -1;
+
+            //Array que guarda os valores da pilha e posição
+            ArrayList arrayStash = new ArrayList();
+            //Objeto da Classe que contém as instruções que o Compilador faz
+            Instruction instruction = new Instruction();
+
+
+            while (linhaInstrucao < dataGridView1.Rows.Count)
+            {
+                topoDaPilha = instruction.execute(dataGridView1.Rows[linhaInstrucao].Cells[atributo].Value.ToString(), dataGridView1.Rows[linhaInstrucao].Cells[atributo + 1].Value.ToString(), dataGridView1.Rows[linhaInstrucao].Cells[atributo + 2].Value.ToString(), arrayStash, topoDaPilha);
+                endereco = arrayStash.Count - 1;
+
+                dr[0] = endereco.ToString();
+                dr[1] = arrayStash[topoDaPilha].ToString();
+                
+
+                linhaInstrucao++;
+            }
+            dt.Rows.Add(dr);
+        }
+        
         private void startStepToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            //Variaveis Gerais
-            int linha = 0, atributo = 1;
-
-            while (linha < dataGridView1.Rows.Count)
-            {
-                Instruction instruction = new Instruction(dataGridView1.Rows[linha].Cells[atributo].Value.ToString(), dataGridView1.Rows[linha].Cells[atributo + 1].Value.ToString(), dataGridView1.Rows[linha].Cells[atributo + 2].Value.ToString());
-                linha++;
-            }
+            //Executa o código linha por linha carregado
         }
-
     }
 
     public class Instruction
     {
-        public String instruction;
-        public String firstAttribute;
-        public String secondAttribute;
-
-        public Instruction(String instruction, String firstAttribute, String secondAttribute)
+        public int execute(string instruction, string firstAttribute, string secondAttribute, ArrayList array, int topoPilha)
         {
-            this.instruction = instruction;
-            this.firstAttribute = firstAttribute;
-            this.secondAttribute = secondAttribute;
 
-            if(String.IsNullOrEmpty(instruction))
+            if (String.IsNullOrEmpty(instruction))
             {
                 throw new Exception("Instruction not provided");
-            } else {
-                executeInstruction();
             }
+            else
+            {
+                switch (instruction)
+                {
+                    case "LDC":
+                        array.Add(firstAttribute);
+                        return topoPilha + 1;
 
-        }
+                    case "ADD":
+                        int x = Convert.ToInt32(array[topoPilha]);
+                        int y = Convert.ToInt32(array[topoPilha - 1]);
+                        array[topoPilha - 1] = x + y;
+                        array.RemoveAt(topoPilha);
+                        return topoPilha - 1;
 
-        public void executeInstruction()
-        {
-            //Nao funciona este objeto, nao sei porque
-            InterfaceVM interfaceVM = new InterfaceVM();
+                    default:
+                        return topoPilha;
 
-            int endereco = 0;
-            
-            switch (instruction) {
-                case "LDV":
-                    ListViewItem item = new ListViewItem(endereco.ToString());
-                    item.SubItems.Add(firstAttribute);
-                    interfaceVM.listView1.Items.Add(item);
-                    endereco++;
-                    break;
-
-                case "ADD":
-
-                    //Codigo quebrado, ainda precisa arrumar
-                    /*//Debug
-                    MessageBox.Show(listView1.SelectedItems.Count.ToString());
-
-                    //Essa verificação é para ver se tem linha selecionada
-                    if (listView1.SelectedItems.Count > 0)
-                    {
-                        //Pega o valor da primeira coluna
-                        string valor = listView1.SelectedItems[0].SubItems[0].Text;
-
-                        //Debug
-                        MessageBox.Show(valor);
-                    }
-
-                    //Após pegar os dois valores, tem que fazer a soma e então adicionar o richTextBox4
-                    //richTextBox4.Text = contaFeita; */
-                    break;
-                default:
-                    break;
-
+                }
             }
         }
     }

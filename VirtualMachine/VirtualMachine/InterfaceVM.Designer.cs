@@ -42,12 +42,11 @@
             this.label4 = new System.Windows.Forms.Label();
             this.label7 = new System.Windows.Forms.Label();
             this.richTextBox6 = new System.Windows.Forms.RichTextBox();
-            this.listView1 = new System.Windows.Forms.ListView();
-            this.columnHeader1 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
-            this.columnHeader2 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.dataGridView1 = new System.Windows.Forms.DataGridView();
+            this.dataGridView2 = new System.Windows.Forms.DataGridView();
             this.menuStrip1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.dataGridView2)).BeginInit();
             this.SuspendLayout();
             // 
             // menuStrip1
@@ -110,6 +109,7 @@
             this.richTextBox3.Location = new System.Drawing.Point(468, 290);
             this.richTextBox3.Name = "richTextBox3";
             this.richTextBox3.ReadOnly = true;
+            this.richTextBox3.ScrollBars = System.Windows.Forms.RichTextBoxScrollBars.Vertical;
             this.richTextBox3.Size = new System.Drawing.Size(175, 140);
             this.richTextBox3.TabIndex = 4;
             this.richTextBox3.Text = "";
@@ -119,6 +119,7 @@
             this.richTextBox4.Location = new System.Drawing.Point(650, 290);
             this.richTextBox4.Name = "richTextBox4";
             this.richTextBox4.ReadOnly = true;
+            this.richTextBox4.ScrollBars = System.Windows.Forms.RichTextBoxScrollBars.Vertical;
             this.richTextBox4.Size = new System.Drawing.Size(175, 140);
             this.richTextBox4.TabIndex = 5;
             this.richTextBox4.Text = "";
@@ -165,35 +166,10 @@
             this.richTextBox6.Location = new System.Drawing.Point(650, 64);
             this.richTextBox6.Name = "richTextBox6";
             this.richTextBox6.ReadOnly = true;
+            this.richTextBox6.ScrollBars = System.Windows.Forms.RichTextBoxScrollBars.Vertical;
             this.richTextBox6.Size = new System.Drawing.Size(175, 207);
             this.richTextBox6.TabIndex = 15;
             this.richTextBox6.Text = "";
-            // 
-            // listView1
-            // 
-            this.listView1.BackColor = System.Drawing.SystemColors.Window;
-            this.listView1.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
-            this.columnHeader1,
-            this.columnHeader2});
-            this.listView1.ForeColor = System.Drawing.SystemColors.WindowText;
-            this.listView1.FullRowSelect = true;
-            this.listView1.GridLines = true;
-            this.listView1.Location = new System.Drawing.Point(470, 61);
-            this.listView1.Name = "listView1";
-            this.listView1.Size = new System.Drawing.Size(173, 210);
-            this.listView1.TabIndex = 16;
-            this.listView1.UseCompatibleStateImageBehavior = false;
-            this.listView1.View = System.Windows.Forms.View.Details;
-            // 
-            // columnHeader1
-            // 
-            this.columnHeader1.Text = "Endereço(s):";
-            this.columnHeader1.Width = 84;
-            // 
-            // columnHeader2
-            // 
-            this.columnHeader2.Text = "Valor:";
-            this.columnHeader2.Width = 84;
             // 
             // dataGridView1
             // 
@@ -203,16 +179,28 @@
             this.dataGridView1.Location = new System.Drawing.Point(12, 45);
             this.dataGridView1.Name = "dataGridView1";
             this.dataGridView1.ReadOnly = true;
+            this.dataGridView1.RowHeadersVisible = false;
+            this.dataGridView1.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
             this.dataGridView1.Size = new System.Drawing.Size(449, 385);
             this.dataGridView1.TabIndex = 17;
+            // 
+            // dataGridView2
+            // 
+            this.dataGridView2.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            this.dataGridView2.Location = new System.Drawing.Point(468, 64);
+            this.dataGridView2.Name = "dataGridView2";
+            this.dataGridView2.RowHeadersVisible = false;
+            this.dataGridView2.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
+            this.dataGridView2.Size = new System.Drawing.Size(175, 207);
+            this.dataGridView2.TabIndex = 18;
             // 
             // InterfaceVM
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(838, 439);
+            this.Controls.Add(this.dataGridView2);
             this.Controls.Add(this.dataGridView1);
-            this.Controls.Add(this.listView1);
             this.Controls.Add(this.richTextBox6);
             this.Controls.Add(this.label7);
             this.Controls.Add(this.label4);
@@ -227,6 +215,7 @@
             this.menuStrip1.ResumeLayout(false);
             this.menuStrip1.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.dataGridView2)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -245,13 +234,11 @@
         private System.Windows.Forms.Label label4;
         private System.Windows.Forms.Label label7;
         private System.Windows.Forms.RichTextBox richTextBox6;
-        private System.Windows.Forms.ColumnHeader columnHeader1;
-        private System.Windows.Forms.ColumnHeader columnHeader2;
         private System.Windows.Forms.ToolStripMenuItem continueToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem startStepToolStripMenuItem;
-        public System.Windows.Forms.ListView listView1;
         public System.Windows.Forms.DataGridView dataGridView1;
         public System.Windows.Forms.RichTextBox richTextBox4;
+        private System.Windows.Forms.DataGridView dataGridView2;
     }
 }
 
