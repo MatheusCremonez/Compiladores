@@ -14,10 +14,7 @@ namespace VirtualMachine.Tests
         [TestMethod()]
         public void InterfaceVMTest()
         {
-            InterfaceVM myInterface = new InterfaceVM();
-            Instruction instruction = new Instruction("ADD", "", "");
-
-            Assert.IsNotNull(myInterface);
+            Assert.Fail();
         }
     }
 }

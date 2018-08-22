@@ -68,3 +68,13 @@ C:\Users\15004336\Downloads\Compiladores\VirtualMachine\VirtualMachine\obj\Debug
 C:\Users\15004336\Downloads\Compiladores\VirtualMachine\VirtualMachine\obj\Debug\VirtualMachine.csproj.CoreCompileInputs.cache
 C:\Users\15004336\Downloads\Compiladores\VirtualMachine\VirtualMachine\obj\Debug\VirtualMachine.exe
 C:\Users\15004336\Downloads\Compiladores\VirtualMachine\VirtualMachine\obj\Debug\VirtualMachine.pdb
+C:\Users\15004336\Downloads\compiladores-master\VirtualMachine\VirtualMachine\bin\Debug\VirtualMachine.exe.config
+C:\Users\15004336\Downloads\compiladores-master\VirtualMachine\VirtualMachine\bin\Debug\VirtualMachine.exe
+C:\Users\15004336\Downloads\compiladores-master\VirtualMachine\VirtualMachine\bin\Debug\VirtualMachine.pdb
+C:\Users\15004336\Downloads\compiladores-master\VirtualMachine\VirtualMachine\obj\Debug\VirtualMachine.csprojResolveAssemblyReference.cache
+C:\Users\15004336\Downloads\compiladores-master\VirtualMachine\VirtualMachine\obj\Debug\VirtualMachine.InterfaceVM.resources
+C:\Users\15004336\Downloads\compiladores-master\VirtualMachine\VirtualMachine\obj\Debug\VirtualMachine.Properties.Resources.resources
+C:\Users\15004336\Downloads\compiladores-master\VirtualMachine\VirtualMachine\obj\Debug\VirtualMachine.csproj.GenerateResource.cache
+C:\Users\15004336\Downloads\compiladores-master\VirtualMachine\VirtualMachine\obj\Debug\VirtualMachine.csproj.CoreCompileInputs.cache
+C:\Users\15004336\Downloads\compiladores-master\VirtualMachine\VirtualMachine\obj\Debug\VirtualMachine.exe
+C:\Users\15004336\Downloads\compiladores-master\VirtualMachine\VirtualMachine\obj\Debug\VirtualMachine.pdb

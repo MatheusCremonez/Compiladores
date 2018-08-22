@@ -74,6 +74,7 @@ namespace VirtualMachine
                     linhaNumero++;
                 }
 
+                dataGridView1.Rows[0].Selected = true;
                 file.Close();
 
             }
@@ -97,38 +98,53 @@ namespace VirtualMachine
             dataGridView2.Columns[1].AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
 
             //Variaveis Gerais
-            int linhaInstrucao = 0, atributo = 1, endereco = 0, validate = 0;
-            int topoDaPilha = -1;
+            int linhaInstrucao = 0, atributo = 1, validate = 0;
+            int topoDaPilha = 0;
 
             //Array que guarda os valores da pilha e posição
             ArrayList arrayStash = new ArrayList();
             //Objeto da Classe que contém as instruções que o Compilador faz
             Instruction instruction = new Instruction();
 
+            //Objeto para pegar uma linha do dataGrid
             DataGridViewRow row = new DataGridViewRow();
 
-            while (linhaInstrucao < dataGridView1.Rows.Count)
+            while (topoDaPilha != -99)
             {
+                dataGridView1.ClearSelection();
+
                 topoDaPilha = instruction.execute(dataGridView1.Rows[linhaInstrucao].Cells[atributo].Value.ToString(), dataGridView1.Rows[linhaInstrucao].Cells[atributo + 1].Value.ToString(), dataGridView1.Rows[linhaInstrucao].Cells[atributo + 2].Value.ToString(), arrayStash, topoDaPilha);
-                endereco = arrayStash.Count - 1;
-
-                for(int i = 0; i < arrayStash.Count; i++)
+                
+                if(!(dataGridView1.Rows[linhaInstrucao].Cells[atributo].Value.ToString().Equals("START")) && !(dataGridView1.Rows[linhaInstrucao].Cells[atributo].Value.ToString().Equals("HLT")))
                 {
-                    row = dataGridView2.Rows[topoDaPilha];
+                    dataGridView2.ClearSelection();
 
-                    if (arrayStash[i] == row.Cells[1].Value)
+                    for (int i = 1; i < dataGridView2.Rows.Count; i++)
                     {
-                        row.Cells[0].Value = endereco.ToString();
-                        row.Cells[1].Value = arrayStash[topoDaPilha].ToString();
-                        validate = 1;
-                    } 
-                }
+                        row = dataGridView2.Rows[i];
 
-                if(validate == 0)
-                {
-                    dt.Rows.Add(endereco.ToString(), arrayStash[topoDaPilha].ToString());
-                }
+                        if (topoDaPilha == Convert.ToInt32(row.Cells[0].Value))
+                        {
+                            row.Cells[0].Value = topoDaPilha;
+                            row.Cells[1].Value = arrayStash[topoDaPilha].ToString();
+                            validate = 1;
+                            dataGridView2.Rows[topoDaPilha].Selected = true;
+                        }
+                    }
 
+                    if (validate == 0)
+                    {
+                        dt.Rows.Add(topoDaPilha, arrayStash[topoDaPilha].ToString());
+                        dataGridView2.Rows[topoDaPilha].Selected = true;
+                    }
+
+                    if (dataGridView1.Rows[linhaInstrucao].Cells[atributo].Value.ToString().Equals("ADD"))
+                    {
+                        richTextBox4.AppendText(arrayStash[topoDaPilha].ToString() + "\n");
+                    }
+                }
+                
+                dataGridView1.Rows[linhaInstrucao].Selected = true;
                 linhaInstrucao++;
             }
            
@@ -143,7 +159,7 @@ namespace VirtualMachine
     public class Instruction
     {
         public int execute(string instruction, string firstAttribute, string secondAttribute, ArrayList array, int topoPilha)
-        {
+        {          
 
             if (String.IsNullOrEmpty(instruction))
             {
@@ -153,9 +169,17 @@ namespace VirtualMachine
             {
                 switch (instruction)
                 {
+                    case "START":
+                        return topoPilha - 1;
+
                     case "LDC":
                         array.Add(firstAttribute);
                         return topoPilha + 1;
+
+                    case "LDV":
+                        topoPilha++;
+                        array[topoPilha] = array[Convert.ToInt32(firstAttribute)];
+                        return topoPilha;
 
                     case "ADD":
                         int x = Convert.ToInt32(array[topoPilha]);
@@ -164,6 +188,8 @@ namespace VirtualMachine
                         array.RemoveAt(topoPilha);
                         return topoPilha - 1;
 
+                    case "HLT":
+                        return -99;
                     default:
                         return topoPilha;
 
