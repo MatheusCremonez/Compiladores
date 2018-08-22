@@ -96,11 +96,8 @@ namespace VirtualMachine
             dataGridView2.Columns[0].AutoSizeMode = DataGridViewAutoSizeColumnMode.DisplayedCells;
             dataGridView2.Columns[1].AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
 
-            //Linhas da tabela
-            DataRow dr = dt.NewRow();
-
             //Variaveis Gerais
-            int linhaInstrucao = 0, atributo = 1, endereco = 0;
+            int linhaInstrucao = 0, atributo = 1, endereco = 0, validate = 0;
             int topoDaPilha = -1;
 
             //Array que guarda os valores da pilha e posição
@@ -108,19 +105,33 @@ namespace VirtualMachine
             //Objeto da Classe que contém as instruções que o Compilador faz
             Instruction instruction = new Instruction();
 
+            DataGridViewRow row = new DataGridViewRow();
 
             while (linhaInstrucao < dataGridView1.Rows.Count)
             {
                 topoDaPilha = instruction.execute(dataGridView1.Rows[linhaInstrucao].Cells[atributo].Value.ToString(), dataGridView1.Rows[linhaInstrucao].Cells[atributo + 1].Value.ToString(), dataGridView1.Rows[linhaInstrucao].Cells[atributo + 2].Value.ToString(), arrayStash, topoDaPilha);
                 endereco = arrayStash.Count - 1;
 
-                dr[0] = endereco.ToString();
-                dr[1] = arrayStash[topoDaPilha].ToString();
-                
+                for(int i = 0; i < arrayStash.Count; i++)
+                {
+                    row = dataGridView2.Rows[topoDaPilha];
+
+                    if (arrayStash[i] == row.Cells[1].Value)
+                    {
+                        row.Cells[0].Value = endereco.ToString();
+                        row.Cells[1].Value = arrayStash[topoDaPilha].ToString();
+                        validate = 1;
+                    } 
+                }
+
+                if(validate == 0)
+                {
+                    dt.Rows.Add(endereco.ToString(), arrayStash[topoDaPilha].ToString());
+                }
 
                 linhaInstrucao++;
             }
-            dt.Rows.Add(dr);
+           
         }
         
         private void startStepToolStripMenuItem_Click(object sender, EventArgs e)
