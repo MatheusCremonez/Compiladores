@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Collections;
 
 namespace VirtualMachine.Tests
 {
@@ -14,7 +15,132 @@ namespace VirtualMachine.Tests
         [TestMethod()]
         public void InterfaceVMTest()
         {
-            Assert.Fail();
+            interfaceTest();
+            instructionTest();
+        }
+
+        public void interfaceTest()
+        {
+            InterfaceVM myInterface = new InterfaceVM();
+            //teste para verificar se a interface foi criada corretamente
+            Assert.IsNotNull(myInterface);
+        }
+
+        public void instructionTest()
+        {
+            Instruction instruction = new Instruction();
+            int arrayTop = 0;
+            ArrayList mockArray = new ArrayList();
+
+            instructionStartTest(instruction);
+            instructionHltTest(instruction);
+            instructionLdcTest(instruction, arrayTop, mockArray);
+            instructionLdvTest(instruction, arrayTop, mockArray);
+            instructionAddTest(instruction, arrayTop, mockArray);
+            instructionSubTest(instruction, arrayTop, mockArray);
+            instructionMultTest(instruction, arrayTop, mockArray);
+            instructionDiviTest(instruction, arrayTop, mockArray);
+        }
+
+        public void instructionStartTest(Instruction instruction)
+        {
+            int newArrayTop = instruction.execute("START", "", "", null, 0);
+            Assert.AreEqual(-1, newArrayTop);
+        }
+
+        public void instructionHltTest(Instruction instruction)
+        {
+            int newArrayTop = instruction.execute("HLT", "", "", null, 0);
+            Assert.AreEqual(-99, newArrayTop);
+        }
+
+        public void instructionLdcTest(Instruction instruction, int top, ArrayList array)
+        {
+            String attribute = "1";
+            top = -1;
+            int newArrayTop = instruction.execute("LDC", attribute, "", array, top);
+            Assert.AreEqual(top+1, newArrayTop);
+            Assert.AreEqual(array[newArrayTop], attribute);
+
+            array.Clear();
+        }
+
+        public void instructionLdvTest(Instruction instruction, int top, ArrayList array)
+        {
+            String attribute = "1";
+            array.Add(10);
+            array.Add(20);
+            top = 1;
+
+            int newArrayTop = instruction.execute("LDV", attribute, "", array, top);
+            Assert.AreEqual(top + 1, newArrayTop);
+            Assert.AreEqual(array[newArrayTop], array[Convert.ToInt32(attribute) + 1]);
+
+            array.Clear();
+        }
+
+        public void instructionAddTest(Instruction instruction, int top, ArrayList array)
+        {
+            array.Add(10);
+            array.Add(2);
+            top = 1;
+
+            int newArrayTop = instruction.execute("ADD", "", "", array, top);
+            Assert.AreEqual(top - 1, newArrayTop);
+            Assert.AreEqual(12, array[newArrayTop]);
+
+            array.Clear();
+        }
+
+        public void instructionSubTest(Instruction instruction, int top, ArrayList array)
+        {
+            array.Add(2);
+            array.Add(10);
+            top = 1;
+
+            int newArrayTop = instruction.execute("SUB", "", "", array, top);
+            Assert.AreEqual(top - 1, newArrayTop);
+            Assert.AreEqual(8, array[newArrayTop]);
+
+            array.Clear();
+        }
+
+        public void instructionMultTest(Instruction instruction, int top, ArrayList array)
+        {
+            array.Add(10);
+            array.Add(2);
+            top = 1;
+
+            int newArrayTop = instruction.execute("MULT", "", "", array, top);
+            Assert.AreEqual(top - 1, newArrayTop);
+            Assert.AreEqual(20, array[newArrayTop]);
+
+            array.Clear();
+        }
+
+        public void instructionDiviTest(Instruction instruction, int top, ArrayList array)
+        {
+            array.Add(10);
+            array.Add(20);
+            top = 1;
+
+            int newArrayTop = instruction.execute("DIVI", "", "", array, top);
+            Assert.AreEqual(top - 1, newArrayTop);
+            Assert.AreEqual(2, array[newArrayTop]);
+
+            array.Clear();
+        }
+
+        public void instructionInvTest(Instruction instruction, int top, ArrayList array)
+        {
+            array.Add(1);
+            top = 1;
+
+            int newArrayTop = instruction.execute("INV", "", "", array, top);
+            Assert.AreEqual(top, newArrayTop);
+            Assert.AreEqual(-1, array[newArrayTop]);
+
+            array.Clear();
         }
     }
 }

@@ -159,8 +159,8 @@ namespace VirtualMachine
     public class Instruction
     {
         public int execute(string instruction, string firstAttribute, string secondAttribute, ArrayList array, int topoPilha)
-        {          
-
+        {
+            int x, y;
             if (String.IsNullOrEmpty(instruction))
             {
                 throw new Exception("Instruction not provided");
@@ -170,23 +170,51 @@ namespace VirtualMachine
                 switch (instruction)
                 {
                     case "START":
-                        return topoPilha - 1;
+                        topoPilha = -1;
+                        return topoPilha;
 
                     case "LDC":
+                        topoPilha++;
                         array.Add(firstAttribute);
-                        return topoPilha + 1;
+                        return topoPilha;
 
                     case "LDV":
                         topoPilha++;
-                        array[topoPilha] = array[Convert.ToInt32(firstAttribute)];
+                        array.Add(array[Convert.ToInt32(firstAttribute)]);
                         return topoPilha;
 
                     case "ADD":
-                        int x = Convert.ToInt32(array[topoPilha]);
-                        int y = Convert.ToInt32(array[topoPilha - 1]);
+                        x = Convert.ToInt32(array[topoPilha]);
+                        y = Convert.ToInt32(array[topoPilha - 1]);
                         array[topoPilha - 1] = x + y;
                         array.RemoveAt(topoPilha);
                         return topoPilha - 1;
+
+                    case "SUB":
+                        x = Convert.ToInt32(array[topoPilha]);
+                        y = Convert.ToInt32(array[topoPilha - 1]);
+                        array[topoPilha - 1] = x - y;
+                        array.RemoveAt(topoPilha);
+                        return topoPilha - 1;
+
+                    case "MULT":
+                        x = Convert.ToInt32(array[topoPilha]);
+                        y = Convert.ToInt32(array[topoPilha - 1]);
+                        array[topoPilha - 1] = x * y;
+                        array.RemoveAt(topoPilha);
+                        return topoPilha - 1;
+
+                    case "DIVI":
+                        x = Convert.ToInt32(array[topoPilha]);
+                        y = Convert.ToInt32(array[topoPilha - 1]);
+                        array[topoPilha - 1] = x / y;
+                        array.RemoveAt(topoPilha);
+                        return topoPilha - 1;
+
+                    case "INV":
+                        x = Convert.ToInt32(array[topoPilha]);
+                        array[topoPilha] = x * (-1);
+                        return topoPilha;
 
                     case "HLT":
                         return -99;
