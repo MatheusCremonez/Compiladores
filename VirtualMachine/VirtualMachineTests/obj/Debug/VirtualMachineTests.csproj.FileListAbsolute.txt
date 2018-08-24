@@ -1,0 +1,12 @@
+C:\Users\Leonardo\Desktop\compiladores\VirtualMachine\VirtualMachineTests\bin\Debug\VirtualMachineTests.dll
+C:\Users\Leonardo\Desktop\compiladores\VirtualMachine\VirtualMachineTests\bin\Debug\VirtualMachineTests.pdb
+C:\Users\Leonardo\Desktop\compiladores\VirtualMachine\VirtualMachineTests\bin\Debug\Microsoft.VisualStudio.QualityTools.UnitTestFramework.dll
+C:\Users\Leonardo\Desktop\compiladores\VirtualMachine\VirtualMachineTests\bin\Debug\VirtualMachine.exe
+C:\Users\Leonardo\Desktop\compiladores\VirtualMachine\VirtualMachineTests\bin\Debug\VirtualMachine.pdb
+C:\Users\Leonardo\Desktop\compiladores\VirtualMachine\VirtualMachineTests\bin\Debug\VirtualMachine.exe.config
+C:\Users\Leonardo\Desktop\compiladores\VirtualMachine\VirtualMachineTests\bin\Debug\pt-BR\Microsoft.VisualStudio.QualityTools.UnitTestFramework.resources.dll
+C:\Users\Leonardo\Desktop\compiladores\VirtualMachine\VirtualMachineTests\obj\Debug\VirtualMachineTests.csprojAssemblyReference.cache
+C:\Users\Leonardo\Desktop\compiladores\VirtualMachine\VirtualMachineTests\obj\Debug\VirtualMachineTests.csproj.CoreCompileInputs.cache
+C:\Users\Leonardo\Desktop\compiladores\VirtualMachine\VirtualMachineTests\obj\Debug\VirtualMachineTests.csproj.CopyComplete
+C:\Users\Leonardo\Desktop\compiladores\VirtualMachine\VirtualMachineTests\obj\Debug\VirtualMachineTests.dll
+C:\Users\Leonardo\Desktop\compiladores\VirtualMachine\VirtualMachineTests\obj\Debug\VirtualMachineTests.pdb
