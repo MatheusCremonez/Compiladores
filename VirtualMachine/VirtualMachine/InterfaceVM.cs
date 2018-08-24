@@ -100,6 +100,7 @@ namespace VirtualMachine
             //Variaveis Gerais
             int linhaInstrucao = 0, atributo = 1, validate = 0;
             int topoDaPilha = 0;
+            string instructionName, firstAttribute, secondAttribute;
 
             //Array que guarda os valores da pilha e posição
             ArrayList arrayStash = new ArrayList();
@@ -113,15 +114,19 @@ namespace VirtualMachine
             {
                 dataGridView1.ClearSelection();
 
-                topoDaPilha = instruction.execute(dataGridView1.Rows[linhaInstrucao].Cells[atributo].Value.ToString(), dataGridView1.Rows[linhaInstrucao].Cells[atributo + 1].Value.ToString(), dataGridView1.Rows[linhaInstrucao].Cells[atributo + 2].Value.ToString(), arrayStash, topoDaPilha);
-                
-                if(!(dataGridView1.Rows[linhaInstrucao].Cells[atributo].Value.ToString().Equals("START")) && !(dataGridView1.Rows[linhaInstrucao].Cells[atributo].Value.ToString().Equals("HLT")))
+                instructionName = dataGridView1.Rows[linhaInstrucao].Cells[atributo].Value.ToString();
+                firstAttribute = dataGridView1.Rows[linhaInstrucao].Cells[atributo + 1].Value.ToString();
+                secondAttribute = dataGridView1.Rows[linhaInstrucao].Cells[atributo + 2].Value.ToString();
+
+                topoDaPilha = instruction.execute(instructionName, firstAttribute, secondAttribute, arrayStash, topoDaPilha);
+
+                if (!(instructionName.Equals("START")) && !(instructionName.Equals("HLT")))
                 {
                     dataGridView2.ClearSelection();
 
                     for (int i = 1; i < dataGridView2.Rows.Count; i++)
                     {
-                        row = dataGridView2.Rows[i];
+                        row = dataGridView2.Rows[i - 1];
 
                         if (topoDaPilha == Convert.ToInt32(row.Cells[0].Value))
                         {
@@ -138,9 +143,10 @@ namespace VirtualMachine
                         dataGridView2.Rows[topoDaPilha].Selected = true;
                     }
 
-                    if (dataGridView1.Rows[linhaInstrucao].Cells[atributo].Value.ToString().Equals("ADD"))
+                    if (dataGridView1.Rows[linhaInstrucao].Cells[atributo].Value.ToString().Equals("PRN"))
                     {
                         richTextBox4.AppendText(arrayStash[topoDaPilha].ToString() + "\n");
+                        topoDaPilha--;
                     }
                 }
                 
@@ -175,7 +181,7 @@ namespace VirtualMachine
 
                     case "LDC":
                         topoPilha++;
-                        array.Add(firstAttribute);
+                        array.Add(Convert.ToInt32(firstAttribute));
                         return topoPilha;
 
                     case "LDV":
@@ -216,8 +222,26 @@ namespace VirtualMachine
                         array[topoPilha] = x * (-1);
                         return topoPilha;
 
+                    case "NULL":
+                        return topoPilha;
+
+                    case "STR":
+                        if(Convert.ToInt32(firstAttribute) >= array.Count)
+                        {
+                            array.Add(array[topoPilha]);
+                        }
+                        else
+                        {
+                            array[Convert.ToInt32(firstAttribute)] = array[topoPilha];
+                        }
+                        return topoPilha - 1;
+
+                    case "PRN":
+                        return topoPilha;
+
                     case "HLT":
                         return -99;
+
                     default:
                         return topoPilha;
 
