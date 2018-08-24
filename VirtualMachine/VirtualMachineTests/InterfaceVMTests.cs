@@ -54,6 +54,8 @@ namespace VirtualMachine.Tests
             instructionCmaqTest(instruction, arrayTop, mockArray);
             instructionCeqTest(instruction, arrayTop, mockArray);
             instructionCdifTest(instruction, arrayTop, mockArray);
+
+            instructionStrTest(instruction, arrayTop, mockArray);
         }
 
         public void instructionStartTest(Instruction instruction)
@@ -73,7 +75,7 @@ namespace VirtualMachine.Tests
             String attribute = "1";
             top = -1;
             int newArrayTop = instruction.execute("LDC", attribute, "", array, top);
-            Assert.AreEqual(top+1, newArrayTop);
+            Assert.AreEqual(top + 1, newArrayTop);
             Assert.AreEqual(array[newArrayTop], Convert.ToInt32(attribute));
 
             array.Clear();
@@ -161,7 +163,7 @@ namespace VirtualMachine.Tests
         {
             int newArrayTop;
 
-            for(int i = 0; i < 2; i++)
+            for (int i = 0; i < 2; i++)
             {
                 for (int j = 0; i < 2; i++)
                 {
@@ -171,13 +173,13 @@ namespace VirtualMachine.Tests
                     top = 1;
 
                     newArrayTop = instruction.execute("AND", "", "", array, top);
-                    Assert.AreEqual(top-1, newArrayTop);
-                    Assert.AreEqual(i*j, array[newArrayTop]);
+                    Assert.AreEqual(top - 1, newArrayTop);
+                    Assert.AreEqual(i * j, array[newArrayTop]);
 
                     array.Clear();
                 }
             }
-           
+
         }
 
         public void instructionOrTest(Instruction instruction, int top, ArrayList array)
@@ -404,6 +406,21 @@ namespace VirtualMachine.Tests
             Assert.AreEqual(logicFalse, array[newArrayTop]);
 
             array.Clear();
+        }
+
+        public void instructionStrTest(Instruction instruction, int top, ArrayList array)
+        {
+            String position = "0";
+
+            array.Add(0);
+            array.Add(2);
+            array.Add(4);
+
+            top = 2;
+
+            int newArrayTop = instruction.execute("STR", position, "", array, top);
+            Assert.AreEqual(top - 1, newArrayTop);
+            Assert.AreEqual(array[Convert.ToInt32(position)], array[top]);
         }
     }
 }
