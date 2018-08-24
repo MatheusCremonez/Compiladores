@@ -123,7 +123,7 @@ namespace VirtualMachine
                 if (!(instructionName.Equals("START")) && !(instructionName.Equals("HLT")))
                 {
                     dataGridView2.ClearSelection();
-
+                    //Count sempre inicia-se com 1
                     for (int i = 1; i < dataGridView2.Rows.Count; i++)
                     {
                         row = dataGridView2.Rows[i - 1];
@@ -238,6 +238,99 @@ namespace VirtualMachine
 
                     case "PRN":
                         return topoPilha;
+
+                    case "AND":
+                        if(array[topoPilha - 1].Equals(1) && array[topoPilha].Equals(1))
+                        {
+                            array[topoPilha - 1] = 1;
+                        }
+                        else
+                        {
+                            array[topoPilha - 1] = 0;
+                        }
+                        return topoPilha - 1;
+
+                    case "OR":
+                        if (array[topoPilha - 1].Equals(1) || array[topoPilha].Equals(1))
+                        {
+                            array[topoPilha - 1] = 1;
+                        }
+                        else
+                        {
+                            array[topoPilha - 1] = 0;
+                        }
+                        return topoPilha - 1;
+
+                    case "NEG":
+                        array[topoPilha] = 1 - Convert.ToInt32(array[topoPilha]);
+                        return topoPilha;
+
+                    case "CME":
+                        if (Convert.ToInt32(array[topoPilha - 1]) < Convert.ToInt32(array[topoPilha]))
+                        {
+                            array[topoPilha - 1] = 1;
+                        }
+                        else
+                        {
+                            array[topoPilha - 1] = 0;
+                        }
+                        return topoPilha - 1;
+
+                    case "CMEQ":
+                        if (Convert.ToInt32(array[topoPilha - 1]) <= Convert.ToInt32(array[topoPilha]))
+                        {
+                            array[topoPilha - 1] = 1;
+                        }
+                        else
+                        {
+                            array[topoPilha - 1] = 0;
+                        }
+                        return topoPilha - 1;
+
+                    case "CMA":
+                        if (Convert.ToInt32(array[topoPilha - 1]) > Convert.ToInt32(array[topoPilha]))
+                        {
+                            array[topoPilha - 1] = 1;
+                        }
+                        else
+                        {
+                            array[topoPilha - 1] = 0;
+                        }
+                        return topoPilha - 1;
+
+                    case "CMAQ":
+                        if (Convert.ToInt32(array[topoPilha - 1]) >= Convert.ToInt32(array[topoPilha]))
+                        {
+                            array[topoPilha - 1] = 1;
+                        }
+                        else
+                        {
+                            array[topoPilha - 1] = 0;
+                        }
+                        return topoPilha - 1;
+
+
+                    case "CEQ":
+                        if (array[topoPilha - 1].Equals(array[topoPilha]))
+                        {
+                            array[topoPilha - 1] = 1;
+                        }
+                        else
+                        {
+                            array[topoPilha - 1] = 0;
+                        }
+                        return topoPilha - 1;
+
+                    case "CDIF":
+                        if (!array[topoPilha - 1].Equals(array[topoPilha]))
+                        {
+                            array[topoPilha - 1] = 1;
+                        }
+                        else
+                        {
+                            array[topoPilha - 1] = 0;
+                        }
+                        return topoPilha - 1;
 
                     case "HLT":
                         return -99;
