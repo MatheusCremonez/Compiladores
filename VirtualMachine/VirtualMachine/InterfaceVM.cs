@@ -98,7 +98,7 @@ namespace VirtualMachine
             dataGridView2.Columns[1].AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
 
             //Variaveis Gerais
-            int linhaInstrucao = 0, atributo = 1, validate = 0;
+            int linhaInstrucao = 0, atributo = 1, i;
             int topoDaPilha = 0;
             string instructionName, firstAttribute, secondAttribute;
 
@@ -122,38 +122,27 @@ namespace VirtualMachine
 
                 if (!(instructionName.Equals("START")) && !(instructionName.Equals("HLT")))
                 {
+                    dt.Clear();
+
+                    for (i = 0; i < arrayStash.Count; i++)
+                    {
+                        dt.Rows.Add(i, arrayStash[i].ToString());
+                    }
+
                     dataGridView2.ClearSelection();
-                    //Count sempre inicia-se com 1
-                    for (int i = 1; i < dataGridView2.Rows.Count; i++)
-                    {
-                        row = dataGridView2.Rows[i - 1];
+                    dataGridView2.Rows[topoDaPilha].Selected = true;
 
-                        if (topoDaPilha == Convert.ToInt32(row.Cells[0].Value))
-                        {
-                            row.Cells[0].Value = topoDaPilha;
-                            row.Cells[1].Value = arrayStash[topoDaPilha].ToString();
-                            validate = 1;
-                            dataGridView2.Rows[topoDaPilha].Selected = true;
-                        }
-                    }
-
-                    if (validate == 0)
-                    {
-                        dt.Rows.Add(topoDaPilha, arrayStash[topoDaPilha].ToString());
-                        dataGridView2.Rows[topoDaPilha].Selected = true;
-                    }
-
-                    if (dataGridView1.Rows[linhaInstrucao].Cells[atributo].Value.ToString().Equals("PRN"))
+                    if (instructionName.Equals("PRN"))
                     {
                         richTextBox4.AppendText(arrayStash[topoDaPilha].ToString() + "\n");
                         topoDaPilha--;
                     }
                 }
-                
+
                 dataGridView1.Rows[linhaInstrucao].Selected = true;
                 linhaInstrucao++;
             }
-           
+
         }
         
         private void startStepToolStripMenuItem_Click(object sender, EventArgs e)
