@@ -14,6 +14,13 @@ namespace VirtualMachine
 {
     public partial class InterfaceVM : Form
     {
+        //Variáveis Globais Para Uso do Passo a Passo
+        int topoDaPilhaStep = -99, linhaInstrucaoStep = 0;
+        ArrayList arrayStashStep = new ArrayList();
+        Instruction instructionStep = new Instruction();
+        //Cria a dataTable para adicionarmos colunas e linhas na lista
+        DataTable dtStep = new DataTable();
+
         public InterfaceVM()
         {
             InitializeComponent();
@@ -98,7 +105,7 @@ namespace VirtualMachine
             dataGridView2.Columns[1].AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
 
             //Variaveis Gerais
-            int linhaInstrucao = 0, atributo = 1, i;
+            int linhaInstrucao = 0, i;
             int topoDaPilha = 0;
             string instructionName, firstAttribute, secondAttribute;
 
@@ -107,16 +114,13 @@ namespace VirtualMachine
             //Objeto da Classe que contém as instruções que o Compilador faz
             Instruction instruction = new Instruction();
 
-            //Objeto para pegar uma linha do dataGrid
-            DataGridViewRow row = new DataGridViewRow();
-
             while (topoDaPilha != -99)
             {
                 dataGridView1.ClearSelection();
 
-                instructionName = dataGridView1.Rows[linhaInstrucao].Cells[atributo].Value.ToString();
-                firstAttribute = dataGridView1.Rows[linhaInstrucao].Cells[atributo + 1].Value.ToString();
-                secondAttribute = dataGridView1.Rows[linhaInstrucao].Cells[atributo + 2].Value.ToString();
+                instructionName = dataGridView1.Rows[linhaInstrucao].Cells[1].Value.ToString();
+                firstAttribute = dataGridView1.Rows[linhaInstrucao].Cells[2].Value.ToString();
+                secondAttribute = dataGridView1.Rows[linhaInstrucao].Cells[3].Value.ToString();
 
                 topoDaPilha = instruction.execute(instructionName, firstAttribute, secondAttribute, arrayStash, topoDaPilha);
 
@@ -147,7 +151,98 @@ namespace VirtualMachine
         
         private void startStepToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            //Executa o código linha por linha carregado
+            //Coloca no dataGrid as colunas criadas
+            dataGridView2.DataSource = dtStep;
+
+            //Verificação para caso queira executar o código de novo e não gerar erro de criação de coluna
+            if(dtStep.Columns.Count <= 1)
+            {
+                //Colunas da tabela
+                dtStep.Columns.Add("Endereço(s):");
+                dtStep.Columns.Add("Valor:");
+
+                //Preenche as colunas para caber no espaço do dataGrid
+                dataGridView2.Columns[0].AutoSizeMode = DataGridViewAutoSizeColumnMode.DisplayedCells;
+                dataGridView2.Columns[1].AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
+            }
+
+            string instructionName = dataGridView1.Rows[linhaInstrucaoStep].Cells[1].Value.ToString();
+            string firstAttribute = dataGridView1.Rows[linhaInstrucaoStep].Cells[2].Value.ToString();
+            string secondAttribute = dataGridView1.Rows[linhaInstrucaoStep].Cells[3].Value.ToString();
+
+            if (dataGridView1.Rows[linhaInstrucaoStep].Cells[1].Value.ToString().Equals("START"))
+            {
+                dtStep.Clear();
+                dataGridView1.ClearSelection();
+                dataGridView1.Rows[linhaInstrucaoStep].Selected = true;
+
+                topoDaPilhaStep = instructionStep.execute(instructionName, firstAttribute, secondAttribute, arrayStashStep, topoDaPilhaStep);
+                linhaInstrucaoStep++;
+            }
+    
+        }
+
+        private void continueToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            //Coloca no dataGrid as colunas criadas
+            dataGridView2.DataSource = dtStep;
+
+            //Variaveis Gerais
+            int i;
+            string instructionName, firstAttribute, secondAttribute;
+
+            if (topoDaPilhaStep != -99)
+            {
+
+                instructionName = dataGridView1.Rows[linhaInstrucaoStep].Cells[1].Value.ToString();
+                firstAttribute = dataGridView1.Rows[linhaInstrucaoStep].Cells[2].Value.ToString();
+                secondAttribute = dataGridView1.Rows[linhaInstrucaoStep].Cells[3].Value.ToString();
+
+                topoDaPilhaStep = instructionStep.execute(instructionName, firstAttribute, secondAttribute, arrayStashStep, topoDaPilhaStep);
+
+                if (dataGridView1.Rows[linhaInstrucaoStep].Cells[1].Value.ToString().Equals("HLT"))
+                {
+                    dataGridView1.ClearSelection();
+                    dataGridView1.Rows[linhaInstrucaoStep].Selected = true;
+                    topoDaPilhaStep = -99;
+                    linhaInstrucaoStep = 0;
+                }
+
+                if (!(instructionName.Equals("START")) && !(instructionName.Equals("HLT")))
+                {
+                    dataGridView1.ClearSelection();
+                    dtStep.Clear();
+
+                    for (i = 0; i < arrayStashStep.Count; i++)
+                    {
+                        dtStep.Rows.Add(i, arrayStashStep[i].ToString());
+                    }
+
+                    dataGridView2.ClearSelection();
+                    dataGridView2.Rows[topoDaPilhaStep].Selected = true;
+
+                    if (instructionName.Equals("PRN"))
+                    {
+                        richTextBox4.AppendText(arrayStashStep[topoDaPilhaStep].ToString() + "\n");
+                        topoDaPilhaStep--;
+                    }
+
+                    dataGridView1.Rows[linhaInstrucaoStep].Selected = true;
+                    linhaInstrucaoStep++;
+                }
+                
+            }
+
+        }
+
+        private void stopToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            topoDaPilhaStep = -99;
+            linhaInstrucaoStep = 0;
+
+            dtStep.Clear();
+            dataGridView1.ClearSelection();
+            dataGridView1.Rows[0].Selected = true;
         }
     }
 
@@ -322,6 +417,7 @@ namespace VirtualMachine
                         return topoPilha - 1;
 
                     case "HLT":
+                        array.Clear();
                         return -99;
 
                     default:
