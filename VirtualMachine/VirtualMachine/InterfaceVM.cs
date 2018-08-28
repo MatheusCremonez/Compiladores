@@ -258,6 +258,10 @@ namespace VirtualMachine
                     {
                         dataGridView2.Rows[topoDaPilhaStep].Selected = true;
                     }
+                    else if (topoDaPilhaStep == 0)
+                    {
+                        dataGridView2.Rows[0].Selected = true;
+                    }
                     
 
                     if (instructionName.Equals("PRN"))
@@ -278,6 +282,8 @@ namespace VirtualMachine
         {
             topoDaPilhaStep = -99;
             linhaInstrucaoStep = 0;
+
+            arrayStashStep.Clear();
 
             dtStep.Clear();
             dataGridView1.ClearSelection();
