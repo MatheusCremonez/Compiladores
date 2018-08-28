@@ -44,6 +44,7 @@
             this.richTextBox6 = new System.Windows.Forms.RichTextBox();
             this.dataGridView1 = new System.Windows.Forms.DataGridView();
             this.dataGridView2 = new System.Windows.Forms.DataGridView();
+            this.stopToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.menuStrip1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView2)).BeginInit();
@@ -55,7 +56,8 @@
             this.arquivoToolStripMenuItem,
             this.startToolStripMenuItem,
             this.startStepToolStripMenuItem,
-            this.continueToolStripMenuItem});
+            this.continueToolStripMenuItem,
+            this.stopToolStripMenuItem});
             this.menuStrip1.Location = new System.Drawing.Point(0, 0);
             this.menuStrip1.Name = "menuStrip1";
             this.menuStrip1.Size = new System.Drawing.Size(838, 24);
@@ -90,6 +92,7 @@
             this.continueToolStripMenuItem.Name = "continueToolStripMenuItem";
             this.continueToolStripMenuItem.Size = new System.Drawing.Size(68, 20);
             this.continueToolStripMenuItem.Text = "Continue";
+            this.continueToolStripMenuItem.Click += new System.EventHandler(this.continueToolStripMenuItem_Click);
             // 
             // openFileDialog1
             // 
@@ -194,6 +197,13 @@
             this.dataGridView2.Size = new System.Drawing.Size(175, 207);
             this.dataGridView2.TabIndex = 18;
             // 
+            // stopToolStripMenuItem
+            // 
+            this.stopToolStripMenuItem.Name = "stopToolStripMenuItem";
+            this.stopToolStripMenuItem.Size = new System.Drawing.Size(43, 20);
+            this.stopToolStripMenuItem.Text = "Stop";
+            this.stopToolStripMenuItem.Click += new System.EventHandler(this.stopToolStripMenuItem_Click);
+            // 
             // InterfaceVM
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -239,6 +249,7 @@
         public System.Windows.Forms.DataGridView dataGridView1;
         public System.Windows.Forms.RichTextBox richTextBox4;
         private System.Windows.Forms.DataGridView dataGridView2;
+        private System.Windows.Forms.ToolStripMenuItem stopToolStripMenuItem;
     }
 }
 
