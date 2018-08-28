@@ -215,7 +215,23 @@ namespace VirtualMachine
                 firstAttribute = dataGridView1.Rows[linhaInstrucaoStep].Cells[2].Value.ToString();
                 secondAttribute = dataGridView1.Rows[linhaInstrucaoStep].Cells[3].Value.ToString();
 
-                topoDaPilhaStep = instructionStep.execute(instructionName, firstAttribute, secondAttribute, arrayStashStep, topoDaPilhaStep);
+                if (instructionName.Equals("JMP") || instructionName.Equals("JMPF"))
+                {
+                    int newInstructionLine = instructionStep.executeJump(dataGridView1, instructionName, firstAttribute);
+                    if (newInstructionLine != (-1))
+                    {
+                        linhaInstrucaoStep = newInstructionLine;
+                    }
+                    else
+                    {
+                        //Não encontrou a linha especificada no jump
+                        //Verificar criação de exceções para cada tipo de erro possível na máquina virtual
+                    }
+                }
+                else
+                {
+                    topoDaPilhaStep = instructionStep.execute(instructionName, firstAttribute, secondAttribute, arrayStashStep, topoDaPilhaStep);
+                }
 
                 if (dataGridView1.Rows[linhaInstrucaoStep].Cells[1].Value.ToString().Equals("HLT"))
                 {
@@ -225,7 +241,7 @@ namespace VirtualMachine
                     linhaInstrucaoStep = 0;
                 }
 
-                if (!(instructionName.Equals("START")) && !(instructionName.Equals("HLT")))
+                if (!(instructionName.Equals("START")) && !(instructionName.Equals("HLT")) && !(instructionName.Equals("JMP")))
                 {
                     dataGridView1.ClearSelection();
                     dtStep.Clear();
