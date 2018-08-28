@@ -122,9 +122,26 @@ namespace VirtualMachine
                 firstAttribute = dataGridView1.Rows[linhaInstrucao].Cells[2].Value.ToString();
                 secondAttribute = dataGridView1.Rows[linhaInstrucao].Cells[3].Value.ToString();
 
-                topoDaPilha = instruction.execute(instructionName, firstAttribute, secondAttribute, arrayStash, topoDaPilha);
+                if(instructionName.Equals("JMP") || instructionName.Equals("JMPF"))
+                {
+                    int newInstructionLine = instruction.executeJump(dataGridView1, instructionName, firstAttribute);
+                    if(newInstructionLine != (-1))
+                    {
+                        linhaInstrucao = newInstructionLine;
+                    }
+                    else
+                    {
+                        //Não encontrou a linha especificada no jump
+                        //Verificar criação de exceções para cada tipo de erro possível na máquina virtual
+                    }
+                }
+                else
+                {
+                    topoDaPilha = instruction.execute(instructionName, firstAttribute, secondAttribute, arrayStash, topoDaPilha);
+                }
+                
 
-                if (!(instructionName.Equals("START")) && !(instructionName.Equals("HLT")))
+                if (!(instructionName.Equals("START")) && !(instructionName.Equals("HLT")) && !(instructionName.Equals("JMP")))
                 {
                     dt.Clear();
 
@@ -248,6 +265,20 @@ namespace VirtualMachine
 
     public class Instruction
     {
+        public int executeJump(DataGridView file, String instruction, String line)
+        {
+            int i = 0;
+            while(!file.Rows[i].Cells[1].Value.ToString().Equals("HLT"))
+            {
+                if(file.Rows[i].Cells[1].Value.ToString().Equals(line))
+                {
+                    return i;
+                }
+                i++;
+            }
+            return -1;
+        }
+
         public int execute(string instruction, string firstAttribute, string secondAttribute, ArrayList array, int topoPilha)
         {
             int x, y;
@@ -421,7 +452,12 @@ namespace VirtualMachine
                         return -99;
 
                     default:
-                        return topoPilha;
+                        if (String.Equals(firstAttribute,"NULL"))
+                        {
+                            topoPilha = execute(firstAttribute, "", "", array, topoPilha);
+                            return topoPilha;
+                        }
+                        return -99;
 
                 }
             }
