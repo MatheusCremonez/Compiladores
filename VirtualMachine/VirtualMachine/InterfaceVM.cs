@@ -217,6 +217,8 @@ namespace VirtualMachine
 
                 if (instructionName.Equals("JMP") || instructionName.Equals("JMPF"))
                 {
+                    dataGridView1.ClearSelection();
+                    dataGridView1.Rows[linhaInstrucaoStep].Selected = true;
                     int newInstructionLine = instructionStep.executeJump(dataGridView1, instructionName, firstAttribute);
                     if (newInstructionLine != (-1))
                     {
@@ -252,7 +254,11 @@ namespace VirtualMachine
                     }
 
                     dataGridView2.ClearSelection();
-                    dataGridView2.Rows[topoDaPilhaStep].Selected = true;
+                    if(topoDaPilhaStep > 0)
+                    {
+                        dataGridView2.Rows[topoDaPilhaStep].Selected = true;
+                    }
+                    
 
                     if (instructionName.Equals("PRN"))
                     {
@@ -283,7 +289,7 @@ namespace VirtualMachine
     {
         public int executeJump(DataGridView file, String instruction, String line)
         {
-            int i = 0;
+            int i = 1;
             while(!file.Rows[i].Cells[1].Value.ToString().Equals("HLT"))
             {
                 if(file.Rows[i].Cells[1].Value.ToString().Equals(line))
