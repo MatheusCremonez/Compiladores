@@ -1,0 +1,7 @@
+VirtualMachine/.vs/*
+VirtualMachine/VirtualMachine/bin/*
+VirtualMachine/VirtualMachine/obj/*
+VirtualMachine/VirtualMachineTests/bin/*
+VirtualMachine/VirtualMachineTests/obj/*
+VirtualMachine/.vs/VirtualMachine/v15/Server/sqlite3/storage.ide-wal
+VirtualMachine/.vs/VirtualMachine/v15/Server/sqlite3/storage.ide-shm

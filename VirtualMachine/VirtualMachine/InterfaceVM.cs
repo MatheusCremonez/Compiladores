@@ -1,14 +1,9 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
 using System.Data;
-using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.IO;
 using System.Collections;
+using Microsoft.VisualBasic;
 
 namespace VirtualMachine
 {
@@ -145,6 +140,19 @@ namespace VirtualMachine
                 {
                     dt.Clear();
 
+                    if (instructionName.Equals("RD"))
+                    {
+                        if (topoDaPilha >= arrayStash.Count)
+                        {
+                            arrayStash.Add(int.Parse(Interaction.InputBox("Próximo Valor de Entrada:", "Input", "", -1, -1)));
+                        }
+                        else
+                        {
+                            arrayStash[topoDaPilha] = int.Parse(Interaction.InputBox("Próximo Valor de Entrada:", "Input", "", -1, -1));
+                        }
+                        richTextBox3.AppendText(arrayStash[topoDaPilha].ToString() + "\n");
+                    }
+
                     for (i = 0; i < arrayStash.Count; i++)
                     {
                         dt.Rows.Add(i, arrayStash[i].ToString());
@@ -192,6 +200,9 @@ namespace VirtualMachine
                 dtStep.Clear();
                 dataGridView1.ClearSelection();
                 dataGridView1.Rows[linhaInstrucaoStep].Selected = true;
+
+                richTextBox3.Clear();
+                richTextBox4.Clear();
 
                 topoDaPilhaStep = instructionStep.execute(instructionName, firstAttribute, secondAttribute, arrayStashStep, topoDaPilhaStep);
                 linhaInstrucaoStep++;
@@ -248,21 +259,29 @@ namespace VirtualMachine
                     dataGridView1.ClearSelection();
                     dtStep.Clear();
 
+                    if (instructionName.Equals("RD"))
+                    {
+                        if (topoDaPilhaStep >= arrayStashStep.Count)
+                        {
+                            arrayStashStep.Add(int.Parse(Interaction.InputBox("Próximo Valor de Entrada:", "Input", "", -1, -1)));
+                        }
+                        else
+                        {
+                            arrayStashStep[topoDaPilhaStep] = int.Parse(Interaction.InputBox("Próximo Valor de Entrada:", "Input", "", -1, -1));
+                        }
+                        richTextBox3.AppendText(arrayStashStep[topoDaPilhaStep].ToString() + "\n");
+                    }
+
                     for (i = 0; i < arrayStashStep.Count; i++)
                     {
                         dtStep.Rows.Add(i, arrayStashStep[i].ToString());
                     }
 
                     dataGridView2.ClearSelection();
-                    if(topoDaPilhaStep > 0)
+                    if(topoDaPilhaStep >= 0)
                     {
                         dataGridView2.Rows[topoDaPilhaStep].Selected = true;
                     }
-                    else if (topoDaPilhaStep == 0)
-                    {
-                        dataGridView2.Rows[0].Selected = true;
-                    }
-                    
 
                     if (instructionName.Equals("PRN"))
                     {
@@ -284,6 +303,9 @@ namespace VirtualMachine
             linhaInstrucaoStep = 0;
 
             arrayStashStep.Clear();
+
+            richTextBox3.Clear();
+            richTextBox4.Clear();
 
             dtStep.Clear();
             dataGridView1.ClearSelection();
@@ -309,7 +331,7 @@ namespace VirtualMachine
 
         public int execute(string instruction, string firstAttribute, string secondAttribute, ArrayList array, int topoPilha)
         {
-            int x, y;
+            int x, y, k;
             if (String.IsNullOrEmpty(instruction))
             {
                 throw new Exception("Instruction not provided");
@@ -378,6 +400,10 @@ namespace VirtualMachine
                             array[Convert.ToInt32(firstAttribute)] = array[topoPilha];
                         }
                         return topoPilha - 1;
+
+                    case "RD":
+                        topoPilha = topoPilha + 1;
+                        return topoPilha;
 
                     case "PRN":
                         return topoPilha;
@@ -474,6 +500,30 @@ namespace VirtualMachine
                             array[topoPilha - 1] = 0;
                         }
                         return topoPilha - 1;
+
+                    case "ALLOC":
+                        for (k = 0; k < Convert.ToInt32(secondAttribute); k++)
+                        {
+                            topoPilha = topoPilha + 1;
+                            if(topoPilha <= Convert.ToInt32(firstAttribute))
+                            {
+                                array.Add("");
+                            }
+                            else
+                            {
+                                array.Add("");
+                                array[topoPilha] = array[(Convert.ToInt32(firstAttribute) + k)];
+                            }
+                        }
+                        return topoPilha;
+
+                    case "DALLOC":
+                        for (k = (Convert.ToInt32(secondAttribute) - 1); k >= 0; k--)
+                        {
+                            array[(Convert.ToInt32(firstAttribute) + k)] = array[topoPilha];
+                            topoPilha = topoPilha - 1;
+                        }
+                        return topoPilha;
 
                     case "HLT":
                         array.Clear();
