@@ -117,10 +117,26 @@ namespace VirtualMachine
                 firstAttribute = dataGridView1.Rows[linhaInstrucao].Cells[2].Value.ToString();
                 secondAttribute = dataGridView1.Rows[linhaInstrucao].Cells[3].Value.ToString();
 
-                if(instructionName.Equals("JMP") || instructionName.Equals("JMPF"))
+                if (instructionName.Equals("RETURN"))
                 {
-                    int newInstructionLine = instruction.executeJump(dataGridView1, instructionName, firstAttribute);
-                    if(newInstructionLine != (-1))
+                    dataGridView1.ClearSelection();
+                    dataGridView1.Rows[linhaInstrucao].Selected = true;
+                    linhaInstrucao = Convert.ToInt32(arrayStash[topoDaPilha]);
+                }
+                if (instructionName.Equals("CALL"))
+                {
+                    dataGridView1.ClearSelection();
+                    dataGridView1.Rows[linhaInstrucao].Selected = true;
+                    arrayStash.Add("");
+                    topoDaPilha++;
+                    //isso é uma autêntica gambiarra
+                    secondAttribute = Convert.ToString(linhaInstrucao);
+                }
+
+                if (instructionName.Equals("JMP") || instructionName.Equals("JMPF"))
+                {
+                    int newInstructionLine = instruction.executeJump(dataGridView1, instructionName, firstAttribute, Convert.ToString(arrayStash[topoDaPilha]));
+                    if (newInstructionLine != (-1))
                     {
                         linhaInstrucao = newInstructionLine;
                     }
@@ -129,14 +145,20 @@ namespace VirtualMachine
                         //Não encontrou a linha especificada no jump
                         //Verificar criação de exceções para cada tipo de erro possível na máquina virtual
                     }
+
+                    if (instructionName.Equals("JMPF"))
+                    {
+                        arrayStash.RemoveAt(topoDaPilha);
+                        topoDaPilha--;
+                    }
                 }
                 else
                 {
                     topoDaPilha = instruction.execute(instructionName, firstAttribute, secondAttribute, arrayStash, topoDaPilha);
                 }
-                
 
-                if (!(instructionName.Equals("START")) && !(instructionName.Equals("HLT")) && !(instructionName.Equals("JMP")))
+
+                if (!(instructionName.Equals("START")) && !(instructionName.Equals("HLT")) && !(instructionName.Equals("JMP")) && !(instructionName.Equals("JMPF")))
                 {
                     dt.Clear();
 
@@ -158,18 +180,51 @@ namespace VirtualMachine
                         dt.Rows.Add(i, arrayStash[i].ToString());
                     }
 
-                    dataGridView2.ClearSelection();
-                    dataGridView2.Rows[topoDaPilha].Selected = true;
+                    if(topoDaPilha >= 0)
+                    {
+                        dataGridView2.ClearSelection();
+                        dataGridView2.Rows[topoDaPilha].Selected = true;
+                    }
 
                     if (instructionName.Equals("PRN"))
                     {
                         richTextBox4.AppendText(arrayStash[topoDaPilha].ToString() + "\n");
+                        arrayStash.RemoveAt(topoDaPilha);
                         topoDaPilha--;
                     }
-                }
 
-                dataGridView1.Rows[linhaInstrucao].Selected = true;
-                linhaInstrucao++;
+                    if (instructionName.Equals("CALL"))
+                    {
+
+                        int newInstructionLine = instructionStep.executeJump(dataGridView1, "JMP", firstAttribute, Convert.ToString(arrayStash[topoDaPilha]));
+
+
+                        if (newInstructionLine != (-1))
+                        {
+                            linhaInstrucao = newInstructionLine;
+                        }
+                        else
+                        {
+                            //Não encontrou a linha especificada no jump
+                            //Verificar criação de exceções para cada tipo de erro possível na máquina virtual
+                        }
+                        dataGridView1.Rows[linhaInstrucao].Selected = true;
+                        linhaInstrucao++;
+                    }
+                    else
+                    {
+                        dataGridView1.Rows[linhaInstrucao].Selected = true;
+                        if (!instructionName.Equals("RETURN"))
+                        {
+                            linhaInstrucao++;
+                        }
+                    }
+
+                }
+                else
+                {
+                    linhaInstrucao++;
+                }
             }
 
         }
@@ -226,20 +281,54 @@ namespace VirtualMachine
                 firstAttribute = dataGridView1.Rows[linhaInstrucaoStep].Cells[2].Value.ToString();
                 secondAttribute = dataGridView1.Rows[linhaInstrucaoStep].Cells[3].Value.ToString();
 
-                if (instructionName.Equals("JMP") || instructionName.Equals("JMPF"))
+                if (instructionName.Equals("RETURN"))
                 {
                     dataGridView1.ClearSelection();
                     dataGridView1.Rows[linhaInstrucaoStep].Selected = true;
-                    int newInstructionLine = instructionStep.executeJump(dataGridView1, instructionName, firstAttribute);
-                    if (newInstructionLine != (-1))
-                    {
-                        linhaInstrucaoStep = newInstructionLine;
-                    }
-                    else
-                    {
+                    linhaInstrucaoStep = Convert.ToInt32(arrayStashStep[topoDaPilhaStep]);
+                }
+                if (instructionName.Equals("CALL"))
+                {
+                    dataGridView1.ClearSelection();
+                    dataGridView1.Rows[linhaInstrucaoStep].Selected = true;
+                    arrayStashStep.Add("");
+                    topoDaPilhaStep++;
+                    //isso é uma autêntica gambiarra
+                    secondAttribute = Convert.ToString(linhaInstrucaoStep);
+                }
+
+                if (instructionName.Equals("JMP") || instructionName.Equals("JMPF"))
+                {
+                    dataGridView1.ClearSelection();
+                    dataGridView1.Rows[linhaInstrucaoStep].Selected = true;                    
+                    
+                        int newInstructionLine;
+                        if (topoDaPilhaStep < 0)
+                        {
+                            newInstructionLine = instructionStep.executeJump(dataGridView1, instructionName, firstAttribute, "");
+                        }
+                        else
+                        {
+                            newInstructionLine = instructionStep.executeJump(dataGridView1, instructionName, firstAttribute, Convert.ToString(arrayStashStep[topoDaPilhaStep]));
+                        }
+                        
+                        if (newInstructionLine != (-1))
+                        {
+                            linhaInstrucaoStep = newInstructionLine;
+                        }
+                        else
+                        {
                         //Não encontrou a linha especificada no jump
                         //Verificar criação de exceções para cada tipo de erro possível na máquina virtual
-                    }
+                        linhaInstrucaoStep++;
+                        }
+
+                        if (instructionName.Equals("JMPF"))
+                        {
+                            arrayStashStep.RemoveAt(topoDaPilhaStep);
+                            topoDaPilhaStep--;
+                        }
+
                 }
                 else
                 {
@@ -254,7 +343,7 @@ namespace VirtualMachine
                     linhaInstrucaoStep = 0;
                 }
 
-                if (!(instructionName.Equals("START")) && !(instructionName.Equals("HLT")) && !(instructionName.Equals("JMP")))
+                if (!(instructionName.Equals("START")) && !(instructionName.Equals("HLT")) && !(instructionName.Equals("JMP")) && !(instructionName.Equals("JMPF")))
                 {
                     dataGridView1.ClearSelection();
                     dtStep.Clear();
@@ -286,11 +375,35 @@ namespace VirtualMachine
                     if (instructionName.Equals("PRN"))
                     {
                         richTextBox4.AppendText(arrayStashStep[topoDaPilhaStep].ToString() + "\n");
+                        arrayStashStep.RemoveAt(topoDaPilhaStep);
                         topoDaPilhaStep--;
                     }
+                    if (instructionName.Equals("CALL"))
+                    {
+                        
+                        int newInstructionLine = instructionStep.executeJump(dataGridView1, "JMP", firstAttribute, Convert.ToString(arrayStashStep[topoDaPilhaStep]));
 
-                    dataGridView1.Rows[linhaInstrucaoStep].Selected = true;
-                    linhaInstrucaoStep++;
+                        
+                        if (newInstructionLine != (-1))
+                        {
+                            linhaInstrucaoStep = newInstructionLine;
+                        }
+                        else
+                        {
+                            //Não encontrou a linha especificada no jump
+                            //Verificar criação de exceções para cada tipo de erro possível na máquina virtual
+                        }
+                        dataGridView1.Rows[linhaInstrucaoStep].Selected = true;
+                        linhaInstrucaoStep++;
+                    }
+                    else
+                    {
+                        dataGridView1.Rows[linhaInstrucaoStep].Selected = true;
+                        if(!instructionName.Equals("RETURN"))
+                        {
+                            linhaInstrucaoStep++;
+                        }  
+                    }
                 }
                 
             }
@@ -315,18 +428,35 @@ namespace VirtualMachine
 
     public class Instruction
     {
-        public int executeJump(DataGridView file, String instruction, String line)
+        public int executeJump(DataGridView file, String instruction, String line, String contentTopStack)
         {
             int i = 1;
-            while(!file.Rows[i].Cells[1].Value.ToString().Equals("HLT"))
+            if (instruction.Equals("JMP"))
             {
-                if(file.Rows[i].Cells[1].Value.ToString().Equals(line))
+                while (!file.Rows[i].Cells[1].Value.ToString().Equals("HLT"))
                 {
-                    return i;
+                    if (file.Rows[i].Cells[1].Value.ToString().Equals(line))
+                    {
+                        return i;
+                    }
+                    i++;
                 }
-                i++;
+                return -1;
             }
+            else if (instruction.Equals("JMPF"))
+            {
+                if (Convert.ToInt32(contentTopStack).Equals(0))
+                {
+                    return executeJump(file, "JMP", line, contentTopStack);
+                }
+                else
+                {
+                    return -1;
+                }
+            }
+
             return -1;
+
         }
 
         public int execute(string instruction, string firstAttribute, string secondAttribute, ArrayList array, int topoPilha)
@@ -364,7 +494,7 @@ namespace VirtualMachine
                     case "SUB":
                         x = Convert.ToInt32(array[topoPilha]);
                         y = Convert.ToInt32(array[topoPilha - 1]);
-                        array[topoPilha - 1] = x - y;
+                        array[topoPilha - 1] = y - x;
                         array.RemoveAt(topoPilha);
                         return topoPilha - 1;
 
@@ -399,6 +529,7 @@ namespace VirtualMachine
                         {
                             array[Convert.ToInt32(firstAttribute)] = array[topoPilha];
                         }
+                        array.RemoveAt(topoPilha);
                         return topoPilha - 1;
 
                     case "RD":
@@ -417,6 +548,7 @@ namespace VirtualMachine
                         {
                             array[topoPilha - 1] = 0;
                         }
+                        array.RemoveAt(topoPilha);
                         return topoPilha - 1;
 
                     case "OR":
@@ -428,6 +560,7 @@ namespace VirtualMachine
                         {
                             array[topoPilha - 1] = 0;
                         }
+                        array.RemoveAt(topoPilha);
                         return topoPilha - 1;
 
                     case "NEG":
@@ -443,6 +576,7 @@ namespace VirtualMachine
                         {
                             array[topoPilha - 1] = 0;
                         }
+                        array.RemoveAt(topoPilha);
                         return topoPilha - 1;
 
                     case "CMEQ":
@@ -454,6 +588,7 @@ namespace VirtualMachine
                         {
                             array[topoPilha - 1] = 0;
                         }
+                        array.RemoveAt(topoPilha);
                         return topoPilha - 1;
 
                     case "CMA":
@@ -465,6 +600,7 @@ namespace VirtualMachine
                         {
                             array[topoPilha - 1] = 0;
                         }
+                        array.RemoveAt(topoPilha);
                         return topoPilha - 1;
 
                     case "CMAQ":
@@ -476,6 +612,7 @@ namespace VirtualMachine
                         {
                             array[topoPilha - 1] = 0;
                         }
+                        array.RemoveAt(topoPilha);
                         return topoPilha - 1;
 
 
@@ -488,6 +625,7 @@ namespace VirtualMachine
                         {
                             array[topoPilha - 1] = 0;
                         }
+                        array.RemoveAt(topoPilha);
                         return topoPilha - 1;
 
                     case "CDIF":
@@ -499,6 +637,7 @@ namespace VirtualMachine
                         {
                             array[topoPilha - 1] = 0;
                         }
+                        array.RemoveAt(topoPilha);
                         return topoPilha - 1;
 
                     case "ALLOC":
@@ -521,9 +660,18 @@ namespace VirtualMachine
                         for (k = (Convert.ToInt32(secondAttribute) - 1); k >= 0; k--)
                         {
                             array[(Convert.ToInt32(firstAttribute) + k)] = array[topoPilha];
+                            array.RemoveAt(topoPilha);
                             topoPilha = topoPilha - 1;
                         }
                         return topoPilha;
+
+                    case "CALL":
+                        array[topoPilha] = Convert.ToInt32(secondAttribute) + 1;
+                        return topoPilha;
+
+                    case "RETURN":
+                        array.RemoveAt(topoPilha);
+                        return topoPilha - 1;
 
                     case "HLT":
                         array.Clear();

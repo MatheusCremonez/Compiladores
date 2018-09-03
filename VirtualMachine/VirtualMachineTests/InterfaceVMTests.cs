@@ -66,7 +66,7 @@ namespace VirtualMachine.Tests
 
         public void instructionHltTest(Instruction instruction)
         {
-            int newArrayTop = instruction.execute("HLT", "", "", null, 0);
+            int newArrayTop = instruction.execute("HLT", "", "",new ArrayList(), 0);
             Assert.AreEqual(-99, newArrayTop);
         }
 
@@ -116,7 +116,7 @@ namespace VirtualMachine.Tests
 
             int newArrayTop = instruction.execute("SUB", "", "", array, top);
             Assert.AreEqual(top - 1, newArrayTop);
-            Assert.AreEqual(8, array[newArrayTop]);
+            Assert.AreEqual(-8, array[newArrayTop]);
 
             array.Clear();
         }
@@ -420,7 +420,7 @@ namespace VirtualMachine.Tests
 
             int newArrayTop = instruction.execute("STR", position, "", array, top);
             Assert.AreEqual(top - 1, newArrayTop);
-            Assert.AreEqual(array[Convert.ToInt32(position)], array[top]);
+            Assert.AreEqual(array[Convert.ToInt32(position)], 4);
         }
     }
 }
