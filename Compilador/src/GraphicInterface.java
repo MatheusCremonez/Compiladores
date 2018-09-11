@@ -1,4 +1,3 @@
-import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.BufferedReader;
@@ -18,7 +17,10 @@ import javax.swing.SwingConstants;
 import javax.swing.filechooser.FileNameExtensionFilter;
 
 public class GraphicInterface extends JFrame{
-	
+
+	//Indentificador de versão de serialização da classe
+	private static final long serialVersionUID = 1L;
+
 	private JLabel label1;
 	
 	private JButton openFileButton;
@@ -27,7 +29,6 @@ public class GraphicInterface extends JFrame{
 	
 	private JLabel fileLabel;
 	private JTextArea fileText;
-	private JLabel divisorLabel;
 	private JLabel consoleLabel;
 	private JTextArea consoleText;
 	
@@ -106,10 +107,8 @@ public class GraphicInterface extends JFrame{
 					in.close();
 					fileText.requestFocus();
 				} catch (FileNotFoundException e) {
-					// TODO Auto-generated catch block
 					e.printStackTrace();
 				} catch (IOException e) {
-					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
 				
@@ -131,10 +130,8 @@ public class GraphicInterface extends JFrame{
 					out.close();
 					
 				} catch (FileNotFoundException e) {
-					// TODO Auto-generated catch block
 					e.printStackTrace();
 				} catch (IOException e) {
-					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
 
