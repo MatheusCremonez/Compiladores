@@ -33,6 +33,7 @@
             this.startToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.startStepToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.continueToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.stopToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.openFileDialog1 = new System.Windows.Forms.OpenFileDialog();
             this.label1 = new System.Windows.Forms.Label();
             this.richTextBox3 = new System.Windows.Forms.RichTextBox();
@@ -41,13 +42,14 @@
             this.label3 = new System.Windows.Forms.Label();
             this.label4 = new System.Windows.Forms.Label();
             this.label7 = new System.Windows.Forms.Label();
-            this.richTextBox6 = new System.Windows.Forms.RichTextBox();
             this.dataGridView1 = new System.Windows.Forms.DataGridView();
             this.dataGridView2 = new System.Windows.Forms.DataGridView();
-            this.stopToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.dataGridView3 = new System.Windows.Forms.DataGridView();
+            this.Column1 = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.menuStrip1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView2)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.dataGridView3)).BeginInit();
             this.SuspendLayout();
             // 
             // menuStrip1
@@ -93,6 +95,13 @@
             this.continueToolStripMenuItem.Size = new System.Drawing.Size(68, 20);
             this.continueToolStripMenuItem.Text = "Continue";
             this.continueToolStripMenuItem.Click += new System.EventHandler(this.continueToolStripMenuItem_Click);
+            // 
+            // stopToolStripMenuItem
+            // 
+            this.stopToolStripMenuItem.Name = "stopToolStripMenuItem";
+            this.stopToolStripMenuItem.Size = new System.Drawing.Size(43, 20);
+            this.stopToolStripMenuItem.Text = "Stop";
+            this.stopToolStripMenuItem.Click += new System.EventHandler(this.stopToolStripMenuItem_Click);
             // 
             // openFileDialog1
             // 
@@ -164,16 +173,6 @@
             this.label7.TabIndex = 14;
             this.label7.Text = "Break Point\'s";
             // 
-            // richTextBox6
-            // 
-            this.richTextBox6.Location = new System.Drawing.Point(650, 64);
-            this.richTextBox6.Name = "richTextBox6";
-            this.richTextBox6.ReadOnly = true;
-            this.richTextBox6.ScrollBars = System.Windows.Forms.RichTextBoxScrollBars.Vertical;
-            this.richTextBox6.Size = new System.Drawing.Size(175, 207);
-            this.richTextBox6.TabIndex = 15;
-            this.richTextBox6.Text = "";
-            // 
             // dataGridView1
             // 
             this.dataGridView1.AllowUserToAddRows = false;
@@ -197,21 +196,33 @@
             this.dataGridView2.Size = new System.Drawing.Size(175, 207);
             this.dataGridView2.TabIndex = 18;
             // 
-            // stopToolStripMenuItem
+            // dataGridView3
             // 
-            this.stopToolStripMenuItem.Name = "stopToolStripMenuItem";
-            this.stopToolStripMenuItem.Size = new System.Drawing.Size(43, 20);
-            this.stopToolStripMenuItem.Text = "Stop";
-            this.stopToolStripMenuItem.Click += new System.EventHandler(this.stopToolStripMenuItem_Click);
+            this.dataGridView3.AllowUserToDeleteRows = false;
+            this.dataGridView3.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            this.dataGridView3.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
+            this.Column1});
+            this.dataGridView3.Location = new System.Drawing.Point(650, 64);
+            this.dataGridView3.Name = "dataGridView3";
+            this.dataGridView3.RowHeadersVisible = false;
+            this.dataGridView3.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
+            this.dataGridView3.Size = new System.Drawing.Size(175, 207);
+            this.dataGridView3.TabIndex = 19;
+            // 
+            // Column1
+            // 
+            this.Column1.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.Fill;
+            this.Column1.HeaderText = "Linhas:";
+            this.Column1.Name = "Column1";
             // 
             // InterfaceVM
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(838, 439);
+            this.Controls.Add(this.dataGridView3);
             this.Controls.Add(this.dataGridView2);
             this.Controls.Add(this.dataGridView1);
-            this.Controls.Add(this.richTextBox6);
             this.Controls.Add(this.label7);
             this.Controls.Add(this.label4);
             this.Controls.Add(this.label3);
@@ -226,6 +237,7 @@
             this.menuStrip1.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView2)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.dataGridView3)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -243,13 +255,14 @@
         private System.Windows.Forms.Label label3;
         private System.Windows.Forms.Label label4;
         private System.Windows.Forms.Label label7;
-        private System.Windows.Forms.RichTextBox richTextBox6;
         private System.Windows.Forms.ToolStripMenuItem continueToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem startStepToolStripMenuItem;
         public System.Windows.Forms.DataGridView dataGridView1;
         public System.Windows.Forms.RichTextBox richTextBox4;
         private System.Windows.Forms.DataGridView dataGridView2;
         private System.Windows.Forms.ToolStripMenuItem stopToolStripMenuItem;
+        private System.Windows.Forms.DataGridView dataGridView3;
+        private System.Windows.Forms.DataGridViewTextBoxColumn Column1;
     }
 }
 

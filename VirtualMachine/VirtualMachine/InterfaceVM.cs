@@ -98,11 +98,29 @@ namespace VirtualMachine
             //Preenche as colunas para caber no espaço do dataGrid
             dataGridView2.Columns[0].AutoSizeMode = DataGridViewAutoSizeColumnMode.DisplayedCells;
             dataGridView2.Columns[1].AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
-
+            
             //Variaveis Gerais
-            int linhaInstrucao = 0, i;
+            int linhaInstrucao = 0, i, j = 0;
             int topoDaPilha = 0;
             string instructionName, firstAttribute, secondAttribute;
+
+            ArrayList breakpoint = new ArrayList();
+
+            while (dataGridView3.Rows[j].Cells[0].Value != null)
+            {
+                breakpoint.Add(dataGridView3.Rows[j].Cells[0].Value.ToString());
+                j++;
+            }
+            breakpoint.Sort();
+            
+            for (int k = 0; k < (breakpoint.Count - 1); k++)
+            {
+                if (breakpoint[k].Equals(breakpoint[k + 1]))
+                {
+                    breakpoint.RemoveAt(k);
+                    k--;
+                }
+            }                
 
             //Array que guarda os valores da pilha e posição
             ArrayList arrayStash = new ArrayList();
@@ -111,11 +129,23 @@ namespace VirtualMachine
 
             while (topoDaPilha != -99)
             {
+
+                if (breakpoint.Count > 0 && breakpoint[0].Equals(linhaInstrucao.ToString()))
+                {
+                    DialogResult dialogResult = MessageBox.Show("Continuar ?", "BreakPoint", MessageBoxButtons.OK);
+                    if (dialogResult == DialogResult.OK)
+                    {
+                        breakpoint.RemoveAt(0);
+                    }
+                    
+                }
+
                 dataGridView1.ClearSelection();
 
                 instructionName = dataGridView1.Rows[linhaInstrucao].Cells[1].Value.ToString();
                 firstAttribute = dataGridView1.Rows[linhaInstrucao].Cells[2].Value.ToString();
                 secondAttribute = dataGridView1.Rows[linhaInstrucao].Cells[3].Value.ToString();
+
 
                 if (instructionName.Equals("RETURN"))
                 {
