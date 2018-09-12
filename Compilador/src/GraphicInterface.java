@@ -140,8 +140,7 @@ public class GraphicInterface extends JFrame{
 			if(event.getSource() == compileButton) 
 			{
 				//consoleText.setText(fileText.getText());
-				// o arquivo a ser mandado para o analisador seria: fileText.getText()
-				//SyntacticAnalyzer sa = new SyntacticAnalyzer();
+				SyntacticAnalyzer sa = new SyntacticAnalyzer(fileText.getText());
 			}
 		}	
 	}
