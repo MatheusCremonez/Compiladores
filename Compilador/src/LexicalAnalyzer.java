@@ -6,7 +6,7 @@ public class LexicalAnalyzer {
 	private int index = 0;
 	private int line = 1;
 	private final String fontFile;
-	
+
 	public LexicalAnalyzer(String file) {
 		// System.out.println(file);
 		fontFile = file;
@@ -14,9 +14,8 @@ public class LexicalAnalyzer {
 	}
 
 	public void analise(String file) {
-		
-		
-		List<Token> listaToken = new ArrayList();
+
+		List<Token> listaToken = new ArrayList<Token>();
 
 		char caracter = leCaracter();
 
@@ -40,16 +39,15 @@ public class LexicalAnalyzer {
 				}
 			}
 			if ((index < file.length())) {
-				if(caracter == '\n') {
+				if (caracter == '\n') {
 					index++;
 					line++;
-				}
-				else {
+				} else {
 					Token token = pegaToken(caracter);
 					listaToken.add(token);
 					index++;
 				}
-				
+
 				if (index < file.length()) {
 					caracter = file.charAt(index);
 				}
@@ -65,13 +63,81 @@ public class LexicalAnalyzer {
 			System.out.println();
 		}
 	}
-	
+
 	public final char leCaracter() {
 		return fontFile.charAt(index);
 	}
 
-	public final Token pegaToken(char caracter) {
-		Token token = new Token("scaracter",Character.toString(caracter), line);
+	public Token pegaToken(char caracter) {
+		// Token token = new Token("scaracter", Character.toString(caracter), line);
+		Token token = trataAtribuicao(caracter);
 		return token;
+	}
+
+	public final Token trataOperadorAritmetico(char caracter) {
+		if (caracter == '+') {
+			Token token = new Token("Smais", Character.toString(caracter), line);
+
+			index++;
+			if (index < fontFile.length()) {
+				caracter = leCaracter();
+			}
+
+			return token;
+
+		} else if (caracter == '-') {
+			Token token = new Token("Smenos", Character.toString(caracter), line);
+
+			index++;
+			if (index < fontFile.length()) {
+				caracter = leCaracter();
+			}
+
+			return token;
+
+		} else { // Operador *
+			Token token = new Token("Smult", Character.toString(caracter), line);
+
+			index++;
+			if (index < fontFile.length()) {
+				caracter = leCaracter();
+			}
+
+			return token;
+		}
+	}
+
+	public Token trataAtribuicao(char caracter) {
+
+		// já chega sabendo que o primeiro caracter é um :
+
+		if ((index + 1) < fontFile.length()) {
+			char caracter2 = fontFile.charAt(index + 1);
+			if (caracter2 == '=') {
+				Token token = new Token("satribuição", Character.toString(caracter), line);
+				index = index + 2;
+				if (index < fontFile.length()) {
+					caracter = leCaracter();
+				}
+
+				return token;
+			} else {
+				Token token = new Token("Sdoispontos", Character.toString(caracter), line);
+				index++;
+				if (index < fontFile.length()) {
+					caracter = leCaracter();
+				}
+
+				return token;
+			}
+		} else {
+			Token token = new Token("Sdoispontos", Character.toString(caracter), line);
+			index++;
+			if (index < fontFile.length()) {
+				caracter = leCaracter();
+			}
+
+			return token;
+		}
 	}
 }
