@@ -1,0 +1,5 @@
+START
+LDC 3
+LDC 2
+RD
+HLT
