@@ -1,4 +1,6 @@
-{Teste arroz feijão}
-teste
-{kkkk}
-oi
+programa p;
+var a,b; inteiro;
+procedimento q;
+inicio
+a!=b
+fim.

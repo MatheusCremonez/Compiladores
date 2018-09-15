@@ -63,6 +63,7 @@ public class GraphicInterface extends JFrame{
 		add(consoleLabel);
 		
 		consoleText = new JTextArea();
+		consoleText.setEditable(false);
 		add(consoleText);
 		
 		JScrollPane consoleTextScrollPane = new JScrollPane(consoleText); 
@@ -140,7 +141,8 @@ public class GraphicInterface extends JFrame{
 			if(event.getSource() == compileButton) 
 			{
 				//consoleText.setText(fileText.getText());
-				SyntacticAnalyzer sa = new SyntacticAnalyzer(fileText.getText());
+				LexicalAnalyzer la = new LexicalAnalyzer(fileText.getText());
+				consoleText.setText(la.getMessage());
 			}
 		}	
 	}
