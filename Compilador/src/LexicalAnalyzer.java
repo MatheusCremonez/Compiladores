@@ -1,18 +1,24 @@
 import java.util.ArrayList;
+import java.util.List;
 
 public class LexicalAnalyzer {
 
+	private int index = 0;
+	private int line = 1;
+	private final String fontFile;
+	
 	public LexicalAnalyzer(String file) {
 		// System.out.println(file);
-		analise(file);
+		fontFile = file;
+		analise(fontFile);
 	}
 
 	public void analise(String file) {
-		int index = 0;
-		char token;
-		ArrayList listaToken = new ArrayList();
+		
+		
+		List<Token> listaToken = new ArrayList();
 
-		char caracter = file.charAt(index);
+		char caracter = leCaracter();
 
 		while (index < file.length()) {
 			while ((((caracter == '{') || (caracter == ' ')) && (index < file.length()))) {
@@ -20,25 +26,26 @@ public class LexicalAnalyzer {
 					while (caracter != '}') {
 						index++;
 						if (index < file.length()) {
-							caracter = file.charAt(index);
+							caracter = leCaracter();
 						}
 					}
 					index++;
-					caracter = file.charAt(index);
+					caracter = leCaracter();
 				}
 				while (caracter == ' ') {
 					index++;
 					if (index < file.length()) {
-						caracter = file.charAt(index);
+						caracter = leCaracter();
 					}
 				}
 			}
 			if ((index < file.length())) {
 				if(caracter == '\n') {
 					index++;
+					line++;
 				}
 				else {
-					token = pegaToken(caracter);
+					Token token = pegaToken(caracter);
 					listaToken.add(token);
 					index++;
 				}
@@ -51,12 +58,20 @@ public class LexicalAnalyzer {
 		}
 
 		// Debug
-		for (index = 0; index < listaToken.size(); index++) {
-			System.out.println(listaToken.get(index));
+		for (int i = 0; i < listaToken.size(); i++) {
+			System.out.print(listaToken.get(i).symbol + " ");
+			System.out.print(listaToken.get(i).lexema + " ");
+			System.out.print(listaToken.get(i).line);
+			System.out.println();
 		}
 	}
+	
+	public final char leCaracter() {
+		return fontFile.charAt(index);
+	}
 
-	public char pegaToken(char caracter) {
-		return caracter;
+	public final Token pegaToken(char caracter) {
+		Token token = new Token("scaracter",Character.toString(caracter), line);
+		return token;
 	}
 }
