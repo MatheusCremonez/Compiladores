@@ -62,8 +62,6 @@ public class LexicalAnalyzer {
 				else setMessage(getMessage() + '\n' + newMessage); 
 			}
 		}
-		
-		
 	}
 
 	public final char leCaracter() {
@@ -299,7 +297,6 @@ public class LexicalAnalyzer {
 		default:
 			return new Token("sidentificador", id, line);
 		}
-		
 	}
 	
 	public final boolean isInvalidCharacter(char character) {
@@ -314,4 +311,3 @@ public class LexicalAnalyzer {
 		return this.message;
 	}
 }
-

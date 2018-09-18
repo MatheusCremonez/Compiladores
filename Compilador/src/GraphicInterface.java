@@ -1,5 +1,6 @@
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.FileNotFoundException;
@@ -11,98 +12,98 @@ import javax.swing.JButton;
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JMenu;
+import javax.swing.JMenuBar;
+import javax.swing.JMenuItem;
+import javax.swing.JOptionPane;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
-import javax.swing.SwingConstants;
 import javax.swing.filechooser.FileNameExtensionFilter;
 
-public class GraphicInterface extends JFrame{
+public class GraphicInterface extends JFrame {
 
-	//Indentificador de versão de serialização da classe
+	// Indentificador de versão de serialização da classe
 	private static final long serialVersionUID = 1L;
 
-	private JLabel label1;
-	
-	private JButton openFileButton;
-	private JButton saveFileButton;
+	private JMenuBar menu;
+	private JMenu arquivo;
+	private JMenuItem abrir;
+	private JMenuItem salvar;
+
 	private JButton compileButton;
-	
+
 	private JLabel fileLabel;
 	private JTextArea fileText;
 	private JLabel consoleLabel;
 	private JTextArea consoleText;
-	
-	public GraphicInterface()
-	{
+
+	public GraphicInterface() {
+
 		super("Compilador");
 		setLayout(null);
-		
-		openFileButton = new JButton("Abrir Arquivo");
-		openFileButton.setBounds(10, 10, 125, 35);
-		add(openFileButton);
-		
-		saveFileButton = new JButton("Salvar Arquivo");
-		saveFileButton.setBounds(145, 10, 125, 35);
-		add(saveFileButton);
-		
+
+		menu = new JMenuBar();
+		arquivo = new JMenu("Arquivo");
+		abrir = new JMenuItem("Abrir");
+		salvar = new JMenuItem("Salvar");
+
+		arquivo.add(abrir);
+		arquivo.add(salvar);
+		menu.add(arquivo);
+
+		setJMenuBar(menu);
+
 		fileLabel = new JLabel("Arquivo:");
-		fileLabel.setBounds(10, 45, 125, 35);
+		fileLabel.setBounds(10, 5, 125, 35);
 		add(fileLabel);
-		
+
 		fileText = new JTextArea();
 		add(fileText);
-		
-		JScrollPane fileTextScrollPane = new JScrollPane(fileText); 
-		fileTextScrollPane.setVerticalScrollBarPolicy(
-                JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
-		fileTextScrollPane.setBounds(10, 80, 900, 250);
+
+		JScrollPane fileTextScrollPane = new JScrollPane(fileText);
+		fileTextScrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
+		fileTextScrollPane.setBounds(10, 40, 900, 250);
 		add(fileTextScrollPane);
-		
+
 		consoleLabel = new JLabel("Console:");
-		consoleLabel.setBounds(10, 330, 900, 35);
+		consoleLabel.setBounds(10, 290, 900, 35);
 		add(consoleLabel);
-		
+
 		consoleText = new JTextArea();
 		consoleText.setEditable(false);
 		add(consoleText);
-		
-		JScrollPane consoleTextScrollPane = new JScrollPane(consoleText); 
-		consoleTextScrollPane.setVerticalScrollBarPolicy(
-                JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
-		consoleTextScrollPane.setBounds(10, 365, 900, 250);
+
+		JScrollPane consoleTextScrollPane = new JScrollPane(consoleText);
+		consoleTextScrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
+		consoleTextScrollPane.setBounds(10, 325, 900, 250);
 		add(consoleTextScrollPane);
-		
+
 		compileButton = new JButton("Compilar");
-		compileButton.setBounds(10, 635, 125, 35);
+		compileButton.setBounds(10, 595, 125, 35);
 		add(compileButton);
-		
-		label1 = new JLabel();
-		label1.setBounds(0, 1, 819, 460);
-		label1.setHorizontalTextPosition(SwingConstants.CENTER);
-		label1.setVerticalTextPosition(SwingConstants.TOP);
-		add(label1);
-		
+
+		MenuActionListener menuHandler = new MenuActionListener();
+		abrir.addActionListener(menuHandler);
+		salvar.addActionListener(menuHandler);
+
 		ButtonHandler handler = new ButtonHandler();
-		openFileButton.addActionListener(handler);
-		saveFileButton.addActionListener(handler);
 		compileButton.addActionListener(handler);
 	}
-	
-	private class ButtonHandler implements ActionListener
-	{
-		public void actionPerformed(ActionEvent event)
-		{	
-			if(event.getSource() == openFileButton) 
-			{
+
+	public class MenuActionListener implements ActionListener {
+
+		public void actionPerformed(ActionEvent event) {
+
+			if (event.getSource() == abrir) {
 				try {
 					JFileChooser choice = new JFileChooser();
 					choice.setFileFilter(new FileNameExtensionFilter("TXT files", "txt"));
 					choice.showOpenDialog(null);
 					String name = choice.getSelectedFile().getAbsolutePath();
-					
-					if(!name.toLowerCase().endsWith(".txt"))
+
+					if (!name.toLowerCase().endsWith(".txt"))
 						name += ".txt";
-					
+
 					BufferedReader in = new BufferedReader(new FileReader(name));
 					fileText.read(in, null);
 					in.close();
@@ -112,38 +113,42 @@ public class GraphicInterface extends JFrame{
 				} catch (IOException e) {
 					e.printStackTrace();
 				}
-				
+
 			}
-			
-			if(event.getSource() == saveFileButton) 
-			{				
+
+			if (event.getSource() == salvar) {
 				try {
 					JFileChooser choice = new JFileChooser();
 					choice.setFileFilter(new FileNameExtensionFilter("TXT files", "txt"));
 					choice.showSaveDialog(null);
 					String name = choice.getSelectedFile().getAbsolutePath();
-					
-					if(!name.toLowerCase().endsWith(".txt"))
+
+					if (!name.toLowerCase().endsWith(".txt"))
 						name += ".txt";
-					
+
 					BufferedWriter out = new BufferedWriter(new FileWriter(name));
 					out.write(fileText.getText());
 					out.close();
-					
+
+					JOptionPane.showMessageDialog(null, "Arquivo Salvo com Sucesso");
+
 				} catch (FileNotFoundException e) {
 					e.printStackTrace();
 				} catch (IOException e) {
 					e.printStackTrace();
 				}
-
 			}
-			
-			if(event.getSource() == compileButton) 
-			{
-				//consoleText.setText(fileText.getText());
+		}
+	}
+
+	private class ButtonHandler implements ActionListener {
+
+		public void actionPerformed(ActionEvent event) {
+
+			if (event.getSource() == compileButton) {
 				LexicalAnalyzer la = new LexicalAnalyzer(fileText.getText());
 				consoleText.setText(la.getMessage());
 			}
-		}	
+		}
 	}
 }
