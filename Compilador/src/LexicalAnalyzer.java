@@ -1,6 +1,8 @@
 import java.util.ArrayList;
 import java.util.List;
 
+import Exceptions.LexicalException;
+
 public class LexicalAnalyzer {
 
 	public String message;
@@ -11,112 +13,117 @@ public class LexicalAnalyzer {
 
 	public LexicalAnalyzer(String file) {
 		fontFile = file;
-		analise(fontFile);
 	}
 
-	public void analise(String file) {
+	public Token lexical() {
+		char caracter;
+		Token token;
+		
+		if (index < fontFile.length()) {
+			caracter = leCaracter();
 
-		List<Token> listaToken = new ArrayList<Token>();
-
-		char caracter = leCaracter();
-
-		while (index < file.length()) {
-			while ((((caracter == '{') || (caracter == ' ')) && (index < file.length()))) {
-				if (caracter == '{') {
-					while (caracter != '}') {
-						index++;
-						if (index < file.length()) {
-							caracter = leCaracter();
-						}
-					}
+			caracter = verificaCaracteresIgnorados(caracter);
+			
+			if (index < fontFile.length()) {
+				try {
+					token = pegaToken(caracter);
 					index++;
-					caracter = leCaracter();
+					return token;
+				} catch (LexicalException e) {
+					setMessage(e.getMessage());
 				}
-				while (caracter == ' ') {
-					index++;
-					if (index < file.length()) {
-						caracter = leCaracter();
-					}
-				}
-			}
-			if ((index < file.length())) {
-				if (caracter == '\n') {
-					index++;
-					line++;
-				} else {
-					Token token = pegaToken(caracter);
-					listaToken.add(token);
-					index++;
-				}
-				if (index < file.length()) {
-					caracter = leCaracter();
-				}
-			}
-
-		}
-
-		if(!error) {
-			for (int i = 0; i < listaToken.size(); i++) {
-				String newMessage = listaToken.get(i).symbol + " " + listaToken.get(i).lexema + " " + listaToken.get(i).line;
-				if(i == 0) setMessage(newMessage); 
-				else setMessage(getMessage() + '\n' + newMessage); 
 			}
 		}
+		return null;
+	}
+	
+	private char verificaCaracteresIgnorados(char caracter) {
+		while (caracter == '{' || caracter == ' ' || caracter == '\n')
+		{
+			if (caracter == '{') {
+				while (caracter != '}') {
+					index++;
+					if (index >= fontFile.length()) {
+						return caracter;
+					}
+					caracter = leCaracter();
+				}
+				if (caracter == '}') {
+					index++;
+					if (index >= fontFile.length()) {
+						return caracter;
+					}
+					caracter = leCaracter();
+				}
+			}
+			if (caracter == ' ') {
+				index++;
+				if (index >= fontFile.length()) {
+					return caracter;
+				}
+				caracter = leCaracter();
+			}
+			
+			if (caracter == '\n') {
+				index++;
+				line++;
+				if (index >= fontFile.length()) {
+					return caracter;
+				}
+				caracter = leCaracter();
+			}
+		}
+		
+		return caracter;
 	}
 
-	public final char leCaracter() {
+	private final char leCaracter() {
 		return fontFile.charAt(index);
 	}
-		
-	public final Token pegaToken(char caracter) {
-		
-		if(Character.isDigit(caracter)) {
+
+	private final Token pegaToken(char caracter) throws LexicalException {
+
+		if (Character.isDigit(caracter)) {
 			return trataDigito(caracter);
-		}
-		else if(Character.isLetter(caracter)) {
+		} else if (Character.isLetter(caracter)) {
 			return trataIdentificadorPalavraReservada(caracter);
-		}
-		else if(caracter == ':') {
+		} else if (caracter == ':') {
 			return trataAtribuicao(caracter);
-		}
-		else if(caracter == '+' || caracter == '-' || caracter == '*') {
+		} else if (caracter == '+' || caracter == '-' || caracter == '*') {
 			return trataOperadorAritmetico(caracter);
-		}
-		else if(caracter == '<' || caracter == '>' || caracter == '=' || caracter == '!') {
+		} else if (caracter == '<' || caracter == '>' || caracter == '=' || caracter == '!') {
 			return trataOperadorRelacional(caracter);
-		}
-		else if(caracter == ';' || caracter == ',' || caracter == '(' || caracter == ')' || caracter == '.') {
+		} else if (caracter == ';' || caracter == ',' || caracter == '(' || caracter == ')' || caracter == '.') {
 			return trataPontuacao(caracter);
-		}
-		else {
-			setMessage("Há algum caracter inválido na linha "+ line + ".");
+		} else {
 			error = true;
 			index = fontFile.length();
-			return new Token("erro", Character.toString(caracter), line); 
+			throw new LexicalException("Há algum caracter inválido na linha " + line + ".");
 		}
 	}
 
 	public final Token trataDigito(char caracter) {
 		String num;
 		char newCaracter;
-		
+
 		num = Character.toString(caracter);
-		
+
 		if (index < fontFile.length()) {
 			newCaracter = leCaracter();
-			while (Character.isDigit(newCaracter) && (index+1) < fontFile.length() && !(isInvalidCharacter(newCaracter))) {
+			while (Character.isDigit(newCaracter) && (index + 1) < fontFile.length()
+					&& !(isInvalidCharacter(newCaracter))) {
 				index++;
 				newCaracter = leCaracter();
-				if(Character.isDigit(newCaracter)) {
+				if (Character.isDigit(newCaracter)) {
 					num = num + Character.toString(newCaracter);
 				}
 			}
-			if(!(Character.isDigit(newCaracter))) {
+			if (!(Character.isDigit(newCaracter))) {
 				index--;
 			}
-			
+
 		}
-		
+
 		return new Token("snúmero", num, line);
 
 	}
@@ -124,97 +131,94 @@ public class LexicalAnalyzer {
 	public final Token trataIdentificadorPalavraReservada(char caracter) {
 		String id;
 		char newCaracter;
-		
+
 		id = Character.toString(caracter);
-		
+
 		if (index < fontFile.length()) {
 			newCaracter = leCaracter();
-			while ((Character.isLetter(newCaracter) || newCaracter == '_') && (index+1) < fontFile.length() && !(isInvalidCharacter(newCaracter))) {
-				index++;
-				newCaracter = leCaracter();
-				if((Character.isLetter(newCaracter) || newCaracter == '_')) {
-					id = id + Character.toString(newCaracter);
+			if (Character.isLetter(newCaracter)) {
+				while ((Character.isLetter(newCaracter) || Character.isDigit(newCaracter) || newCaracter == '_')
+						&& (index + 1) < fontFile.length() && !(isInvalidCharacter(newCaracter))) {
+					index++;
+					newCaracter = leCaracter();
+					if ((Character.isLetter(newCaracter) || Character.isDigit(newCaracter) || newCaracter == '_')) {
+						id = id + Character.toString(newCaracter);
+					}
 				}
 			}
-			if(!(Character.isLetter(newCaracter) || newCaracter == '_')) {
+
+			if (!(Character.isLetter(newCaracter) || Character.isDigit(newCaracter) || newCaracter == '_')) {
 				index--;
 			}
-			
+
 		}
-		
+
 		return switchIdentifier(id);
-		
+
 	}
-	
-	public final Token trataOperadorAritmetico(char caracter) {		
+
+	public final Token trataOperadorAritmetico(char caracter) {
 		if (caracter == '+') {
-			return new Token("Smais", Character.toString(caracter), line);
+			return new Token("smais", Character.toString(caracter), line);
 		} else if (caracter == '-') {
-			return new Token("Smenos", Character.toString(caracter), line);
-		} else { 
-			return new Token("Smult", Character.toString(caracter), line);
+			return new Token("smenos", Character.toString(caracter), line);
+		} else {
+			return new Token("smult", Character.toString(caracter), line);
 		}
 	}
 
-	public final Token trataOperadorRelacional(char caracter) {
-		
+	public final Token trataOperadorRelacional(char caracter) throws LexicalException {
+
 		String op = Character.toString(caracter);
 		char newCaracter;
-		
-		if(caracter == '<') {
-			
+
+		if (caracter == '<') {
+
 			index++;
 			if (index < fontFile.length()) {
 				newCaracter = leCaracter();
-				if(isInvalidCharacter(newCaracter)) {
-					index--;
-				}
-				if(newCaracter == '=') {
+				if (newCaracter == '=') {
 					op = op + newCaracter;
 					return new Token("smenorig", op, line);
+				} else {
+					index--;
 				}
 			}
-			
+
 			return new Token("smenor", op, line);
-		}
-		else if(caracter == '>') {
-			
+		} else if (caracter == '>') {
+
 			index++;
 			if (index < fontFile.length()) {
 				newCaracter = leCaracter();
-				if(isInvalidCharacter(newCaracter)) {
-					index--;
-				}
-				if(newCaracter == '=') {
+				if (newCaracter == '=') {
 					op = op + newCaracter;
 					return new Token("smaiorig", op, line);
+				} else {
+					index--;
 				}
 			}
 			return new Token("smaior", op, line);
-		}
-		else if(caracter == '=') {
+		} else if (caracter == '=') {
 			return new Token("sigual", op, line);
-		}
-		else if(caracter == '!') {
+		} else if (caracter == '!') {
 			index++;
 			if (index < fontFile.length()) {
 				newCaracter = leCaracter();
-				if(newCaracter == '=') {
+				if (newCaracter == '=') {
 					op = op + newCaracter;
 					return new Token("sdif", op, line);
 				}
 			}
-			setMessage("Há algum caracter inválido na linha "+ line + ".");
 			error = true;
 			index = fontFile.length();
-			return new Token("erro", op, line);
+			throw new LexicalException("Há algum caracter inválido na linha " + line + ".");
 		}
-		setMessage("Há algum caracter inválido na linha "+ line + ".");
 		error = true;
 		index = fontFile.length();
-		return new Token("erro", op, line);
+		throw new LexicalException("Há algum caracter inválido na linha " + line + ".");
 	}
-	
+
 	public final Token trataAtribuicao(char caracter) {
 
 		String palavra = Character.toString(caracter);
@@ -227,14 +231,14 @@ public class LexicalAnalyzer {
 				return new Token("satribuição", palavra + Character.toString(caracter2), line);
 			} else {
 				index--;
-				return new Token("Sdoispontos", palavra, line);
+				return new Token("sdoispontos", palavra, line);
 			}
 		} else {
-			return new Token("Sdoispontos", palavra, line);
+			return new Token("sdoispontos", palavra, line);
 		}
-		
+
 	}
-	
+
 	public final Token trataPontuacao(char caracter) {
 		if (caracter == ';') {
 			return new Token("sponto_vírgula", Character.toString(caracter), line);
@@ -248,10 +252,9 @@ public class LexicalAnalyzer {
 			return new Token("sponto", Character.toString(caracter), line);
 		}
 	}
-	
-	public final Token switchIdentifier(String id)
-	{
-		switch(id) {
+
+	public final Token switchIdentifier(String id) {
+		switch (id) {
 		case "programa":
 			return new Token("s" + id, id, line);
 		case "se":
@@ -264,7 +267,7 @@ public class LexicalAnalyzer {
 			return new Token("s" + id, id, line);
 		case "faca":
 			return new Token("s" + id, id, line);
-		case "início":
+		case "inicio":
 			return new Token("s" + id, id, line);
 		case "fim":
 			return new Token("s" + id, id, line);
@@ -298,15 +301,15 @@ public class LexicalAnalyzer {
 			return new Token("sidentificador", id, line);
 		}
 	}
-	
+
 	public final boolean isInvalidCharacter(char character) {
 		return (character == '\n' || Character.isWhitespace(character) || Character.isSpaceChar(character));
 	}
-	
+
 	public void setMessage(String message) {
 		this.message = message;
 	}
-	
+
 	public final String getMessage() {
 		return this.message;
 	}

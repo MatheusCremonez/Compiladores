@@ -32,7 +32,6 @@ public class GraphicInterface extends JFrame {
 
 	private JButton compileButton;
 
-	private JLabel fileLabel;
 	private JTextArea fileText;
 	private JLabel consoleLabel;
 	private JTextArea consoleText;
@@ -53,20 +52,16 @@ public class GraphicInterface extends JFrame {
 
 		setJMenuBar(menu);
 
-		fileLabel = new JLabel("Arquivo:");
-		fileLabel.setBounds(10, 5, 125, 35);
-		add(fileLabel);
-
 		fileText = new JTextArea();
 		add(fileText);
 
 		JScrollPane fileTextScrollPane = new JScrollPane(fileText);
 		fileTextScrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
-		fileTextScrollPane.setBounds(10, 40, 900, 250);
+		fileTextScrollPane.setBounds(10, 10, 900, 415);
 		add(fileTextScrollPane);
 
 		consoleLabel = new JLabel("Console:");
-		consoleLabel.setBounds(10, 290, 900, 35);
+		consoleLabel.setBounds(10, 420, 900, 35);
 		add(consoleLabel);
 
 		consoleText = new JTextArea();
@@ -75,11 +70,11 @@ public class GraphicInterface extends JFrame {
 
 		JScrollPane consoleTextScrollPane = new JScrollPane(consoleText);
 		consoleTextScrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
-		consoleTextScrollPane.setBounds(10, 325, 900, 250);
+		consoleTextScrollPane.setBounds(10, 450, 900, 150);
 		add(consoleTextScrollPane);
 
 		compileButton = new JButton("Compilar");
-		compileButton.setBounds(10, 595, 125, 35);
+		compileButton.setBounds(10, 610, 125, 35);
 		add(compileButton);
 
 		MenuActionListener menuHandler = new MenuActionListener();
@@ -146,8 +141,8 @@ public class GraphicInterface extends JFrame {
 		public void actionPerformed(ActionEvent event) {
 
 			if (event.getSource() == compileButton) {
-				LexicalAnalyzer la = new LexicalAnalyzer(fileText.getText());
-				consoleText.setText(la.getMessage());
+				SyntacticAnalyzer sa = new SyntacticAnalyzer(fileText.getText());
+				consoleText.setText(sa.getMessage());
 			}
 		}
 	}
