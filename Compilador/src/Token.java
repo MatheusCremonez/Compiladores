@@ -1,8 +1,8 @@
 
 public class Token {
-	final public String symbol;
-	final public String lexema;
-	final public int line;
+	final private String symbol;
+	final private String lexema;
+	final private int line;
 	
 	public Token(String symbol, String lexema, int line)
 	{

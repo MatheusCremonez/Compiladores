@@ -1,12 +1,9 @@
-import java.util.ArrayList;
-import java.util.List;
-
 import Exceptions.LexicalException;
 
 public class LexicalAnalyzer {
 
-	public String message;
-	public boolean error = false;
+	public boolean error = false; // pode ser private (alterar depois)
+	private String message;
 	private int index = 0;
 	private int line = 1;
 	private final String fontFile;
@@ -18,12 +15,12 @@ public class LexicalAnalyzer {
 	public Token lexical() {
 		char caracter;
 		Token token;
-		
+
 		if (index < fontFile.length()) {
 			caracter = leCaracter();
 
 			caracter = verificaCaracteresIgnorados(caracter);
-			
+
 			if (index < fontFile.length()) {
 				try {
 					token = pegaToken(caracter);
@@ -36,10 +33,9 @@ public class LexicalAnalyzer {
 		}
 		return null;
 	}
-	
+
 	private char verificaCaracteresIgnorados(char caracter) {
-		while (caracter == '{' || caracter == ' ' || caracter == '\n')
-		{
+		while (caracter == '{' || caracter == ' ' || caracter == '\n') {
 			if (caracter == '{') {
 				while (caracter != '}') {
 					index++;
@@ -63,7 +59,7 @@ public class LexicalAnalyzer {
 				}
 				caracter = leCaracter();
 			}
-			
+
 			if (caracter == '\n') {
 				index++;
 				line++;
@@ -73,7 +69,7 @@ public class LexicalAnalyzer {
 				caracter = leCaracter();
 			}
 		}
-		
+
 		return caracter;
 	}
 
@@ -236,7 +232,6 @@ public class LexicalAnalyzer {
 		} else {
 			return new Token("sdoispontos", palavra, line);
 		}
-
 	}
 
 	public final Token trataPontuacao(char caracter) {
