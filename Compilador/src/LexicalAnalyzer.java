@@ -19,7 +19,11 @@ public class LexicalAnalyzer {
 		if (index < fontFile.length()) {
 			caracter = leCaracter();
 
-			caracter = verificaCaracteresIgnorados(caracter);
+			try {
+				caracter = verificaCaracteresIgnorados(caracter);
+			} catch (LexicalException e) {
+				setMessage(e.getMessage());
+			}
 
 			if (index < fontFile.length()) {
 				try {
@@ -34,13 +38,14 @@ public class LexicalAnalyzer {
 		return null;
 	}
 
-	private char verificaCaracteresIgnorados(char caracter) {
-		while (caracter == '{' || caracter == ' ' || caracter == '\n') {
+	private char verificaCaracteresIgnorados(char caracter) throws LexicalException {
+		while (caracter == '{' || caracter == ' ' || caracter == '	' ||caracter == '\n' ) {
 			if (caracter == '{') {
 				while (caracter != '}') {
 					index++;
 					if (index >= fontFile.length()) {
-						return caracter;
+						error = true;
+						throw new LexicalException("Há algum caracter inválido na linha " + line + ".");
 					}
 					caracter = leCaracter();
 				}
@@ -53,6 +58,14 @@ public class LexicalAnalyzer {
 				}
 			}
 			if (caracter == ' ') {
+				index++;
+				if (index >= fontFile.length()) {
+					return caracter;
+				}
+				caracter = leCaracter();
+			}
+			
+			if (caracter == '	') {
 				index++;
 				if (index >= fontFile.length()) {
 					return caracter;
