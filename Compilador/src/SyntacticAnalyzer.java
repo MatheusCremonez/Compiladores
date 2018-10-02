@@ -5,13 +5,14 @@ public class SyntacticAnalyzer {
 
 	private String message;
 	private List<Token> listaToken = new ArrayList<Token>();
+	private LexicalAnalyzer la;
 
 	public SyntacticAnalyzer(String file) {
-		LexicalAnalyzer la = new LexicalAnalyzer(file);
-		syntactic(la);
+		la = new LexicalAnalyzer(file);
+		syntactic();
 	}
 
-	public void syntactic(LexicalAnalyzer la) {
+	public void syntactic() {
 
 		Token token;
 
