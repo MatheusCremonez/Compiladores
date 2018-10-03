@@ -1,7 +1,5 @@
-import Exceptions.MissingTokenException;
+import Constants.*;
 import Exceptions.SyntacticException;
-
-import Constants.Constants;
 
 public class SyntacticAnalyzer {
 
@@ -20,8 +18,6 @@ public class SyntacticAnalyzer {
 			analisadorSintatico();
 		} catch (SyntacticException e) {
 			setMessage(e.getMessage());
-		} catch (MissingTokenException e) {
-			setMessage(e.getMessage());
 		} catch (NullPointerException e) {
 			setMessage("Sintaticamente, o código está incorreto."); //ANALISAR ERROS COMO ESSE 
 			//(talvez criar um método que analisa qual foi o último token lido antes da exceção)
@@ -31,7 +27,7 @@ public class SyntacticAnalyzer {
 		}
 	}
 	
-	private void analisadorSintatico() throws SyntacticException, MissingTokenException {
+	private void analisadorSintatico() throws SyntacticException {
 		token = la.lexical();
 		if (token.getSymbol().equals(Constants.PROGRAMA_SIMBOLO)) {
 			token = la.lexical();
@@ -48,19 +44,19 @@ public class SyntacticAnalyzer {
 							throw new SyntacticException("Trecho de código inesperado na linha: " + token.getLine());
 						}
 					} else {
-						throw new MissingTokenException(Constants.PONTO_LEXEMA, Constants.PONTO_SIMBOLO, 
+						throw new SyntacticException(Constants.PONTO_LEXEMA, Constants.PONTO_SIMBOLO, 
 								token.getLexema(), token.getSymbol(), token.getLine());
 					}
 				} else {
-					throw new MissingTokenException(Constants.PONTO_VIRGULA_LEXEMA, Constants.PONTO_VIRGULA_SIMBOLO, 
+					throw new SyntacticException(Constants.PONTO_VIRGULA_LEXEMA, Constants.PONTO_VIRGULA_SIMBOLO, 
 							token.getLexema(), token.getSymbol(), token.getLine());
 				}
 			} else {
-				throw new MissingTokenException(Constants.IDENTIFICADOR_LEXEMA, Constants.IDENTIFICADOR_SIMBOLO, 
+				throw new SyntacticException(Constants.IDENTIFICADOR_LEXEMA, Constants.IDENTIFICADOR_SIMBOLO, 
 						token.getLexema(), token.getSymbol(), token.getLine());
 			}
 		} else {
-			throw new MissingTokenException(Constants.PROGRAMA_LEXEMA, Constants.PROGRAMA_SIMBOLO, 
+			throw new SyntacticException(Constants.PROGRAMA_LEXEMA, Constants.PROGRAMA_SIMBOLO, 
 					token.getLexema(), token.getSymbol(), token.getLine());
 		}
 	}

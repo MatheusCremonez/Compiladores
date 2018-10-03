@@ -7,4 +7,10 @@ public class SyntacticException extends Exception {
 	public SyntacticException(String message) {
 		super(message);
 	}
+	
+	public SyntacticException(String expectedLexema, String expectedSymbol, String receivedLexema, String receivedSymbol, int line) {
+		super("Token esperado não encontrado na linha: " + line + ".\n"
+				+ "Encontrado: '" + receivedLexema + "' (" + receivedSymbol + ").\n"
+				+ "Esperado: '" + expectedLexema + "' (" + expectedSymbol + ").");
+	}
 }
