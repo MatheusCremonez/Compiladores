@@ -5,11 +5,14 @@ import Exceptions.LexicalException;
 import Exceptions.MissingTokenException;
 import Exceptions.SyntacticException;
 
+import Constants.Constants;
+
 public class SyntacticAnalyzer {
 
 	private String message;
 	private LexicalAnalyzer la;
 	private Token token;
+	private Constants constant;
 
 	public SyntacticAnalyzer(String file) {
 		la = new LexicalAnalyzer(file);
@@ -35,14 +38,14 @@ public class SyntacticAnalyzer {
 	
 	private void analisadorSintatico() throws SyntacticException, MissingTokenException {
 		token = la.lexical();
-		if (token.getSymbol().equals("sprograma")) {
+		if (token.getSymbol().equals(constant.PROGRAMA_SIMBOLO)) {
 			token = la.lexical();
-			if (token.getSymbol().equals("sidentificador")) {
+			if (token.getSymbol().equals(constant.IDENTIFICADOR_SIMBOLO)) {
 				token = la.lexical();
-				if (token.getSymbol().equals("sponto_vírgula")) {
+				if (token.getSymbol().equals(constant.PONTO_VIRGULA_SIMBOLO)) {
 					//analisa_bloco()
-					token = la.lexical();
-					if (token.getSymbol().equals("sponto")) {
+					token = la.lexical(); //ALTERNATIVO
+					if (token.getSymbol().equals(constant.PONTO_SIMBOLO)) {
 						token = la.lexical();
 						if(token == null) { // token = null simboliza o fim do arquivo
 							setMessage("Compilação sintática realizada com sucesso.");
@@ -50,16 +53,20 @@ public class SyntacticAnalyzer {
 							throw new SyntacticException("Trecho de código inesperado na linha: " + token.getLine());
 						}
 					} else {
-						throw new MissingTokenException(".", "sponto", token.getLexema(), token.getSymbol(), token.getLine());
+						throw new MissingTokenException(constant.PONTO_LEXEMA, constant.PONTO_SIMBOLO, 
+								token.getLexema(), token.getSymbol(), token.getLine());
 					}
 				} else {
-					throw new MissingTokenException(";", "sponto_vírgula", token.getLexema(), token.getSymbol(), token.getLine());
+					throw new MissingTokenException(constant.PONTO_VIRGULA_LEXEMA, constant.PONTO_VIRGULA_SIMBOLO, 
+							token.getLexema(), token.getSymbol(), token.getLine());
 				}
 			} else {
-				throw new MissingTokenException("identificador", "sidentificador", token.getLexema(), token.getSymbol(), token.getLine());
+				throw new MissingTokenException(constant.IDENTIFICADOR_LEXEMA, constant.IDENTIFICADOR_SIMBOLO, 
+						token.getLexema(), token.getSymbol(), token.getLine());
 			}
 		} else {
-			throw new MissingTokenException("programa", "sprograma", token.getLexema(), token.getSymbol(), token.getLine());
+			throw new MissingTokenException(constant.PROGRAMA_LEXEMA, constant.PROGRAMA_SIMBOLO, 
+					token.getLexema(), token.getSymbol(), token.getLine());
 		}
 	}
 

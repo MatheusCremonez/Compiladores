@@ -1,5 +1,7 @@
 import Exceptions.LexicalException;
 
+import Constants.Constants;
+
 public class LexicalAnalyzer {
 
 	public boolean error = false; // pode ser private (alterar depois)
@@ -7,6 +9,7 @@ public class LexicalAnalyzer {
 	private int index = 0;
 	private int line = 1;
 	private final String fontFile;
+	private Constants constant;
 
 	public LexicalAnalyzer(String file) {
 		fontFile = file;
@@ -39,7 +42,7 @@ public class LexicalAnalyzer {
 	}
 
 	private char verificaCaracteresIgnorados(char caracter) throws LexicalException {
-		while (caracter == '{' || caracter == ' ' || caracter == '	' ||caracter == '\n' ) {
+		while (caracter == '{' || caracter == ' ' || caracter == '	' || caracter == '\n') {
 			if (caracter == '{') {
 				while (caracter != '}') {
 					index++;
@@ -64,7 +67,7 @@ public class LexicalAnalyzer {
 				}
 				caracter = leCaracter();
 			}
-			
+
 			if (caracter == '	') {
 				index++;
 				if (index >= fontFile.length()) {
@@ -133,7 +136,7 @@ public class LexicalAnalyzer {
 
 		}
 
-		return new Token("snúmero", num, line);
+		return new Token(constant.NUMERO_SIMBOLO, num, line);
 
 	}
 
@@ -168,11 +171,11 @@ public class LexicalAnalyzer {
 
 	public final Token trataOperadorAritmetico(char caracter) {
 		if (caracter == '+') {
-			return new Token("smais", Character.toString(caracter), line);
+			return new Token(constant.MAIS_SIMBOLO, Character.toString(caracter), line);
 		} else if (caracter == '-') {
-			return new Token("smenos", Character.toString(caracter), line);
+			return new Token(constant.MENOS_SIMBOLO, Character.toString(caracter), line);
 		} else {
-			return new Token("smult", Character.toString(caracter), line);
+			return new Token(constant.MULT_SIMBOLO, Character.toString(caracter), line);
 		}
 	}
 
@@ -188,13 +191,13 @@ public class LexicalAnalyzer {
 				newCaracter = leCaracter();
 				if (newCaracter == '=') {
 					op = op + newCaracter;
-					return new Token("smenorig", op, line);
+					return new Token(constant.MENOR_IGUAL_SIMBOLO, op, line);
 				} else {
 					index--;
 				}
 			}
 
-			return new Token("smenor", op, line);
+			return new Token(constant.MENOR_SIMBOLO, op, line);
 		} else if (caracter == '>') {
 
 			index++;
@@ -202,21 +205,21 @@ public class LexicalAnalyzer {
 				newCaracter = leCaracter();
 				if (newCaracter == '=') {
 					op = op + newCaracter;
-					return new Token("smaiorig", op, line);
+					return new Token(constant.MAIOR_IGUAL_SIMBOLO, op, line);
 				} else {
 					index--;
 				}
 			}
-			return new Token("smaior", op, line);
+			return new Token(constant.MAIOR_SIMBOLO, op, line);
 		} else if (caracter == '=') {
-			return new Token("sigual", op, line);
+			return new Token(constant.IGUAL_SIMBOLO, op, line);
 		} else if (caracter == '!') {
 			index++;
 			if (index < fontFile.length()) {
 				newCaracter = leCaracter();
 				if (newCaracter == '=') {
 					op = op + newCaracter;
-					return new Token("sdif", op, line);
+					return new Token(constant.DIFERENTE_SIMBOLO, op, line);
 				}
 			}
 			error = true;
@@ -237,25 +240,25 @@ public class LexicalAnalyzer {
 			char caracter2 = leCaracter();
 
 			if (caracter2 == '=') {
-				return new Token("satribuição", palavra + Character.toString(caracter2), line);
+				return new Token(constant.ATRIBUICAO_SIMBOLO, palavra + Character.toString(caracter2), line);
 			} else {
 				index--;
-				return new Token("sdoispontos", palavra, line);
+				return new Token(constant.DOIS_PONTOS_SIMBOLO, palavra, line);
 			}
 		} else {
-			return new Token("sdoispontos", palavra, line);
+			return new Token(constant.DOIS_PONTOS_SIMBOLO, palavra, line);
 		}
 	}
 
 	public final Token trataPontuacao(char caracter) {
 		if (caracter == ';') {
-			return new Token("sponto_vírgula", Character.toString(caracter), line);
+			return new Token(constant.PONTO_VIRGULA_SIMBOLO, Character.toString(caracter), line);
 		} else if (caracter == ',') {
-			return new Token("svírgula", Character.toString(caracter), line);
+			return new Token(constant.VIRGULA_SIMBOLO, Character.toString(caracter), line);
 		} else if (caracter == '(') {
-			return new Token("sabre_parênteses", Character.toString(caracter), line);
+			return new Token(constant.ABRE_PARENTESES_SIMBOLO, Character.toString(caracter), line);
 		} else if (caracter == ')') {
-			return new Token("sfecha_parênteses", Character.toString(caracter), line);
+			return new Token(constant.FECHA_PARENTESES_SIMBOLO, Character.toString(caracter), line);
 		} else { // considera ser o ponto (.)
 			return new Token("sponto", Character.toString(caracter), line);
 		}
@@ -264,49 +267,49 @@ public class LexicalAnalyzer {
 	public final Token switchIdentifier(String id) {
 		switch (id) {
 		case "programa":
-			return new Token("s" + id, id, line);
+			return new Token(constant.PROGRAMA_SIMBOLO, id, line);
 		case "se":
-			return new Token("s" + id, id, line);
+			return new Token(constant.SE_SIMBOLO, id, line);
 		case "entao":
-			return new Token("s" + id, id, line);
+			return new Token(constant.ENTAO_SIMBOLO, id, line);
 		case "senao":
-			return new Token("s" + id, id, line);
+			return new Token(constant.SENAO_SIMBOLO, id, line);
 		case "enquanto":
-			return new Token("s" + id, id, line);
+			return new Token(constant.ENQUANTO_SIMBOLO, id, line);
 		case "faca":
-			return new Token("s" + id, id, line);
+			return new Token(constant.FACA_SIMBOLO, id, line);
 		case "inicio":
-			return new Token("s" + id, id, line);
+			return new Token(constant.INICIO_SIMBOLO, id, line);
 		case "fim":
-			return new Token("s" + id, id, line);
+			return new Token(constant.FIM_SIMBOLO, id, line);
 		case "escreva":
-			return new Token("s" + id, id, line);
+			return new Token(constant.ESCREVA_SIMBOLO, id, line);
 		case "leia":
-			return new Token("s" + id, id, line);
+			return new Token(constant.LEIA_SIMBOLO, id, line);
 		case "var":
-			return new Token("s" + id, id, line);
+			return new Token(constant.VAR_SIMBOLO, id, line);
 		case "inteiro":
-			return new Token("s" + id, id, line);
+			return new Token(constant.INTEIRO_SIMBOLO, id, line);
 		case "booleano":
-			return new Token("s" + id, id, line);
+			return new Token(constant.BOOLEANO_SIMBOLO, id, line);
 		case "verdadeiro":
-			return new Token("s" + id, id, line);
+			return new Token(constant.VERDADEIRO_SIMBOLO, id, line);
 		case "falso":
-			return new Token("s" + id, id, line);
+			return new Token(constant.FALSO_SIMBOLO, id, line);
 		case "procedimento":
-			return new Token("s" + id, id, line);
+			return new Token(constant.PROCEDIMENTO_SIMBOLO, id, line);
 		case "funcao":
-			return new Token("s" + id, id, line);
+			return new Token(constant.FUNCAO_SIMBOLO, id, line);
 		case "div":
-			return new Token("s" + id, id, line);
+			return new Token(constant.DIV_SIMBOLO, id, line);
 		case "e":
-			return new Token("s" + id, id, line);
+			return new Token(constant.E_SIMBOLO, id, line);
 		case "ou":
-			return new Token("s" + id, id, line);
+			return new Token(constant.OU_SIMBOLO, id, line);
 		case "nao":
-			return new Token("s" + id, id, line);
+			return new Token(constant.NAO_SIMBOLO, id, line);
 		default:
-			return new Token("sidentificador", id, line);
+			return new Token(constant.IDENTIFICADOR_SIMBOLO, id, line);
 		}
 	}
 
