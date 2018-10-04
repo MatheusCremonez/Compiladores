@@ -13,7 +13,6 @@ public class SyntacticAnalyzer {
 	}
 
 	public void syntactic() {
-
 		try {
 			analisadorSintatico();
 		} catch (SyntacticException e) {
@@ -67,11 +66,9 @@ public class SyntacticAnalyzer {
 		analisa_et_variaveis();
 		analisa_subrotinas();
 		analisa_comandos();
-
 	}
 
 	public void analisa_et_variaveis() throws SyntacticException {
-
 		if (token.getSymbol().equals(Constants.VAR_SIMBOLO)) {
 			token = la.lexical();
 			if (token.getSymbol().equals(Constants.IDENTIFICADOR_SIMBOLO)) {
@@ -89,11 +86,9 @@ public class SyntacticAnalyzer {
 						token.getLexema(), token.getSymbol(), token.getLine());
 			}
 		}
-
 	}
 
 	public void analisa_variaveis() throws SyntacticException {
-
 		do {
 			if (token.getSymbol().equals(Constants.IDENTIFICADOR_SIMBOLO)) {
 				token = la.lexical();
@@ -118,8 +113,8 @@ public class SyntacticAnalyzer {
 			}
 
 		} while (!(token.getSymbol().equals(Constants.DOIS_PONTOS_SIMBOLO)));
-		token = la.lexical();
 
+		token = la.lexical();
 		analisa_tipo();
 	}
 
@@ -132,12 +127,93 @@ public class SyntacticAnalyzer {
 		token = la.lexical();
 	}
 
+	// Ainda precisa ser feito
 	public void analisa_subrotinas() {
 
 	}
 
-	public void analisa_comandos() {
+	public void analisa_comandos() throws SyntacticException {
+		if (token.getSymbol().equals(Constants.INICIO_SIMBOLO)) {
+			token = la.lexical();
+			analisa_comando_simples();
 
+			while (!(token.getSymbol().equals(Constants.FIM_SIMBOLO))) {
+				if (token.getSymbol().equals(Constants.PONTO_VIRGULA_SIMBOLO)) {
+
+					token = la.lexical();
+					if (!(token.getSymbol().equals(Constants.FIM_SIMBOLO))) {
+						analisa_comando_simples();
+					}
+				} else {
+					throw new SyntacticException(Constants.PONTO_VIRGULA_LEXEMA, Constants.PONTO_VIRGULA_SIMBOLO,
+							token.getLexema(), token.getSymbol(), token.getLine());
+				}
+			}
+			token = la.lexical();
+		} else {
+			throw new SyntacticException(Constants.INICIO_LEXEMA, Constants.INICIO_SIMBOLO, token.getLexema(),
+					token.getSymbol(), token.getLine());
+		}
+	}
+
+	public void analisa_comando_simples() throws SyntacticException {
+		if (token.getSymbol().equals(Constants.IDENTIFICADOR_SIMBOLO)) {
+			// analisa_atrib_chprocedimento();
+		} else if (token.getSymbol().equals(Constants.SE_SIMBOLO)) {
+			// analisa_se();
+		} else if (token.getSymbol().equals(Constants.ENQUANTO_SIMBOLO)) {
+			// analisa_enquanto();
+		} else if (token.getSymbol().equals(Constants.LEIA_SIMBOLO)) {
+			analisa_leia();
+		} else if (token.getSymbol().equals(Constants.ESCREVA_SIMBOLO)) {
+			analisa_escreva();
+		} else {
+			analisa_comandos();
+		}
+	}
+
+	public void analisa_leia() throws SyntacticException {
+		token = la.lexical();
+		if (token.getSymbol().equals(Constants.ABRE_PARENTESES_SIMBOLO)) {
+			token = la.lexical();
+			if (token.getSymbol().equals(Constants.IDENTIFICADOR_SIMBOLO)) {
+				token = la.lexical();
+				if (token.getSymbol().equals(Constants.FECHA_PARENTESES_SIMBOLO)) {
+					token = la.lexical();
+				} else {
+					throw new SyntacticException(Constants.FECHA_PARENTESES_LEXEMA, Constants.FECHA_PARENTESES_SIMBOLO,
+							token.getLexema(), token.getSymbol(), token.getLine());
+				}
+			} else {
+				throw new SyntacticException(Constants.IDENTIFICADOR_LEXEMA, Constants.IDENTIFICADOR_SIMBOLO,
+						token.getLexema(), token.getSymbol(), token.getLine());
+			}
+		} else {
+			throw new SyntacticException(Constants.ABRE_PARENTESES_LEXEMA, Constants.ABRE_PARENTESES_SIMBOLO,
+					token.getLexema(), token.getSymbol(), token.getLine());
+		}
+	}
+
+	public void analisa_escreva() throws SyntacticException {
+		token = la.lexical();
+		if (token.getSymbol().equals(Constants.ABRE_PARENTESES_SIMBOLO)) {
+			token = la.lexical();
+			if (token.getSymbol().equals(Constants.IDENTIFICADOR_SIMBOLO)) {
+				token = la.lexical();
+				if (token.getSymbol().equals(Constants.FECHA_PARENTESES_SIMBOLO)) {
+					token = la.lexical();
+				} else {
+					throw new SyntacticException(Constants.FECHA_PARENTESES_LEXEMA, Constants.FECHA_PARENTESES_SIMBOLO,
+							token.getLexema(), token.getSymbol(), token.getLine());
+				}
+			} else {
+				throw new SyntacticException(Constants.IDENTIFICADOR_LEXEMA, Constants.IDENTIFICADOR_SIMBOLO,
+						token.getLexema(), token.getSymbol(), token.getLine());
+			}
+		} else {
+			throw new SyntacticException(Constants.ABRE_PARENTESES_LEXEMA, Constants.ABRE_PARENTESES_SIMBOLO,
+					token.getLexema(), token.getSymbol(), token.getLine());
+		}
 	}
 
 	public void setMessage(String message) {
