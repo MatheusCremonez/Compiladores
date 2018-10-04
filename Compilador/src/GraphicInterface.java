@@ -1,6 +1,10 @@
+import java.awt.Color;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.FileNotFoundException;
@@ -33,8 +37,11 @@ public class GraphicInterface extends JFrame {
 	private JButton compileButton;
 
 	private JTextArea fileText;
+	private JTextArea lineText;
 	private JLabel consoleLabel;
 	private JTextArea consoleText;
+	
+	// private int errorLine;
 
 	public GraphicInterface() {
 
@@ -51,13 +58,24 @@ public class GraphicInterface extends JFrame {
 		menu.add(arquivo);
 
 		setJMenuBar(menu);
+		
+		lineText = new JTextArea();
+		lineText.setBackground(Color.LIGHT_GRAY);
+		lineText.setEditable(false);
+		add(lineText);
+		
+		JScrollPane lineTextScrollPane = new JScrollPane(lineText);
+		lineTextScrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_NEVER);
+		lineTextScrollPane.setBounds(10, 10, 20, 415);
+		add(lineTextScrollPane);
 
 		fileText = new JTextArea();
 		add(fileText);
 
 		JScrollPane fileTextScrollPane = new JScrollPane(fileText);
 		fileTextScrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
-		fileTextScrollPane.setBounds(10, 10, 900, 415);
+		fileTextScrollPane.setBounds(30, 10, 880, 415);
+		fileTextScrollPane.getVerticalScrollBar().setModel(lineTextScrollPane.getVerticalScrollBar().getModel());
 		add(fileTextScrollPane);
 
 		consoleLabel = new JLabel("Console:");
@@ -81,8 +99,14 @@ public class GraphicInterface extends JFrame {
 		abrir.addActionListener(menuHandler);
 		salvar.addActionListener(menuHandler);
 
-		ButtonHandler handler = new ButtonHandler();
-		compileButton.addActionListener(handler);
+		ButtonHandler buttonHandler = new ButtonHandler();
+		compileButton.addActionListener(buttonHandler);
+		
+		ClickHandler clickHandler = new ClickHandler();
+		consoleText.addMouseListener(clickHandler);
+		
+		KeyHandler keyHandler = new KeyHandler();
+		fileText.addKeyListener(keyHandler);
 	}
 
 	public class MenuActionListener implements ActionListener {
@@ -103,6 +127,7 @@ public class GraphicInterface extends JFrame {
 					fileText.read(in, null);
 					in.close();
 					fileText.requestFocus();
+					setFileLines();
 				} catch (FileNotFoundException e) {
 					e.printStackTrace();
 				} catch (IOException e) {
@@ -141,9 +166,75 @@ public class GraphicInterface extends JFrame {
 		public void actionPerformed(ActionEvent event) {
 
 			if (event.getSource() == compileButton) {
+				// setFileLines();
 				SyntacticAnalyzer sa = new SyntacticAnalyzer(fileText.getText());
 				consoleText.setText(sa.getMessage());
+//				if (sa.getErrorLine() > 0) {
+//					errorLine = sa.getErrorLine();
+//				}
 			}
 		}
 	}
+	
+	private class KeyHandler implements KeyListener {
+
+		@Override
+		public void keyPressed(KeyEvent arg0) {
+				setFileLines();
+		}
+
+		@Override
+		public void keyReleased(KeyEvent e) {
+			if(e.getKeyCode() == KeyEvent.VK_BACK_SPACE || e.getKeyCode() == KeyEvent.VK_BACK_SPACE) {
+				setFileLines();
+			}
+			
+		}
+
+		@Override
+		public void keyTyped(KeyEvent e) { }
+
+	}
+	
+	private class ClickHandler implements MouseListener {
+
+		@Override
+		public void mouseClicked(MouseEvent event) {
+			// consoleText.setText(String.valueOf(errorLine));
+		}
+
+		@Override
+		public void mouseEntered(MouseEvent e) {}
+
+		@Override
+		public void mouseExited(MouseEvent e) {}
+
+		@Override
+		public void mousePressed(MouseEvent e) {}
+
+		@Override
+		public void mouseReleased(MouseEvent e) {}
+	}
+	
+	public void setFileLines() {
+		int i = 1, fileIndex = 0;
+		String fileContent = fileText.getText();
+		String lineContent = "";
+		
+		if (fileIndex < fileContent.length()) {
+			lineContent = "1\n";
+		}
+		
+		while (fileIndex < fileContent.length()) {
+			if(fileContent.charAt(fileIndex) == '\n') {
+				i++;
+				lineContent = lineContent + String.valueOf(i) + '\n';
+			}
+			fileIndex++;
+		}
+		
+		lineText.setText(lineContent);
+		
+	}
+		
 }
