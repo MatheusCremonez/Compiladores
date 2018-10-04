@@ -179,13 +179,13 @@ public class GraphicInterface extends JFrame {
 	private class KeyHandler implements KeyListener {
 
 		@Override
-		public void keyPressed(KeyEvent arg0) {
+		public void keyPressed(KeyEvent e) {
 				setFileLines();
 		}
 
 		@Override
 		public void keyReleased(KeyEvent e) {
-			if(e.getKeyCode() == KeyEvent.VK_BACK_SPACE || e.getKeyCode() == KeyEvent.VK_BACK_SPACE) {
+			if(e.getKeyCode() == KeyEvent.VK_BACK_SPACE) {
 				setFileLines();
 			}
 			
