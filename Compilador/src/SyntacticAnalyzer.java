@@ -127,7 +127,6 @@ public class SyntacticAnalyzer {
 		token = la.lexical();
 	}
 
-	// Ainda precisa ser feito
 	public void analisaSubrotinas() throws SyntacticException {
 		int flag = 0;
 
