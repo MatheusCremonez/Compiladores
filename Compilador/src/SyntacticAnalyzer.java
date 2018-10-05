@@ -34,7 +34,7 @@ public class SyntacticAnalyzer {
 			if (token.getSymbol().equals(Constants.IDENTIFICADOR_SIMBOLO)) {
 				token = la.lexical();
 				if (token.getSymbol().equals(Constants.PONTO_VIRGULA_SIMBOLO)) {
-					analisa_bloco();
+					analisaBloco();
 					if (token.getSymbol().equals(Constants.PONTO_SIMBOLO)) {
 						token = la.lexical();
 						if (token == null) { // token = null simboliza o fim do arquivo
@@ -60,20 +60,20 @@ public class SyntacticAnalyzer {
 		}
 	}
 
-	public void analisa_bloco() throws SyntacticException {
+	public void analisaBloco() throws SyntacticException {
 		token = la.lexical();
 
-		analisa_et_variaveis();
-		analisa_subrotinas();
-		analisa_comandos();
+		analisaEtVariaveis();
+		analisaSubrotinas();
+		analisaComandos();
 	}
 
-	public void analisa_et_variaveis() throws SyntacticException {
+	public void analisaEtVariaveis() throws SyntacticException {
 		if (token.getSymbol().equals(Constants.VAR_SIMBOLO)) {
 			token = la.lexical();
 			if (token.getSymbol().equals(Constants.IDENTIFICADOR_SIMBOLO)) {
 				while (token.getSymbol().equals(Constants.IDENTIFICADOR_SIMBOLO)) {
-					analisa_variaveis();
+					analisaVariaveis();
 					if (token.getSymbol().equals(Constants.PONTO_VIRGULA_SIMBOLO)) {
 						token = la.lexical();
 					} else {
@@ -88,7 +88,7 @@ public class SyntacticAnalyzer {
 		}
 	}
 
-	public void analisa_variaveis() throws SyntacticException {
+	public void analisaVariaveis() throws SyntacticException {
 		do {
 			if (token.getSymbol().equals(Constants.IDENTIFICADOR_SIMBOLO)) {
 				token = la.lexical();
@@ -115,10 +115,10 @@ public class SyntacticAnalyzer {
 		} while (!(token.getSymbol().equals(Constants.DOIS_PONTOS_SIMBOLO)));
 
 		token = la.lexical();
-		analisa_tipo();
+		analisaTipo();
 	}
 
-	public void analisa_tipo() throws SyntacticException {
+	public void analisaTipo() throws SyntacticException {
 		if (!(token.getSymbol().equals(Constants.INTEIRO_SIMBOLO))
 				&& !(token.getSymbol().equals(Constants.BOOLEANO_SIMBOLO))) {
 			throw new SyntacticException(Constants.INTEIRO_LEXEMA, Constants.INTEIRO_SIMBOLO, Constants.BOOLEANO_LEXEMA,
@@ -128,21 +128,49 @@ public class SyntacticAnalyzer {
 	}
 
 	// Ainda precisa ser feito
-	public void analisa_subrotinas() {
+	public void analisaSubrotinas() throws SyntacticException {
+		int flag = 0;
 
+		if ((token.getSymbol().equals(Constants.PROCEDIMENTO_SIMBOLO))
+				|| (token.getSymbol().equals(Constants.FUNCAO_SIMBOLO))) {
+			// terá questões semanticas aqui no futuro
+		}
+
+		while ((token.getSymbol().equals(Constants.PROCEDIMENTO_SIMBOLO))
+				|| (token.getSymbol().equals(Constants.FUNCAO_SIMBOLO))) {
+
+			if (token.getSymbol().equals(Constants.PROCEDIMENTO_SIMBOLO)) {
+				//analisaDeclaracaoProcedimento();
+			}
+			else {
+				//analisaDeclaracaoFuncao();
+			}
+			
+			if (token.getSymbol().equals(Constants.PONTO_VIRGULA_SIMBOLO)) {
+				token = la.lexical();
+			}
+			else {
+				throw new SyntacticException(Constants.PONTO_VIRGULA_LEXEMA, Constants.PONTO_VIRGULA_SIMBOLO,
+						token.getLexema(), token.getSymbol(), token.getLine());
+			}
+		}
+		
+		if(flag == 1) {
+			// terá questões semanticas aqui no futuro
+		}
 	}
 
-	public void analisa_comandos() throws SyntacticException {
+	public void analisaComandos() throws SyntacticException {
 		if (token.getSymbol().equals(Constants.INICIO_SIMBOLO)) {
 			token = la.lexical();
-			analisa_comando_simples();
+			analisaComandoSimples();
 
 			while (!(token.getSymbol().equals(Constants.FIM_SIMBOLO))) {
 				if (token.getSymbol().equals(Constants.PONTO_VIRGULA_SIMBOLO)) {
 
 					token = la.lexical();
 					if (!(token.getSymbol().equals(Constants.FIM_SIMBOLO))) {
-						analisa_comando_simples();
+						analisaComandoSimples();
 					}
 				} else {
 					throw new SyntacticException(Constants.PONTO_VIRGULA_LEXEMA, Constants.PONTO_VIRGULA_SIMBOLO,
@@ -156,23 +184,41 @@ public class SyntacticAnalyzer {
 		}
 	}
 
-	public void analisa_comando_simples() throws SyntacticException {
+	public void analisaComandoSimples() throws SyntacticException {
 		if (token.getSymbol().equals(Constants.IDENTIFICADOR_SIMBOLO)) {
-			// analisa_atrib_chprocedimento();
+			analisaAtribChprocedimento();
 		} else if (token.getSymbol().equals(Constants.SE_SIMBOLO)) {
-			// analisa_se();
+			analisaSe();
 		} else if (token.getSymbol().equals(Constants.ENQUANTO_SIMBOLO)) {
-			// analisa_enquanto();
+			analisaEnquanto();
 		} else if (token.getSymbol().equals(Constants.LEIA_SIMBOLO)) {
-			analisa_leia();
+			analisaLeia();
 		} else if (token.getSymbol().equals(Constants.ESCREVA_SIMBOLO)) {
-			analisa_escreva();
+			analisaEscreva();
 		} else {
-			analisa_comandos();
+			analisaComandos();
 		}
 	}
 
-	public void analisa_leia() throws SyntacticException {
+	public void analisaAtribChprocedimento() {
+		token = la.lexical();
+		if (token.getSymbol().equals(Constants.ATRIBUICAO_SIMBOLO)) {
+			analisaAtribuição();
+		} else {
+			chamadaProcedimento();
+		}
+	}
+
+	public void analisaAtribuição() {
+		token = la.lexical();
+		// analisaExpressao();
+	}
+
+	public void chamadaProcedimento() {
+		// terá questões semanticas aqui no futuro
+	}
+
+	public void analisaLeia() throws SyntacticException {
 		token = la.lexical();
 		if (token.getSymbol().equals(Constants.ABRE_PARENTESES_SIMBOLO)) {
 			token = la.lexical();
@@ -194,7 +240,7 @@ public class SyntacticAnalyzer {
 		}
 	}
 
-	public void analisa_escreva() throws SyntacticException {
+	public void analisaEscreva() throws SyntacticException {
 		token = la.lexical();
 		if (token.getSymbol().equals(Constants.ABRE_PARENTESES_SIMBOLO)) {
 			token = la.lexical();
@@ -213,6 +259,34 @@ public class SyntacticAnalyzer {
 		} else {
 			throw new SyntacticException(Constants.ABRE_PARENTESES_LEXEMA, Constants.ABRE_PARENTESES_SIMBOLO,
 					token.getLexema(), token.getSymbol(), token.getLine());
+		}
+	}
+
+	public void analisaEnquanto() throws SyntacticException {
+		token = la.lexical();
+		// analisaExpressao();
+		if (token.getSymbol().equals(Constants.FACA_SIMBOLO)) {
+			token = la.lexical();
+			analisaComandoSimples();
+		} else {
+			throw new SyntacticException(Constants.FACA_LEXEMA, Constants.FACA_SIMBOLO, token.getLexema(),
+					token.getSymbol(), token.getLine());
+		}
+	}
+
+	public void analisaSe() throws SyntacticException {
+		token = la.lexical();
+		// analisaExpressao();
+		if (token.getSymbol().equals(Constants.ENTAO_SIMBOLO)) {
+			token = la.lexical();
+			analisaComandoSimples();
+			if (token.getSymbol().equals(Constants.SENAO_SIMBOLO)) {
+				token = la.lexical();
+				analisaComandoSimples();
+			}
+		} else {
+			throw new SyntacticException(Constants.ENTAO_LEXEMA, Constants.ENTAO_SIMBOLO, token.getLexema(),
+					token.getSymbol(), token.getLine());
 		}
 	}
 
