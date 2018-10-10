@@ -128,8 +128,6 @@ public class SyntacticAnalyzer {
 	}
 
 	public void analisaSubrotinas() throws SyntacticException {
-		int flag = 0;
-
 		if ((token.getSymbol().equals(Constants.PROCEDIMENTO_SIMBOLO))
 				|| (token.getSymbol().equals(Constants.FUNCAO_SIMBOLO))) {
 			// terá questões semanticas aqui no futuro
@@ -139,9 +137,9 @@ public class SyntacticAnalyzer {
 				|| (token.getSymbol().equals(Constants.FUNCAO_SIMBOLO))) {
 
 			if (token.getSymbol().equals(Constants.PROCEDIMENTO_SIMBOLO)) {
-				// analisaDeclaracaoProcedimento();
+				analisaDeclaracaoProcedimento();
 			} else {
-				// analisaDeclaracaoFuncao();
+				analisaDeclaracaoFuncao();
 			}
 
 			if (token.getSymbol().equals(Constants.PONTO_VIRGULA_SIMBOLO)) {
@@ -150,10 +148,6 @@ public class SyntacticAnalyzer {
 				throw new SyntacticException(Constants.PONTO_VIRGULA_LEXEMA, Constants.PONTO_VIRGULA_SIMBOLO,
 						token.getLexema(), token.getSymbol(), token.getLine());
 			}
-		}
-
-		if (flag == 1) {
-			// terá questões semanticas aqui no futuro
 		}
 	}
 
@@ -287,6 +281,54 @@ public class SyntacticAnalyzer {
 			}
 		} else {
 			throw new SyntacticException(Constants.ENTAO_LEXEMA, Constants.ENTAO_SIMBOLO, token.getLexema(),
+					token.getSymbol(), token.getLine());
+		}
+	}
+	
+	public void analisaDeclaracaoProcedimento() throws SyntacticException {
+		token = la.lexical();
+		if (token.getSymbol().equals(Constants.IDENTIFICADOR_SIMBOLO)) {
+			token = la.lexical();
+			if (token.getSymbol().equals(Constants.PONTO_VIRGULA_SIMBOLO)) {
+				analisaBloco();
+			}
+			else {
+				throw new SyntacticException(Constants.IDENTIFICADOR_LEXEMA, Constants.IDENTIFICADOR_SIMBOLO, token.getLexema(),
+						token.getSymbol(), token.getLine());
+			}
+		}
+		else {
+			throw new SyntacticException(Constants.IDENTIFICADOR_LEXEMA, Constants.IDENTIFICADOR_SIMBOLO, token.getLexema(),
+					token.getSymbol(), token.getLine());
+		}
+	}
+	
+	public void analisaDeclaracaoFuncao() throws SyntacticException {
+		token = la.lexical();
+		if (token.getSymbol().equals(Constants.IDENTIFICADOR_SIMBOLO)) {
+			token = la.lexical();
+			if (token.getSymbol().equals(Constants.DOIS_PONTOS_SIMBOLO)) {
+				token = la.lexical();
+				if(token.getSymbol().equals(Constants.INTEIRO_SIMBOLO) || token.getSymbol().equals(Constants.BOOLEANO_SIMBOLO)) {
+					token = la.lexical();
+					if (token.getSymbol().equals(Constants.PONTO_VIRGULA_SIMBOLO)) {
+						analisaBloco();
+					}
+				}
+				else {
+					throw new SyntacticException(Constants.INTEIRO_LEXEMA, Constants.INTEIRO_SIMBOLO,
+							Constants.BOOLEANO_LEXEMA, Constants.BOOLEANO_SIMBOLO, token.getLexema(), token.getSymbol(),
+							token.getLine());
+				}
+			}
+			else {
+				throw new SyntacticException(Constants.DOIS_PONTOS_LEXEMA, Constants.DOIS_PONTOS_SIMBOLO, token.getLexema(),
+						token.getSymbol(), token.getLine());
+			}
+			
+		}
+		else {
+			throw new SyntacticException(Constants.IDENTIFICADOR_LEXEMA, Constants.IDENTIFICADOR_SIMBOLO, token.getLexema(),
 					token.getSymbol(), token.getLine());
 		}
 	}
