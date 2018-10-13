@@ -322,4 +322,8 @@ public class LexicalAnalyzer {
 	public final String getMessage() {
 		return this.message;
 	}
+	
+	public final int getLine() {
+		return this.line;
+	}
 }

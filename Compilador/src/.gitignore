@@ -5,3 +5,5 @@
 /SyntacticAnalyzer.class
 /Token.class
 /GraphicInterface$MenuActionListener.class
+/GraphicInterface$ClickHandler.class
+/GraphicInterface$KeyHandler.class
