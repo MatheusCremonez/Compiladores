@@ -41,7 +41,7 @@ public class GraphicInterface extends JFrame {
 	private JLabel consoleLabel;
 	private JTextArea consoleText;
 	
-	// private int errorLine;
+	private int errorLine;
 
 	public GraphicInterface() {
 
@@ -166,7 +166,7 @@ public class GraphicInterface extends JFrame {
 		public void actionPerformed(ActionEvent event) {
 
 			if (event.getSource() == compileButton) {
-				// setFileLines();
+				consoleText.setText(null);
 				SyntacticAnalyzer sa = new SyntacticAnalyzer(fileText.getText());
 				consoleText.setText(sa.getMessage());
 //				if (sa.getErrorLine() > 0) {
@@ -189,6 +189,10 @@ public class GraphicInterface extends JFrame {
 				setFileLines();
 			}
 			
+			if(e.getKeyCode() == KeyEvent.VK_CONTROL) {
+					setFileLines();
+			}
+			
 		}
 
 		@Override
@@ -200,7 +204,7 @@ public class GraphicInterface extends JFrame {
 
 		@Override
 		public void mouseClicked(MouseEvent event) {
-			// consoleText.setText(String.valueOf(errorLine));
+//			consoleText.setText(String.valueOf(errorLine));
 		}
 
 		@Override

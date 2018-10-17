@@ -19,9 +19,6 @@ public class SyntacticAnalyzer {
 		} catch (SyntacticException e) {
 			errorLine = token.getLine();
 			setMessage(e.getMessage());
-		} catch (NullPointerException e) {
-			setMessage("Sintaticamente, o código está incorreto."); //ANALISAR ERROS COMO ESSE 
-			//(talvez criar um método que analisa qual foi o último token lido antes da exceção)
 		}
 		if (la.error) {
 			setMessage(la.getMessage());
@@ -282,6 +279,7 @@ public class SyntacticAnalyzer {
 				token = la.lexical();
 				analisaComandoSimples();
 			}
+			
 		} else {
 			throw new SyntacticException(Constants.ENTAO_LEXEMA, Constants.ENTAO_SIMBOLO, token.getLexema(),
 					token.getSymbol(), token.getLine());
@@ -351,20 +349,14 @@ public class SyntacticAnalyzer {
 	public void analisaExpressaoSimples() throws SyntacticException {
 		if (token.getSymbol().equals(Constants.MAIS_SIMBOLO) || token.getSymbol().equals(Constants.MENOS_SIMBOLO)) {
 			token = la.lexical();
-			analisaTermo();
-			while (token.getSymbol().equals(Constants.MAIS_SIMBOLO) || token.getSymbol().equals(Constants.MENOS_SIMBOLO)
-					|| token.getSymbol().equals(Constants.OU_SIMBOLO)) {
-				token = la.lexical();
-				analisaTermo();
-			}
-		} else {
-			analisaTermo();
-			while (token.getSymbol().equals(Constants.MAIS_SIMBOLO) || token.getSymbol().equals(Constants.MENOS_SIMBOLO)
-					|| token.getSymbol().equals(Constants.OU_SIMBOLO)) {
-				token = la.lexical();
-				analisaTermo();
-			}
 		}
+		analisaTermo();
+		while (token.getSymbol().equals(Constants.MAIS_SIMBOLO) || token.getSymbol().equals(Constants.MENOS_SIMBOLO)
+				|| token.getSymbol().equals(Constants.OU_SIMBOLO)) {
+			token = la.lexical();
+			analisaTermo();
+		}
+
 	}
 
 	public void analisaTermo() throws SyntacticException {

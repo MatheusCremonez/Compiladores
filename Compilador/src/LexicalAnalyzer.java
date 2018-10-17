@@ -36,7 +36,7 @@ public class LexicalAnalyzer {
 				}
 			}
 		}
-		return null;
+		return new Token("ERRO" , "Fim de Arquivo", line);
 	}
 
 	private char verificaCaracteresIgnorados(char caracter) throws LexicalException {
@@ -326,4 +326,5 @@ public class LexicalAnalyzer {
 	public final int getLine() {
 		return this.line;
 	}
+	
 }
