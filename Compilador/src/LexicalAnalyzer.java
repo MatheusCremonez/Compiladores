@@ -36,7 +36,11 @@ public class LexicalAnalyzer {
 				}
 			}
 		}
-		return new Token("ERRO" , "Fim de Arquivo", line);
+		
+		if(index >= fontFile.length()) {
+			return new Token(Constants.FIM_ARQUIVO, Constants.FIM_ARQUIVO, line);
+		}
+		return new Token(Constants.ERRO , Constants.FIM_ARQUIVO, line);
 	}
 
 	private char verificaCaracteresIgnorados(char caracter) throws LexicalException {

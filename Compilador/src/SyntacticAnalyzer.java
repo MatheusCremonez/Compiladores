@@ -36,7 +36,7 @@ public class SyntacticAnalyzer {
 					analisaBloco();
 					if (token.getSymbol().equals(Constants.PONTO_SIMBOLO)) {
 						token = la.lexical();
-						if (token == null) { // token = null simboliza o fim do arquivo
+						if (token.getSymbol().equals(Constants.FIM_ARQUIVO)) { // token = null simboliza o fim do arquivo
 							setMessage("Compilação sintática realizada com sucesso.");
 						} else {
 							throw new SyntacticException("Trecho de código inesperado na linha: " + token.getLine());
@@ -294,7 +294,7 @@ public class SyntacticAnalyzer {
 				analisaBloco();
 			}
 			else {
-				throw new SyntacticException(Constants.IDENTIFICADOR_LEXEMA, Constants.IDENTIFICADOR_SIMBOLO, token.getLexema(),
+				throw new SyntacticException(Constants.PONTO_VIRGULA_LEXEMA, Constants.PONTO_VIRGULA_SIMBOLO, token.getLexema(),
 						token.getSymbol(), token.getLine());
 			}
 		}

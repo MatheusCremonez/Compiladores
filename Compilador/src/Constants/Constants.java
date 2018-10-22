@@ -1,6 +1,9 @@
 package Constants;
 
 public final class Constants {
+	public static final String FIM_ARQUIVO = "final de arquivo";
+	public static final String ERRO = "ERRO";
+	
 	public static final String PROGRAMA_SIMBOLO = "sprograma";
 	public static final String PROGRAMA_LEXEMA = "programa";
 	
