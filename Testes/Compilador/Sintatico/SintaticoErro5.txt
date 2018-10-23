@@ -6,5 +6,6 @@ inicio
     analisa1;
     analisa2;
     se b > (c+ a*a)
-    entao a:=b;
+    entao a:=b
+    escreva(a)	
 fim.

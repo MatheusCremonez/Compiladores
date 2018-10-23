@@ -23,6 +23,9 @@ import javax.swing.JOptionPane;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.filechooser.FileNameExtensionFilter;
+import javax.swing.text.BadLocationException;
+import javax.swing.text.DefaultHighlighter;
+import javax.swing.text.Highlighter;
 
 public class GraphicInterface extends JFrame {
 
@@ -41,8 +44,11 @@ public class GraphicInterface extends JFrame {
 	private JLabel consoleLabel;
 	private JTextArea consoleText;
 	
+	private Highlighter.HighlightPainter painter;
+	
 	private int errorLine;
-
+	private String errorContent = "";
+	
 	public GraphicInterface() {
 
 		super("Compilador");
@@ -128,6 +134,7 @@ public class GraphicInterface extends JFrame {
 					in.close();
 					fileText.requestFocus();
 					setFileLines();
+					fileText.getHighlighter().removeAllHighlights();
 				} catch (FileNotFoundException e) {
 					e.printStackTrace();
 				} catch (IOException e) {
@@ -167,11 +174,12 @@ public class GraphicInterface extends JFrame {
 
 			if (event.getSource() == compileButton) {
 				consoleText.setText(null);
+				fileText.getHighlighter().removeAllHighlights();
 				SyntacticAnalyzer sa = new SyntacticAnalyzer(fileText.getText());
 				consoleText.setText(sa.getMessage());
-//				if (sa.getErrorLine() > 0) {
-//					errorLine = sa.getErrorLine();
-//				}
+				if (sa.getErrorLine() > 0) {
+					errorLine = sa.getErrorLine();
+				}
 			}
 		}
 	}
@@ -204,7 +212,9 @@ public class GraphicInterface extends JFrame {
 
 		@Override
 		public void mouseClicked(MouseEvent event) {
-//			consoleText.setText(String.valueOf(errorLine));
+			if (errorLine > 0) {
+				paintErrorLine(errorLine);
+			}
 		}
 
 		@Override
@@ -220,7 +230,7 @@ public class GraphicInterface extends JFrame {
 		public void mouseReleased(MouseEvent e) {}
 	}
 	
-	public void setFileLines() {
+	private void setFileLines() {
 		int i = 1, fileIndex = 0;
 		String fileContent = fileText.getText();
 		String lineContent = "";
@@ -238,6 +248,44 @@ public class GraphicInterface extends JFrame {
 		}
 		
 		lineText.setText(lineContent);
+		
+	}
+	
+	private void paintErrorLine(int line) {
+		String fileContent = fileText.getText();
+		int i = 1, fileIndex = 0, start = 0, finish = fileContent.length(), aux = 0;
+		
+		while (fileIndex < fileContent.length()) {
+			if(i == line) {
+				start = fileIndex;
+				
+				while (i == line || fileContent.charAt(fileIndex) != '\n') {
+					fileIndex++;
+					if(fileIndex >= fileContent.length()) {
+						fileIndex = finish;
+						aux = 1;
+					}
+					if(fileContent.charAt(fileIndex - aux) == '\n' || fileIndex >= fileContent.length()) {
+						finish = fileIndex;
+						
+						painter = new DefaultHighlighter.DefaultHighlightPainter(Color.RED);
+			            try {
+			            	fileText.getHighlighter().addHighlight(start, finish, painter);
+						} catch (BadLocationException e) {
+							// TODO Auto-generated catch block
+							e.printStackTrace();
+						}
+			            break;
+					}
+				}
+			}
+
+			
+			if(fileContent.charAt(fileIndex) == '\n') {
+				i++;
+			}
+			fileIndex++;
+		}
 		
 	}
 		
