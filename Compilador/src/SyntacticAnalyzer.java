@@ -390,9 +390,7 @@ public class SyntacticAnalyzer {
 				|| token.getSymbol().equals(Constants.FALSO_SIMBOLO)) {
 			token = la.lexical();
 		} else {
-			throw new SyntacticException(Constants.VERDADEIRO_LEXEMA, Constants.VERDADEIRO_SIMBOLO,
-					Constants.FALSO_LEXEMA, Constants.FALSO_SIMBOLO, token.getLexema(), token.getSymbol(),
-					token.getLine());
+			throw new SyntacticException("Expressão incompleta na linha: " + token.getLine());
 		}
 	}
 

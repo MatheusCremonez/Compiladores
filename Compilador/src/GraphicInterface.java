@@ -173,6 +173,7 @@ public class GraphicInterface extends JFrame {
 		public void actionPerformed(ActionEvent event) {
 
 			if (event.getSource() == compileButton) {
+				errorLine = 0;
 				consoleText.setText(null);
 				fileText.getHighlighter().removeAllHighlights();
 				SyntacticAnalyzer sa = new SyntacticAnalyzer(fileText.getText());
