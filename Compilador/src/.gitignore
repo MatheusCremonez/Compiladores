@@ -7,3 +7,5 @@
 /GraphicInterface$MenuActionListener.class
 /GraphicInterface$ClickHandler.class
 /GraphicInterface$KeyHandler.class
+/SemanticAnalyzer.class
+/TableOfSymbols.class

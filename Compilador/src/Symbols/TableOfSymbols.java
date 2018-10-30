@@ -5,10 +5,22 @@ import java.util.List;
 
 public class TableOfSymbols {
 
+	private List<Symbol> stackOfSymbols;
+	
 	public TableOfSymbols() {
-		List<Symbol> stashOfSymbols = new ArrayList<Symbol>();
+		stackOfSymbols = new ArrayList<Symbol>();
 	}
 	
+	public void insert(Symbol symbol) {
+		stackOfSymbols.add(symbol);		
+	}
+	
+	public void debugTable() {
+		for(int i = 0; i < stackOfSymbols.size(); i++) {
+			System.out.println(stackOfSymbols.get(i).lexema);
+		}
+			
+	}
 }
 
 

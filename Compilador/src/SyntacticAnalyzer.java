@@ -1,21 +1,29 @@
 import Constants.*;
 import Exceptions.SyntacticException;
+import Symbols.Symbol;
+import Symbols.TableOfSymbols;
+import Symbols.Variable;
 
 public class SyntacticAnalyzer {
 
 	private String message;
 	private int errorLine;
 	private LexicalAnalyzer la;
+	private SemanticAnalyzer semantic;
+	private TableOfSymbols table;
 	private Token token;
 
 	public SyntacticAnalyzer(String file) {
 		la = new LexicalAnalyzer(file);
+		semantic = new SemanticAnalyzer();
+		table = new TableOfSymbols();
 		syntactic();
 	}
 
 	public void syntactic() {
 		try {
 			analisadorSintatico();
+			table.debugTable();
 		} catch (SyntacticException e) {
 			errorLine = token.getLine();
 			setMessage(e.getMessage());
@@ -31,12 +39,13 @@ public class SyntacticAnalyzer {
 		if (token.getSymbol().equals(Constants.PROGRAMA_SIMBOLO)) {
 			token = la.lexical();
 			if (token.getSymbol().equals(Constants.IDENTIFICADOR_SIMBOLO)) {
+				table.insert(new Symbol(token.getLexema()));
 				token = la.lexical();
 				if (token.getSymbol().equals(Constants.PONTO_VIRGULA_SIMBOLO)) {
 					analisaBloco();
 					if (token.getSymbol().equals(Constants.PONTO_SIMBOLO)) {
 						token = la.lexical();
-						if (token.getSymbol().equals(Constants.FIM_ARQUIVO)) { // token = null simboliza o fim do arquivo
+						if (token.getSymbol().equals(Constants.FIM_ARQUIVO)) { 
 							setMessage("Compilação sintática realizada com sucesso.");
 						} else {
 							throw new SyntacticException("Trecho de código inesperado na linha: " + token.getLine());
@@ -90,6 +99,7 @@ public class SyntacticAnalyzer {
 	public void analisaVariaveis() throws SyntacticException {
 		do {
 			if (token.getSymbol().equals(Constants.IDENTIFICADOR_SIMBOLO)) {
+				table.insert(new Variable(token.getLexema()));
 				token = la.lexical();
 				if (token.getSymbol().equals(Constants.VIRGULA_SIMBOLO)
 						|| token.getSymbol().equals(Constants.DOIS_PONTOS_SIMBOLO)) {
