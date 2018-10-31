@@ -15,6 +15,35 @@ public class TableOfSymbols {
 		stackOfSymbols.add(symbol);		
 	}
 	
+	public boolean search(String lexema) {
+		int i;
+		
+		if (lexema.equals(stackOfSymbols.get(0).lexema)) {
+			return true;
+		}
+		
+		for (i = (stackOfSymbols.size() - 1); i >= 0; i--) {
+			if (stackOfSymbols.get(i) instanceof Variable) {
+				if(lexema.equals(stackOfSymbols.get(i).lexema)) {
+					return true;
+				}
+			} else {
+				break;
+			}
+			
+		}
+		
+		for (int j = i; j >= 0; j--) {
+			if ((stackOfSymbols.get(i) instanceof Procedure) || (stackOfSymbols.get(i) instanceof Function)) {
+				if(lexema.equals(stackOfSymbols.get(i).lexema)) {
+					return true;
+				}
+			}
+		}
+		
+		return false;
+	}
+	
 	public void debugTable() {
 		for(int i = 0; i < stackOfSymbols.size(); i++) {
 			System.out.println(stackOfSymbols.get(i).lexema);
