@@ -125,7 +125,7 @@ public class SyntacticAnalyzer {
 								token.getSymbol(), token.getLine());
 					}
 				} else {
-					throw new SemanticException("Variável duplicada na linha: " + token.getLine());
+					throw new SemanticException("Já existe uma variável com o mesmo nome da variável da linha: " + token.getLine());
 				}
 				
 			} else {
@@ -311,15 +311,19 @@ public class SyntacticAnalyzer {
 	public void analisaDeclaracaoProcedimento() throws SyntacticException, SemanticException {
 		token = la.lexical();
 		if (token.getSymbol().equals(Constants.IDENTIFICADOR_SIMBOLO)) {
-			table.insert(new Procedure(token.getLexema()));
-			token = la.lexical();
-			if (token.getSymbol().equals(Constants.PONTO_VIRGULA_SIMBOLO)) {
-				analisaBloco();
+			if (! table.searchProcedure(token.getLexema())) {
+				table.insert(new Procedure(token.getLexema()));
+				token = la.lexical();
+				if (token.getSymbol().equals(Constants.PONTO_VIRGULA_SIMBOLO)) {
+					analisaBloco();
+				} else {
+					throw new SyntacticException(Constants.PONTO_VIRGULA_LEXEMA, Constants.PONTO_VIRGULA_SIMBOLO, token.getLexema(),
+							token.getSymbol(), token.getLine());
+				}
+			} else {
+				throw new SemanticException("Já existe um procedimento com o mesmo nome do procedimento da linha: " + token.getLine());
 			}
-			else {
-				throw new SyntacticException(Constants.PONTO_VIRGULA_LEXEMA, Constants.PONTO_VIRGULA_SIMBOLO, token.getLexema(),
-						token.getSymbol(), token.getLine());
-			}
+			
 		}
 		else {
 			throw new SyntacticException(Constants.IDENTIFICADOR_LEXEMA, Constants.IDENTIFICADOR_SIMBOLO, token.getLexema(),
@@ -330,29 +334,30 @@ public class SyntacticAnalyzer {
 	public void analisaDeclaracaoFuncao() throws SyntacticException, SemanticException {
 		token = la.lexical();
 		if (token.getSymbol().equals(Constants.IDENTIFICADOR_SIMBOLO)) {
-			table.insert(new Function(token.getLexema()));
-			token = la.lexical();
-			if (token.getSymbol().equals(Constants.DOIS_PONTOS_SIMBOLO)) {
+			if(! table.searchFunction(token.getLexema())) {
+				table.insert(new Function(token.getLexema()));
 				token = la.lexical();
-				if(token.getSymbol().equals(Constants.INTEIRO_SIMBOLO) || token.getSymbol().equals(Constants.BOOLEANO_SIMBOLO)) {
+				if (token.getSymbol().equals(Constants.DOIS_PONTOS_SIMBOLO)) {
 					token = la.lexical();
-					if (token.getSymbol().equals(Constants.PONTO_VIRGULA_SIMBOLO)) {
-						analisaBloco();
+					if(token.getSymbol().equals(Constants.INTEIRO_SIMBOLO) || token.getSymbol().equals(Constants.BOOLEANO_SIMBOLO)) {
+						token = la.lexical();
+						if (token.getSymbol().equals(Constants.PONTO_VIRGULA_SIMBOLO)) {
+							analisaBloco();
+						}
+					} else {
+						throw new SyntacticException(Constants.INTEIRO_LEXEMA, Constants.INTEIRO_SIMBOLO,
+								Constants.BOOLEANO_LEXEMA, Constants.BOOLEANO_SIMBOLO, token.getLexema(), token.getSymbol(),
+								token.getLine());
 					}
+				} else {
+					throw new SyntacticException(Constants.DOIS_PONTOS_LEXEMA, Constants.DOIS_PONTOS_SIMBOLO, token.getLexema(),
+							token.getSymbol(), token.getLine());
 				}
-				else {
-					throw new SyntacticException(Constants.INTEIRO_LEXEMA, Constants.INTEIRO_SIMBOLO,
-							Constants.BOOLEANO_LEXEMA, Constants.BOOLEANO_SIMBOLO, token.getLexema(), token.getSymbol(),
-							token.getLine());
-				}
-			}
-			else {
-				throw new SyntacticException(Constants.DOIS_PONTOS_LEXEMA, Constants.DOIS_PONTOS_SIMBOLO, token.getLexema(),
-						token.getSymbol(), token.getLine());
+			} else {
+				throw new SemanticException("Já existe uma função com o mesmo nome da função da linha: " + token.getLine());
 			}
 			
-		}
-		else {
+		} else {
 			throw new SyntacticException(Constants.IDENTIFICADOR_LEXEMA, Constants.IDENTIFICADOR_SIMBOLO, token.getLexema(),
 					token.getSymbol(), token.getLine());
 		}

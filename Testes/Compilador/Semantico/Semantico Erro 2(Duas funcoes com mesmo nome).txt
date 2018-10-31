@@ -1,0 +1,17 @@
+programa p;
+var a,b,c: inteiro;
+      d,f:booleano;
+funcao func: inteiro;
+var pi:inteiro;
+inicio
+	leia(a)
+fim;
+
+funcao func: inteiro;
+inicio
+	leia(a)
+fim;
+
+inicio
+	leia(c);
+fim.

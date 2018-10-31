@@ -15,12 +15,15 @@ public class TableOfSymbols {
 		stackOfSymbols.add(symbol);		
 	}
 	
-	public boolean search(String lexema) {
-		int i;
-		
+	public boolean lookProgramName(String lexema) {
 		if (lexema.equals(stackOfSymbols.get(0).lexema)) {
 			return true;
 		}
+		return false;
+	}
+	
+	public boolean search(String lexema) {
+		int i;
 		
 		for (i = (stackOfSymbols.size() - 1); i >= 0; i--) {
 			if (stackOfSymbols.get(i) instanceof Variable) {
@@ -41,7 +44,31 @@ public class TableOfSymbols {
 			}
 		}
 		
-		return false;
+		return lookProgramName(lexema);
+	}
+	
+	public boolean searchProcedure (String lexema) {
+		for (int i = (stackOfSymbols.size() - 1); i >= 0; i--) {
+			if (stackOfSymbols.get(i) instanceof Procedure) {
+				if(lexema.equals(stackOfSymbols.get(i).lexema)) {
+					return true;
+				}
+			}
+		}
+		
+		return lookProgramName(lexema);
+	}
+	
+	public boolean searchFunction (String lexema) {
+		for (int i = (stackOfSymbols.size() - 1); i >= 0; i--) {
+			if (stackOfSymbols.get(i) instanceof Function) {
+				if(lexema.equals(stackOfSymbols.get(i).lexema)) {
+					return true;
+				}
+			}
+		}
+		
+		return lookProgramName(lexema);
 	}
 	
 	public void debugTable() {
