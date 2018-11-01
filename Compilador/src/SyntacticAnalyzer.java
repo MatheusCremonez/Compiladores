@@ -340,6 +340,11 @@ public class SyntacticAnalyzer {
 				if (token.getSymbol().equals(Constants.DOIS_PONTOS_SIMBOLO)) {
 					token = la.lexical();
 					if(token.getSymbol().equals(Constants.INTEIRO_SIMBOLO) || token.getSymbol().equals(Constants.BOOLEANO_SIMBOLO)) {
+						if (token.getSymbol().equals(Constants.INTEIRO_SIMBOLO)) {
+							table.insertTypeOnFunction(Constants.INTEIRO_LEXEMA);
+						} else {
+							table.insertTypeOnFunction(Constants.BOOLEANO_LEXEMA);
+						}
 						token = la.lexical();
 						if (token.getSymbol().equals(Constants.PONTO_VIRGULA_SIMBOLO)) {
 							analisaBloco();

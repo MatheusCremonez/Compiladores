@@ -71,18 +71,20 @@ public class TableOfSymbols {
 		return lookProgramName(lexema);
 	}
 	
+	public void insertTypeOnFunction(String type) {
+		Symbol symbol = stackOfSymbols.get(stackOfSymbols.size() - 1);
+		
+		if (symbol instanceof Function && symbol.getType() == null) {
+			stackOfSymbols.get(stackOfSymbols.size() - 1).setType(type);
+		}
+			
+	}
+	
+	
 	public void debugTable() {
 		for(int i = 0; i < stackOfSymbols.size(); i++) {
-			System.out.println(stackOfSymbols.get(i).lexema);
+			System.out.println(stackOfSymbols.get(i).lexema + " " + stackOfSymbols.get(i).getType());
 		}
 			
 	}
 }
-
-
-/*
- * Implementar aqui a tabela de símbolos e todos os seus métodos como:
- * Inserir um símbolo na tabela
- * Pesquisar dupiclidade na tabela
- * Entre outros...
- */
