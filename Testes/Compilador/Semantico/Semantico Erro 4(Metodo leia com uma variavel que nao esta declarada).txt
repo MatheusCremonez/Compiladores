@@ -1,0 +1,6 @@
+programa p;
+var a,b,c:inteiro;
+
+inicio
+	leia(d)
+fim.

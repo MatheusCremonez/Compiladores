@@ -47,6 +47,18 @@ public class TableOfSymbols {
 		return lookProgramName(lexema);
 	}
 	
+	public boolean searchVariable (String lexema) {
+		for (int i = (stackOfSymbols.size() - 1); i >= 0; i--) {
+			if (stackOfSymbols.get(i) instanceof Variable) {
+				if(lexema.equals(stackOfSymbols.get(i).lexema)) {
+					return true;
+				}
+			}
+		}
+		
+		return lookProgramName(lexema);
+	}
+	
 	public boolean searchProcedure (String lexema) {
 		for (int i = (stackOfSymbols.size() - 1); i >= 0; i--) {
 			if (stackOfSymbols.get(i) instanceof Procedure) {

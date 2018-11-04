@@ -172,7 +172,7 @@ public class SyntacticAnalyzer {
 		}
 	}
 
-	public void analisaComandos() throws SyntacticException {
+	public void analisaComandos() throws SyntacticException, SemanticException {
 		if (token.getSymbol().equals(Constants.INICIO_SIMBOLO)) {
 			token = la.lexical();
 			analisaComandoSimples();
@@ -196,7 +196,7 @@ public class SyntacticAnalyzer {
 		}
 	}
 
-	public void analisaComandoSimples() throws SyntacticException {
+	public void analisaComandoSimples() throws SyntacticException, SemanticException {
 		if (token.getSymbol().equals(Constants.IDENTIFICADOR_SIMBOLO)) {
 			analisaAtribChprocedimento();
 		} else if (token.getSymbol().equals(Constants.SE_SIMBOLO)) {
@@ -235,17 +235,21 @@ public class SyntacticAnalyzer {
 		// terá questões semanticas aqui no futuro
 	}
 
-	public void analisaLeia() throws SyntacticException {
+	public void analisaLeia() throws SyntacticException, SemanticException {
 		token = la.lexical();
 		if (token.getSymbol().equals(Constants.ABRE_PARENTESES_SIMBOLO)) {
 			token = la.lexical();
 			if (token.getSymbol().equals(Constants.IDENTIFICADOR_SIMBOLO)) {
-				token = la.lexical();
-				if (token.getSymbol().equals(Constants.FECHA_PARENTESES_SIMBOLO)) {
+				if (table.searchVariable(token.getLexema())) {
 					token = la.lexical();
+					if (token.getSymbol().equals(Constants.FECHA_PARENTESES_SIMBOLO)) {
+						token = la.lexical();
+					} else {
+						throw new SyntacticException(Constants.FECHA_PARENTESES_LEXEMA, Constants.FECHA_PARENTESES_SIMBOLO,
+								token.getLexema(), token.getSymbol(), token.getLine());
+					}
 				} else {
-					throw new SyntacticException(Constants.FECHA_PARENTESES_LEXEMA, Constants.FECHA_PARENTESES_SIMBOLO,
-							token.getLexema(), token.getSymbol(), token.getLine());
+					throw new SemanticException("A variável atribuída ao método 'leia' não está definida.\nLinha: " + token.getLine());
 				}
 			} else {
 				throw new SyntacticException(Constants.IDENTIFICADOR_LEXEMA, Constants.IDENTIFICADOR_SIMBOLO,
@@ -257,17 +261,21 @@ public class SyntacticAnalyzer {
 		}
 	}
 
-	public void analisaEscreva() throws SyntacticException {
+	public void analisaEscreva() throws SyntacticException, SemanticException {
 		token = la.lexical();
 		if (token.getSymbol().equals(Constants.ABRE_PARENTESES_SIMBOLO)) {
 			token = la.lexical();
 			if (token.getSymbol().equals(Constants.IDENTIFICADOR_SIMBOLO)) {
-				token = la.lexical();
-				if (token.getSymbol().equals(Constants.FECHA_PARENTESES_SIMBOLO)) {
+				if (table.searchVariable(token.getLexema()) || table.searchFunction(token.getLexema())) {
 					token = la.lexical();
+					if (token.getSymbol().equals(Constants.FECHA_PARENTESES_SIMBOLO)) {
+						token = la.lexical();
+					} else {
+						throw new SyntacticException(Constants.FECHA_PARENTESES_LEXEMA, Constants.FECHA_PARENTESES_SIMBOLO,
+								token.getLexema(), token.getSymbol(), token.getLine());
+					}
 				} else {
-					throw new SyntacticException(Constants.FECHA_PARENTESES_LEXEMA, Constants.FECHA_PARENTESES_SIMBOLO,
-							token.getLexema(), token.getSymbol(), token.getLine());
+					throw new SemanticException("A variável ou função atribuída ao método 'escreva' não está definida.\nLinha: " + token.getLine());
 				}
 			} else {
 				throw new SyntacticException(Constants.IDENTIFICADOR_LEXEMA, Constants.IDENTIFICADOR_SIMBOLO,
@@ -279,7 +287,7 @@ public class SyntacticAnalyzer {
 		}
 	}
 
-	public void analisaEnquanto() throws SyntacticException {
+	public void analisaEnquanto() throws SyntacticException, SemanticException {
 		token = la.lexical();
 		analisaExpressao();
 		if (token.getSymbol().equals(Constants.FACA_SIMBOLO)) {
@@ -291,7 +299,7 @@ public class SyntacticAnalyzer {
 		}
 	}
 
-	public void analisaSe() throws SyntacticException {
+	public void analisaSe() throws SyntacticException, SemanticException {
 		token = la.lexical();
 		analisaExpressao();
 		if (token.getSymbol().equals(Constants.ENTAO_SIMBOLO)) {
