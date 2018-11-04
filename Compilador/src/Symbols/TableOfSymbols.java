@@ -11,6 +11,10 @@ public class TableOfSymbols {
 		stackOfSymbols = new ArrayList<Symbol>();
 	}
 	
+	public Symbol getSymbol(int index) {
+		return stackOfSymbols.get(index);
+	}
+	
 	public void insert(Symbol symbol) {
 		stackOfSymbols.add(symbol);		
 	}
@@ -20,6 +24,18 @@ public class TableOfSymbols {
 			return true;
 		}
 		return false;
+	}
+	
+	public int searchSymbol(String lexema) {
+		for (int i = (stackOfSymbols.size() - 1); i >= 0; i--) {
+			if (stackOfSymbols.get(i) instanceof Variable || stackOfSymbols.get(i) instanceof Function) {
+				if(lexema.equals(stackOfSymbols.get(i).lexema)) {
+					return i;
+					
+				}
+			}
+		}
+		return -1;
 	}
 	
 	public boolean search(String lexema) {

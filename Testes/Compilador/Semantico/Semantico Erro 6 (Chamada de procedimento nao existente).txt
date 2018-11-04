@@ -1,0 +1,17 @@
+programa p;
+var a,b,c: inteiro;
+      d,f:booleano;
+funcao proc: booleano;
+var pi:inteiro;
+inicio
+	leia(a)
+fim;
+
+procedimento proc;
+inicio
+	leia(a)
+fim;
+
+inicio
+	a;
+fim.

@@ -213,26 +213,39 @@ public class SyntacticAnalyzer {
 				
 	}
 
-	public void analisaAtribChprocedimento() throws SyntacticException {
+	public void analisaAtribChprocedimento() throws SyntacticException, SemanticException {
+		Token aux = token;
 		token = la.lexical();
 		if (token.getSymbol().equals(Constants.ATRIBUICAO_SIMBOLO)) {
 			analisaAtribuição();
 		} else {
-			chamadaProcedimento();
+			chamadaProcedimento(aux);
 		}
 	}
 
-	public void analisaAtribuição() throws SyntacticException {
+	public void analisaAtribuição() throws SyntacticException, SemanticException {
 		token = la.lexical();
 		analisaExpressao();
 	}
 
-	public void chamadaProcedimento() {
-		// terá questões semanticas aqui no futuro
+	public void chamadaProcedimento(Token auxToken) throws SemanticException {
+		if (table.searchProcedure(auxToken.getLexema())) {
+			// OK é um procedimento
+		} else {
+			throw new SemanticException("Procedimento '" + auxToken.getLexema() + "' não está declarado.\nLinha: " + auxToken.getLine());
+		}
 	}
 
-	public void chamadaFuncao() {
-		// terá questões semanticas aqui no futuro
+	public void chamadaFuncao(int index) throws SemanticException{
+		String symbolLexema = table.getSymbol(index).lexema;
+		if (table.searchFunction(symbolLexema)) {
+			// OK é uma função
+			token = la.lexical();
+		} else {
+			throw new SemanticException("Função '" + symbolLexema + "' não está declarada.\nLinha: " + token.getLine());
+		}
+		
+		
 	}
 
 	public void analisaLeia() throws SyntacticException, SemanticException {
@@ -376,7 +389,7 @@ public class SyntacticAnalyzer {
 		}
 	}
 
-	public void analisaExpressao() throws SyntacticException {
+	public void analisaExpressao() throws SyntacticException, SemanticException {
 		analisaExpressaoSimples();
 		if (token.getSymbol().equals(Constants.MAIOR_SIMBOLO) || token.getSymbol().equals(Constants.MAIOR_IGUAL_SIMBOLO)
 				|| token.getSymbol().equals(Constants.IGUAL_SIMBOLO)
@@ -388,7 +401,7 @@ public class SyntacticAnalyzer {
 		}
 	}
 
-	public void analisaExpressaoSimples() throws SyntacticException {
+	public void analisaExpressaoSimples() throws SyntacticException, SemanticException {
 		if (token.getSymbol().equals(Constants.MAIS_SIMBOLO) || token.getSymbol().equals(Constants.MENOS_SIMBOLO)) {
 			token = la.lexical();
 		}
@@ -401,7 +414,7 @@ public class SyntacticAnalyzer {
 
 	}
 
-	public void analisaTermo() throws SyntacticException {
+	public void analisaTermo() throws SyntacticException, SemanticException {
 		analisaFator();
 		while (token.getSymbol().equals(Constants.MULT_SIMBOLO) || token.getSymbol().equals(Constants.DIV_SIMBOLO)
 				|| token.getSymbol().equals(Constants.E_SIMBOLO)) {
@@ -410,10 +423,19 @@ public class SyntacticAnalyzer {
 		}
 	}
 
-	public void analisaFator() throws SyntacticException {
+	public void analisaFator() throws SyntacticException, SemanticException {
 		if (token.getSymbol().equals(Constants.IDENTIFICADOR_SIMBOLO)) {
-			// futuro semantico
-			token = la.lexical(); //provisorio
+			int index = table.searchSymbol(token.getLexema());
+			if (index != (-1)) {
+				if (table.getSymbol(index) instanceof Function && (table.getSymbol(index).getType() == Constants.INTEIRO_LEXEMA || table.getSymbol(index).getType() == Constants.BOOLEANO_LEXEMA)) {
+					chamadaFuncao(index);
+				}
+				else {
+					token = la.lexical();
+				}
+			} else {
+				throw new SemanticException("Variável ou Função '" + token.getLexema() + "' não está definida no escopo atual. \n Linha: " + token.getLine());
+			}
 		} else if (token.getSymbol().equals(Constants.NUMERO_SIMBOLO)) {
 			token = la.lexical();
 		} else if (token.getSymbol().equals(Constants.NAO_SIMBOLO)) {
