@@ -108,6 +108,23 @@ public class TableOfSymbols {
 			
 	}
 	
+	public void cleanLevel() {
+		for(int i = (stackOfSymbols.size() - 1); i >= 0 ; i--) {
+			if (stackOfSymbols.get(i) instanceof Function || stackOfSymbols.get(i) instanceof Procedure) {
+				if (stackOfSymbols.get(i).isNotClosed()) {
+					stackOfSymbols.get(i).setClosed(true);
+					break;
+				} else {
+					stackOfSymbols.remove(i);
+				}				
+			} else {
+				stackOfSymbols.remove(i);
+			}
+		}
+		System.out.println("Tabela Atualizada");
+		debugTable();
+	}
+	
 	
 	public void debugTable() {
 		for(int i = 0; i < stackOfSymbols.size(); i++) {

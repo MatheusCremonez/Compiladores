@@ -350,6 +350,7 @@ public class SyntacticAnalyzer {
 			throw new SyntacticException(Constants.IDENTIFICADOR_LEXEMA, Constants.IDENTIFICADOR_SIMBOLO, token.getLexema(),
 					token.getSymbol(), token.getLine());
 		}
+		table.cleanLevel();
 	}
 	
 	public void analisaDeclaracaoFuncao() throws SyntacticException, SemanticException {
@@ -387,6 +388,7 @@ public class SyntacticAnalyzer {
 			throw new SyntacticException(Constants.IDENTIFICADOR_LEXEMA, Constants.IDENTIFICADOR_SIMBOLO, token.getLexema(),
 					token.getSymbol(), token.getLine());
 		}
+		table.cleanLevel();
 	}
 
 	public void analisaExpressao() throws SyntacticException, SemanticException {

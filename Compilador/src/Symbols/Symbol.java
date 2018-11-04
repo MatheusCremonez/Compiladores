@@ -14,6 +14,10 @@ public class Symbol {
 	public boolean isClosed() {
 		return closed;
 	}
+	
+	public boolean isNotClosed() {
+		return !closed;
+	}
 
 	public void setClosed(boolean closed) {
 		this.closed = closed;
