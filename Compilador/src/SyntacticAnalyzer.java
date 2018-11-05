@@ -145,6 +145,9 @@ public class SyntacticAnalyzer {
 			throw new SyntacticException(Constants.INTEIRO_LEXEMA, Constants.INTEIRO_SIMBOLO, Constants.BOOLEANO_LEXEMA,
 					Constants.BOOLEANO_SIMBOLO, token.getLexema(), token.getSymbol(), token.getLine());
 		}
+		else {
+			table.insertTypeOnVariable(token.getLexema());
+		}
 		token = la.lexical();
 	}
 

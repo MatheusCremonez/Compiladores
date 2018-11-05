@@ -19,23 +19,32 @@ public class TableOfSymbols {
 		stackOfSymbols.add(symbol);		
 	}
 	
+	public void insertTypeOnFunction(String type) {
+		Symbol symbol = stackOfSymbols.get(stackOfSymbols.size() - 1);
+		
+		if (symbol instanceof Function && symbol.getType() == null) {
+			stackOfSymbols.get(stackOfSymbols.size() - 1).setType(type);
+		}
+	}
+	
+	public void insertTypeOnVariable(String type) {
+
+		for (int i = (stackOfSymbols.size() - 1); i > 0; i--) {
+			if (stackOfSymbols.get(i) instanceof Variable) {
+				if (stackOfSymbols.get(i).getType() == null) {
+					stackOfSymbols.get(i).setType(type);
+				}
+			} else {
+				break;
+			}
+		}
+	}
+
 	public boolean lookProgramName(String lexema) {
 		if (lexema.equals(stackOfSymbols.get(0).lexema)) {
 			return true;
 		}
 		return false;
-	}
-	
-	public int searchSymbol(String lexema) {
-		for (int i = (stackOfSymbols.size() - 1); i >= 0; i--) {
-			if (stackOfSymbols.get(i) instanceof Variable || stackOfSymbols.get(i) instanceof Function) {
-				if(lexema.equals(stackOfSymbols.get(i).lexema)) {
-					return i;
-					
-				}
-			}
-		}
-		return -1;
 	}
 	
 	public boolean search(String lexema) {
@@ -61,6 +70,18 @@ public class TableOfSymbols {
 		}
 		
 		return lookProgramName(lexema);
+	}
+	
+	public int searchSymbol(String lexema) {
+		for (int i = (stackOfSymbols.size() - 1); i >= 0; i--) {
+			if (stackOfSymbols.get(i) instanceof Variable || stackOfSymbols.get(i) instanceof Function) {
+				if(lexema.equals(stackOfSymbols.get(i).lexema)) {
+					return i;
+					
+				}
+			}
+		}
+		return -1;
 	}
 	
 	public boolean searchVariable (String lexema) {
@@ -99,15 +120,6 @@ public class TableOfSymbols {
 		return lookProgramName(lexema);
 	}
 	
-	public void insertTypeOnFunction(String type) {
-		Symbol symbol = stackOfSymbols.get(stackOfSymbols.size() - 1);
-		
-		if (symbol instanceof Function && symbol.getType() == null) {
-			stackOfSymbols.get(stackOfSymbols.size() - 1).setType(type);
-		}
-			
-	}
-	
 	public void cleanLevel() {
 		for(int i = (stackOfSymbols.size() - 1); i >= 0 ; i--) {
 			if (stackOfSymbols.get(i) instanceof Function || stackOfSymbols.get(i) instanceof Procedure) {
@@ -124,7 +136,6 @@ public class TableOfSymbols {
 		System.out.println("Tabela Atualizada");
 		debugTable();
 	}
-	
 	
 	public void debugTable() {
 		for(int i = 0; i < stackOfSymbols.size(); i++) {
