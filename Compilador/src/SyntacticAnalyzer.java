@@ -12,13 +12,13 @@ public class SyntacticAnalyzer {
 	private String message;
 	private int errorLine;
 	private LexicalAnalyzer la;
-	private SemanticAnalyzer semantic;
+	//private SemanticAnalyzer semantic;
 	private TableOfSymbols table;
 	private Token token;
 
 	public SyntacticAnalyzer(String file) {
 		la = new LexicalAnalyzer(file);
-		semantic = new SemanticAnalyzer();
+		//semantic = new SemanticAnalyzer();
 		table = new TableOfSymbols();
 		syntactic();
 	}
@@ -219,6 +219,7 @@ public class SyntacticAnalyzer {
 	public void analisaAtribChprocedimento() throws SyntacticException, SemanticException {
 		Token aux = token;
 		token = la.lexical();
+		
 		if (token.getSymbol().equals(Constants.ATRIBUICAO_SIMBOLO)) {
 			analisaAtribuição();
 		} else {
@@ -247,8 +248,6 @@ public class SyntacticAnalyzer {
 		} else {
 			throw new SemanticException("Função '" + symbolLexema + "' não está declarada.\nLinha: " + token.getLine());
 		}
-		
-		
 	}
 
 	public void analisaLeia() throws SyntacticException, SemanticException {
@@ -347,7 +346,6 @@ public class SyntacticAnalyzer {
 			} else {
 				throw new SemanticException("Já existe um procedimento com o mesmo nome do procedimento da linha: " + token.getLine());
 			}
-			
 		}
 		else {
 			throw new SyntacticException(Constants.IDENTIFICADOR_LEXEMA, Constants.IDENTIFICADOR_SIMBOLO, token.getLexema(),
@@ -362,8 +360,10 @@ public class SyntacticAnalyzer {
 			if(! table.searchFunction(token.getLexema())) {
 				table.insert(new Function(token.getLexema()));
 				token = la.lexical();
+				
 				if (token.getSymbol().equals(Constants.DOIS_PONTOS_SIMBOLO)) {
 					token = la.lexical();
+		
 					if(token.getSymbol().equals(Constants.INTEIRO_SIMBOLO) || token.getSymbol().equals(Constants.BOOLEANO_SIMBOLO)) {
 						if (token.getSymbol().equals(Constants.INTEIRO_SIMBOLO)) {
 							table.insertTypeOnFunction(Constants.INTEIRO_LEXEMA);
@@ -371,6 +371,7 @@ public class SyntacticAnalyzer {
 							table.insertTypeOnFunction(Constants.BOOLEANO_LEXEMA);
 						}
 						token = la.lexical();
+						
 						if (token.getSymbol().equals(Constants.PONTO_VIRGULA_SIMBOLO)) {
 							analisaBloco();
 						}
@@ -416,7 +417,6 @@ public class SyntacticAnalyzer {
 			token = la.lexical();
 			analisaTermo();
 		}
-
 	}
 
 	public void analisaTermo() throws SyntacticException, SemanticException {

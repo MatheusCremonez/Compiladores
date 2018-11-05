@@ -47,7 +47,6 @@ public class GraphicInterface extends JFrame {
 	private Highlighter.HighlightPainter painter;
 	
 	private int errorLine;
-	private String errorContent = "";
 	
 	public GraphicInterface() {
 
@@ -135,12 +134,12 @@ public class GraphicInterface extends JFrame {
 					fileText.requestFocus();
 					setFileLines();
 					fileText.getHighlighter().removeAllHighlights();
+					
 				} catch (FileNotFoundException e) {
 					e.printStackTrace();
 				} catch (IOException e) {
 					e.printStackTrace();
 				}
-
 			}
 
 			if (event.getSource() == salvar) {
@@ -176,8 +175,10 @@ public class GraphicInterface extends JFrame {
 				errorLine = 0;
 				consoleText.setText(null);
 				fileText.getHighlighter().removeAllHighlights();
+				
 				SyntacticAnalyzer sa = new SyntacticAnalyzer(fileText.getText());
 				consoleText.setText(sa.getMessage());
+				
 				if (sa.getErrorLine() > 0) {
 					errorLine = sa.getErrorLine();
 				}
@@ -206,7 +207,7 @@ public class GraphicInterface extends JFrame {
 
 		@Override
 		public void keyTyped(KeyEvent e) { }
-
+		
 	}
 	
 	private class ClickHandler implements MouseListener {
@@ -248,8 +249,7 @@ public class GraphicInterface extends JFrame {
 			fileIndex++;
 		}
 		
-		lineText.setText(lineContent);
-		
+		lineText.setText(lineContent);	
 	}
 	
 	private void paintErrorLine(int line) {
@@ -262,6 +262,7 @@ public class GraphicInterface extends JFrame {
 				
 				while (i == line || fileContent.charAt(fileIndex) != '\n') {
 					fileIndex++;
+					
 					if(fileIndex >= fileContent.length()) {
 						fileIndex = finish;
 						aux = 1;
@@ -270,24 +271,23 @@ public class GraphicInterface extends JFrame {
 						finish = fileIndex;
 						
 						painter = new DefaultHighlighter.DefaultHighlightPainter(Color.RED);
+						
 			            try {
 			            	fileText.getHighlighter().addHighlight(start, finish, painter);
 						} catch (BadLocationException e) {
-							// TODO Auto-generated catch block
 							e.printStackTrace();
 						}
+			            
 			            break;
 					}
 				}
 			}
-
 			
 			if(fileContent.charAt(fileIndex) == '\n') {
 				i++;
 			}
+			
 			fileIndex++;
 		}
-		
 	}
-		
 }

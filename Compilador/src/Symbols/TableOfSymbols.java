@@ -76,8 +76,7 @@ public class TableOfSymbols {
 		for (int i = (stackOfSymbols.size() - 1); i >= 0; i--) {
 			if (stackOfSymbols.get(i) instanceof Variable || stackOfSymbols.get(i) instanceof Function) {
 				if(lexema.equals(stackOfSymbols.get(i).lexema)) {
-					return i;
-					
+					return i;	
 				}
 			}
 		}
@@ -141,6 +140,6 @@ public class TableOfSymbols {
 		for(int i = 0; i < stackOfSymbols.size(); i++) {
 			System.out.println(stackOfSymbols.get(i).lexema + " " + stackOfSymbols.get(i).getType());
 		}
-			
 	}
+	
 }
