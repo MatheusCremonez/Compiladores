@@ -1,12 +1,13 @@
 package Symbols;
 
 public class Symbol {
-	public String lexema;
+	
+	private String lexema;
 	private boolean closed;
 	private String type;
 	
 	public Symbol(String lexema) {
-		this.lexema = lexema;
+		this.setLexema(lexema);
 		this.setClosed(false);
 		this.setType(null);
 	}
@@ -29,5 +30,13 @@ public class Symbol {
 
 	public void setType(String type) {
 		this.type = type;
+	}
+
+	public String getLexema() {
+		return lexema;
+	}
+
+	public void setLexema(String lexema) {
+		this.lexema = lexema;
 	}
 }

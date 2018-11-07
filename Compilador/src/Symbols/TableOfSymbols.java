@@ -40,8 +40,8 @@ public class TableOfSymbols {
 		}
 	}
 
-	public boolean lookProgramName(String lexema) {
-		if (lexema.equals(stackOfSymbols.get(0).lexema)) {
+	private boolean lookProgramName(String lexema) {
+		if (lexema.equals(stackOfSymbols.get(0).getLexema())) {
 			return true;
 		}
 		return false;
@@ -52,7 +52,7 @@ public class TableOfSymbols {
 		
 		for (i = (stackOfSymbols.size() - 1); i >= 0; i--) {
 			if (stackOfSymbols.get(i) instanceof Variable) {
-				if(lexema.equals(stackOfSymbols.get(i).lexema)) {
+				if(lexema.equals(stackOfSymbols.get(i).getLexema())) {
 					return true;
 				}
 			} else {
@@ -63,7 +63,7 @@ public class TableOfSymbols {
 		
 		for (int j = i; j >= 0; j--) {
 			if ((stackOfSymbols.get(i) instanceof Procedure) || (stackOfSymbols.get(i) instanceof Function)) {
-				if(lexema.equals(stackOfSymbols.get(i).lexema)) {
+				if(lexema.equals(stackOfSymbols.get(i).getLexema())) {
 					return true;
 				}
 			}
@@ -75,7 +75,7 @@ public class TableOfSymbols {
 	public int searchSymbol(String lexema) {
 		for (int i = (stackOfSymbols.size() - 1); i >= 0; i--) {
 			if (stackOfSymbols.get(i) instanceof Variable || stackOfSymbols.get(i) instanceof Function) {
-				if(lexema.equals(stackOfSymbols.get(i).lexema)) {
+				if(lexema.equals(stackOfSymbols.get(i).getLexema())) {
 					return i;	
 				}
 			}
@@ -86,7 +86,7 @@ public class TableOfSymbols {
 	public boolean searchVariable (String lexema) {
 		for (int i = (stackOfSymbols.size() - 1); i >= 0; i--) {
 			if (stackOfSymbols.get(i) instanceof Variable) {
-				if(lexema.equals(stackOfSymbols.get(i).lexema)) {
+				if(lexema.equals(stackOfSymbols.get(i).getLexema())) {
 					return true;
 				}
 			}
@@ -98,7 +98,7 @@ public class TableOfSymbols {
 	public boolean searchProcedure (String lexema) {
 		for (int i = (stackOfSymbols.size() - 1); i >= 0; i--) {
 			if (stackOfSymbols.get(i) instanceof Procedure) {
-				if(lexema.equals(stackOfSymbols.get(i).lexema)) {
+				if(lexema.equals(stackOfSymbols.get(i).getLexema())) {
 					return true;
 				}
 			}
@@ -110,7 +110,7 @@ public class TableOfSymbols {
 	public boolean searchFunction (String lexema) {
 		for (int i = (stackOfSymbols.size() - 1); i >= 0; i--) {
 			if (stackOfSymbols.get(i) instanceof Function) {
-				if(lexema.equals(stackOfSymbols.get(i).lexema)) {
+				if(lexema.equals(stackOfSymbols.get(i).getLexema())) {
 					return true;
 				}
 			}
@@ -138,7 +138,7 @@ public class TableOfSymbols {
 	
 	public void debugTable() {
 		for(int i = 0; i < stackOfSymbols.size(); i++) {
-			System.out.println(stackOfSymbols.get(i).lexema + " " + stackOfSymbols.get(i).getType());
+			System.out.println(stackOfSymbols.get(i).getLexema() + " " + stackOfSymbols.get(i).getType());
 		}
 	}
 	

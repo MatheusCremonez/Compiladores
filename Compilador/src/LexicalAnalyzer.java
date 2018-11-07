@@ -89,11 +89,7 @@ public class LexicalAnalyzer {
 		}
 
 		return caracter;
-	}
-
-	private final char leCaracter() {
-		return fontFile.charAt(index);
-	}
+	}	
 
 	private final Token pegaToken(char caracter) throws LexicalException {
 
@@ -115,8 +111,12 @@ public class LexicalAnalyzer {
 			throw new LexicalException("Há algum caracter inválido na linha " + line + ".");
 		}
 	}
+	
+	private final char leCaracter() {
+		return fontFile.charAt(index);
+	}
 
-	public final Token trataDigito(char caracter) {
+	private final Token trataDigito(char caracter) {
 		String num;
 		char newCaracter;
 
@@ -142,7 +142,7 @@ public class LexicalAnalyzer {
 
 	}
 
-	public final Token trataIdentificadorPalavraReservada(char caracter) {
+	private final Token trataIdentificadorPalavraReservada(char caracter) {
 		String id;
 		char newCaracter;
 
@@ -171,7 +171,7 @@ public class LexicalAnalyzer {
 
 	}
 
-	public final Token trataOperadorAritmetico(char caracter) {
+	private final Token trataOperadorAritmetico(char caracter) {
 		if (caracter == '+') {
 			return new Token(Constants.MAIS_SIMBOLO, Character.toString(caracter), line);
 		} else if (caracter == '-') {
@@ -181,7 +181,7 @@ public class LexicalAnalyzer {
 		}
 	}
 
-	public final Token trataOperadorRelacional(char caracter) throws LexicalException {
+	private final Token trataOperadorRelacional(char caracter) throws LexicalException {
 
 		String op = Character.toString(caracter);
 		char newCaracter;
@@ -233,7 +233,7 @@ public class LexicalAnalyzer {
 		throw new LexicalException("Há algum caracter inválido na linha " + line + ".");
 	}
 
-	public final Token trataAtribuicao(char caracter) {
+	private final Token trataAtribuicao(char caracter) {
 
 		String palavra = Character.toString(caracter);
 
@@ -252,7 +252,7 @@ public class LexicalAnalyzer {
 		}
 	}
 
-	public final Token trataPontuacao(char caracter) {
+	private final Token trataPontuacao(char caracter) {
 		if (caracter == ';') {
 			return new Token(Constants.PONTO_VIRGULA_SIMBOLO, Character.toString(caracter), line);
 		} else if (caracter == ',') {
@@ -266,7 +266,7 @@ public class LexicalAnalyzer {
 		}
 	}
 
-	public final Token switchIdentifier(String id) {
+	private final Token switchIdentifier(String id) {
 		switch (id) {
 		case "programa":
 			return new Token(Constants.PROGRAMA_SIMBOLO, id, line);
@@ -315,7 +315,7 @@ public class LexicalAnalyzer {
 		}
 	}
 
-	public final boolean isInvalidCharacter(char character) {
+	private final boolean isInvalidCharacter(char character) {
 		return (character == '\n' || Character.isWhitespace(character) || Character.isSpaceChar(character));
 	}
 

@@ -13,12 +13,14 @@ public class SyntacticAnalyzer {
 	private int errorLine;
 	private LexicalAnalyzer la;
 	//private SemanticAnalyzer semantic;
+	//private CodeGenerator generator;
 	private TableOfSymbols table;
 	private Token token;
 
 	public SyntacticAnalyzer(String file) {
 		la = new LexicalAnalyzer(file);
 		//semantic = new SemanticAnalyzer();
+		//generator = new CodeGenerator();
 		table = new TableOfSymbols();
 		syntactic();
 	}
@@ -75,7 +77,7 @@ public class SyntacticAnalyzer {
 		}
 	}
 
-	public void analisaBloco() throws SyntacticException, SemanticException {
+	private void analisaBloco() throws SyntacticException, SemanticException {
 		token = la.lexical();
 
 		analisaEtVariaveis();
@@ -83,7 +85,7 @@ public class SyntacticAnalyzer {
 		analisaComandos();
 	}
 
-	public void analisaEtVariaveis() throws SyntacticException, SemanticException {
+	private void analisaEtVariaveis() throws SyntacticException, SemanticException {
 		if (token.getSymbol().equals(Constants.VAR_SIMBOLO)) {
 			token = la.lexical();
 			if (token.getSymbol().equals(Constants.IDENTIFICADOR_SIMBOLO)) {
@@ -103,7 +105,7 @@ public class SyntacticAnalyzer {
 		}
 	}
 
-	public void analisaVariaveis() throws SyntacticException, SemanticException {
+	private void analisaVariaveis() throws SyntacticException, SemanticException {
 		do {
 			if (token.getSymbol().equals(Constants.IDENTIFICADOR_SIMBOLO)) {
 				if ( ! table.search(token.getLexema())) {
@@ -139,7 +141,7 @@ public class SyntacticAnalyzer {
 		analisaTipo();
 	}
 
-	public void analisaTipo() throws SyntacticException {
+	private void analisaTipo() throws SyntacticException {
 		if (!(token.getSymbol().equals(Constants.INTEIRO_SIMBOLO))
 				&& !(token.getSymbol().equals(Constants.BOOLEANO_SIMBOLO))) {
 			throw new SyntacticException(Constants.INTEIRO_LEXEMA, Constants.INTEIRO_SIMBOLO, Constants.BOOLEANO_LEXEMA,
@@ -151,7 +153,7 @@ public class SyntacticAnalyzer {
 		token = la.lexical();
 	}
 
-	public void analisaSubrotinas() throws SyntacticException, SemanticException {
+	private void analisaSubrotinas() throws SyntacticException, SemanticException {
 		if ((token.getSymbol().equals(Constants.PROCEDIMENTO_SIMBOLO))
 				|| (token.getSymbol().equals(Constants.FUNCAO_SIMBOLO))) {
 			// terá questões semanticas aqui no futuro
@@ -175,7 +177,7 @@ public class SyntacticAnalyzer {
 		}
 	}
 
-	public void analisaComandos() throws SyntacticException, SemanticException {
+	private void analisaComandos() throws SyntacticException, SemanticException {
 		if (token.getSymbol().equals(Constants.INICIO_SIMBOLO)) {
 			token = la.lexical();
 			analisaComandoSimples();
@@ -199,7 +201,7 @@ public class SyntacticAnalyzer {
 		}
 	}
 
-	public void analisaComandoSimples() throws SyntacticException, SemanticException {
+	private void analisaComandoSimples() throws SyntacticException, SemanticException {
 		if (token.getSymbol().equals(Constants.IDENTIFICADOR_SIMBOLO)) {
 			analisaAtribChprocedimento();
 		} else if (token.getSymbol().equals(Constants.SE_SIMBOLO)) {
@@ -216,23 +218,23 @@ public class SyntacticAnalyzer {
 				
 	}
 
-	public void analisaAtribChprocedimento() throws SyntacticException, SemanticException {
+	private void analisaAtribChprocedimento() throws SyntacticException, SemanticException {
 		Token aux = token;
 		token = la.lexical();
 		
 		if (token.getSymbol().equals(Constants.ATRIBUICAO_SIMBOLO)) {
-			analisaAtribuição();
+			analisaAtribuicao();
 		} else {
 			chamadaProcedimento(aux);
 		}
 	}
 
-	public void analisaAtribuição() throws SyntacticException, SemanticException {
+	private void analisaAtribuicao() throws SyntacticException, SemanticException {
 		token = la.lexical();
 		analisaExpressao();
 	}
 
-	public void chamadaProcedimento(Token auxToken) throws SemanticException {
+	private void chamadaProcedimento(Token auxToken) throws SemanticException {
 		if (table.searchProcedure(auxToken.getLexema())) {
 			// OK é um procedimento
 		} else {
@@ -240,8 +242,8 @@ public class SyntacticAnalyzer {
 		}
 	}
 
-	public void chamadaFuncao(int index) throws SemanticException{
-		String symbolLexema = table.getSymbol(index).lexema;
+	private void chamadaFuncao(int index) throws SemanticException{
+		String symbolLexema = table.getSymbol(index).getLexema();
 		if (table.searchFunction(symbolLexema)) {
 			// OK é uma função
 			token = la.lexical();
@@ -250,7 +252,7 @@ public class SyntacticAnalyzer {
 		}
 	}
 
-	public void analisaLeia() throws SyntacticException, SemanticException {
+	private void analisaLeia() throws SyntacticException, SemanticException {
 		token = la.lexical();
 		if (token.getSymbol().equals(Constants.ABRE_PARENTESES_SIMBOLO)) {
 			token = la.lexical();
@@ -276,7 +278,7 @@ public class SyntacticAnalyzer {
 		}
 	}
 
-	public void analisaEscreva() throws SyntacticException, SemanticException {
+	private void analisaEscreva() throws SyntacticException, SemanticException {
 		token = la.lexical();
 		if (token.getSymbol().equals(Constants.ABRE_PARENTESES_SIMBOLO)) {
 			token = la.lexical();
@@ -302,7 +304,7 @@ public class SyntacticAnalyzer {
 		}
 	}
 
-	public void analisaEnquanto() throws SyntacticException, SemanticException {
+	private void analisaEnquanto() throws SyntacticException, SemanticException {
 		token = la.lexical();
 		analisaExpressao();
 		if (token.getSymbol().equals(Constants.FACA_SIMBOLO)) {
@@ -314,7 +316,7 @@ public class SyntacticAnalyzer {
 		}
 	}
 
-	public void analisaSe() throws SyntacticException, SemanticException {
+	private void analisaSe() throws SyntacticException, SemanticException {
 		token = la.lexical();
 		analisaExpressao();
 		if (token.getSymbol().equals(Constants.ENTAO_SIMBOLO)) {
@@ -331,7 +333,7 @@ public class SyntacticAnalyzer {
 		}
 	}
 	
-	public void analisaDeclaracaoProcedimento() throws SyntacticException, SemanticException {
+	private void analisaDeclaracaoProcedimento() throws SyntacticException, SemanticException {
 		token = la.lexical();
 		if (token.getSymbol().equals(Constants.IDENTIFICADOR_SIMBOLO)) {
 			if (! table.searchProcedure(token.getLexema())) {
@@ -354,7 +356,7 @@ public class SyntacticAnalyzer {
 		table.cleanLevel();
 	}
 	
-	public void analisaDeclaracaoFuncao() throws SyntacticException, SemanticException {
+	private void analisaDeclaracaoFuncao() throws SyntacticException, SemanticException {
 		token = la.lexical();
 		if (token.getSymbol().equals(Constants.IDENTIFICADOR_SIMBOLO)) {
 			if(! table.searchFunction(token.getLexema())) {
@@ -395,7 +397,7 @@ public class SyntacticAnalyzer {
 		table.cleanLevel();
 	}
 
-	public void analisaExpressao() throws SyntacticException, SemanticException {
+	private void analisaExpressao() throws SyntacticException, SemanticException {
 		analisaExpressaoSimples();
 		if (token.getSymbol().equals(Constants.MAIOR_SIMBOLO) || token.getSymbol().equals(Constants.MAIOR_IGUAL_SIMBOLO)
 				|| token.getSymbol().equals(Constants.IGUAL_SIMBOLO)
@@ -407,7 +409,7 @@ public class SyntacticAnalyzer {
 		}
 	}
 
-	public void analisaExpressaoSimples() throws SyntacticException, SemanticException {
+	private void analisaExpressaoSimples() throws SyntacticException, SemanticException {
 		if (token.getSymbol().equals(Constants.MAIS_SIMBOLO) || token.getSymbol().equals(Constants.MENOS_SIMBOLO)) {
 			token = la.lexical();
 		}
@@ -419,7 +421,7 @@ public class SyntacticAnalyzer {
 		}
 	}
 
-	public void analisaTermo() throws SyntacticException, SemanticException {
+	private void analisaTermo() throws SyntacticException, SemanticException {
 		analisaFator();
 		while (token.getSymbol().equals(Constants.MULT_SIMBOLO) || token.getSymbol().equals(Constants.DIV_SIMBOLO)
 				|| token.getSymbol().equals(Constants.E_SIMBOLO)) {
@@ -428,7 +430,7 @@ public class SyntacticAnalyzer {
 		}
 	}
 
-	public void analisaFator() throws SyntacticException, SemanticException {
+	private void analisaFator() throws SyntacticException, SemanticException {
 		if (token.getSymbol().equals(Constants.IDENTIFICADOR_SIMBOLO)) {
 			int index = table.searchSymbol(token.getLexema());
 			if (index != (-1)) {
