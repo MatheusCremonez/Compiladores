@@ -1,0 +1,5 @@
+programa p;
+var a, b, c: inteiro;
+inicio
+	a:= a + b*c;
+fim.

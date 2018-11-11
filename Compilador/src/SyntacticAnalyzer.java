@@ -1,3 +1,6 @@
+import java.util.ArrayList;
+import java.util.List;
+
 import Constants.*;
 import Exceptions.SemanticException;
 import Exceptions.SyntacticException;
@@ -12,14 +15,15 @@ public class SyntacticAnalyzer {
 	private String message;
 	private int errorLine;
 	private LexicalAnalyzer la;
-	//private SemanticAnalyzer semantic;
+	private SemanticAnalyzer semantic;
 	//private CodeGenerator generator;
 	private TableOfSymbols table;
 	private Token token;
+	private List<Token> expression = new ArrayList<Token>();
 
 	public SyntacticAnalyzer(String file) {
 		la = new LexicalAnalyzer(file);
-		//semantic = new SemanticAnalyzer();
+		semantic = new SemanticAnalyzer();
 		//generator = new CodeGenerator();
 		table = new TableOfSymbols();
 		syntactic();
@@ -232,6 +236,8 @@ public class SyntacticAnalyzer {
 	private void analisaAtribuicao() throws SyntacticException, SemanticException {
 		token = la.lexical();
 		analisaExpressao();
+		semantic.expressionToPostfix(expression);
+		expression.clear();
 	}
 
 	private void chamadaProcedimento(Token auxToken) throws SemanticException {
@@ -307,6 +313,8 @@ public class SyntacticAnalyzer {
 	private void analisaEnquanto() throws SyntacticException, SemanticException {
 		token = la.lexical();
 		analisaExpressao();
+		semantic.expressionToPostfix(expression);
+		expression.clear();
 		if (token.getSymbol().equals(Constants.FACA_SIMBOLO)) {
 			token = la.lexical();
 			analisaComandoSimples();
@@ -319,6 +327,8 @@ public class SyntacticAnalyzer {
 	private void analisaSe() throws SyntacticException, SemanticException {
 		token = la.lexical();
 		analisaExpressao();
+		semantic.expressionToPostfix(expression);
+		expression.clear();
 		if (token.getSymbol().equals(Constants.ENTAO_SIMBOLO)) {
 			token = la.lexical();
 			analisaComandoSimples();
@@ -404,6 +414,7 @@ public class SyntacticAnalyzer {
 				|| token.getSymbol().equals(Constants.MENOR_SIMBOLO)
 				|| token.getSymbol().equals(Constants.MENOR_IGUAL_SIMBOLO)
 				|| token.getSymbol().equals(Constants.DIFERENTE_SIMBOLO)) {
+			expression.add(token);
 			token = la.lexical();
 			analisaExpressaoSimples();
 		}
@@ -411,11 +422,14 @@ public class SyntacticAnalyzer {
 
 	private void analisaExpressaoSimples() throws SyntacticException, SemanticException {
 		if (token.getSymbol().equals(Constants.MAIS_SIMBOLO) || token.getSymbol().equals(Constants.MENOS_SIMBOLO)) {
+			Token aux = new Token(token.getSymbol(), token.getLexema() + "u", token.getLine()); //passando o operador unário para o semantico
+			expression.add(aux);
 			token = la.lexical();
 		}
 		analisaTermo();
 		while (token.getSymbol().equals(Constants.MAIS_SIMBOLO) || token.getSymbol().equals(Constants.MENOS_SIMBOLO)
 				|| token.getSymbol().equals(Constants.OU_SIMBOLO)) {
+			expression.add(token);
 			token = la.lexical();
 			analisaTermo();
 		}
@@ -425,6 +439,7 @@ public class SyntacticAnalyzer {
 		analisaFator();
 		while (token.getSymbol().equals(Constants.MULT_SIMBOLO) || token.getSymbol().equals(Constants.DIV_SIMBOLO)
 				|| token.getSymbol().equals(Constants.E_SIMBOLO)) {
+			expression.add(token);
 			token = la.lexical();
 			analisaFator();
 		}
@@ -438,20 +453,25 @@ public class SyntacticAnalyzer {
 					chamadaFuncao(index);
 				}
 				else {
+					expression.add(token);
 					token = la.lexical();
 				}
 			} else {
 				throw new SemanticException("Variável ou Função '" + token.getLexema() + "' não está definida no escopo atual. \n Linha: " + token.getLine());
 			}
 		} else if (token.getSymbol().equals(Constants.NUMERO_SIMBOLO)) {
+			expression.add(token);
 			token = la.lexical();
 		} else if (token.getSymbol().equals(Constants.NAO_SIMBOLO)) {
+			expression.add(token);
 			token = la.lexical();
 			analisaFator();
 		} else if (token.getSymbol().equals(Constants.ABRE_PARENTESES_SIMBOLO)) {
+			expression.add(token);
 			token = la.lexical();
 			analisaExpressao();
 			if (token.getSymbol().equals(Constants.FECHA_PARENTESES_SIMBOLO)) {
+				expression.add(token);
 				token = la.lexical();
 			} else {
 				throw new SyntacticException(Constants.FECHA_PARENTESES_LEXEMA, Constants.FECHA_PARENTESES_SIMBOLO,
@@ -459,6 +479,7 @@ public class SyntacticAnalyzer {
 			}
 		} else if (token.getSymbol().equals(Constants.VERDADEIRO_SIMBOLO)
 				|| token.getSymbol().equals(Constants.FALSO_SIMBOLO)) {
+			expression.add(token);
 			token = la.lexical();
 		} else {
 			throw new SyntacticException("Expressão incompleta na linha: " + token.getLine());

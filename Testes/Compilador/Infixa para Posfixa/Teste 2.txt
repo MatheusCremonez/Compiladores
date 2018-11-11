@@ -1,0 +1,5 @@
+programa p;
+var a, b, c, d: inteiro;
+inicio
+	a:= a + b*c > d;
+fim.

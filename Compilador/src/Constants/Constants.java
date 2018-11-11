@@ -121,4 +121,21 @@ public final class Constants {
 	public static final String FALSO_SIMBOLO = "sfalso";
 	public static final String FALSO_LEXEMA = "falso";
 	
+	/* CONSTANTES PARA OS OPERADORES */
+	public static final String MAIS_UNARIO = "+u";
+	public static final String MENOS_UNARIO = "-u";
+	public static final String NAO = "nao";
+	public static final String MULTIPLICACAO = "*";
+	public static final String DIVISAO = "div";
+	public static final String MAIS = "+";
+	public static final String MENOS = "-";
+	public static final String MAIOR = ">";
+	public static final String MENOR = "<";
+	public static final String MENOR_IGUAL = "<=";
+	public static final String MAIOR_IGUAL = ">=";
+	public static final String IGUAL = "=";
+	public static final String DIFERENTE = "!=";
+	public static final String E = "e";
+	public static final String OU = "ou";
+	
 }

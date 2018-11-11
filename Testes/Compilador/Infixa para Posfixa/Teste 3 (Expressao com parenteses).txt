@@ -1,0 +1,5 @@
+programa p;
+var a, b, c, d, w: inteiro;
+inicio
+	a:= - a + b*(-c) <= 3 e w;
+fim.
