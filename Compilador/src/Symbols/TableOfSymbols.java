@@ -6,9 +6,13 @@ import java.util.List;
 public class TableOfSymbols {
 
 	private List<Symbol> stackOfSymbols;
-	
+
 	public TableOfSymbols() {
 		stackOfSymbols = new ArrayList<Symbol>();
+	}
+	
+	public List<Symbol> getStackOfSymbols() {
+		return stackOfSymbols;
 	}
 	
 	public Symbol getSymbol(int index) {
@@ -107,7 +111,7 @@ public class TableOfSymbols {
 		return lookProgramName(lexema);
 	}
 	
-	public boolean searchFunction (String lexema) {
+	public boolean searchFunction(String lexema) {
 		for (int i = (stackOfSymbols.size() - 1); i >= 0; i--) {
 			if (stackOfSymbols.get(i) instanceof Function) {
 				if(lexema.equals(stackOfSymbols.get(i).getLexema())) {
@@ -118,6 +122,17 @@ public class TableOfSymbols {
 		
 		return lookProgramName(lexema);
 	}
+	
+	public String searchTypeOfVariableOrFunction(String lexema) {
+		for (int i = (stackOfSymbols.size() - 1); i >= 0; i--) {
+			if (stackOfSymbols.get(i) instanceof Variable || stackOfSymbols.get(i) instanceof Function) {
+				if(lexema.equals(stackOfSymbols.get(i).getLexema())) {
+					return stackOfSymbols.get(i).getType();
+				}
+			}
+		}
+		return null;
+	}	
 	
 	public void cleanLevel() {
 		for(int i = (stackOfSymbols.size() - 1); i >= 0 ; i--) {

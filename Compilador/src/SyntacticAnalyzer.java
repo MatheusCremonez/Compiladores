@@ -227,16 +227,21 @@ public class SyntacticAnalyzer {
 		token = la.lexical();
 		
 		if (token.getSymbol().equals(Constants.ATRIBUICAO_SIMBOLO)) {
-			analisaAtribuicao();
+			analisaAtribuicao(aux);
 		} else {
 			chamadaProcedimento(aux);
 		}
 	}
 
-	private void analisaAtribuicao() throws SyntacticException, SemanticException {
+	private void analisaAtribuicao(Token attributionToken) throws SyntacticException, SemanticException {
 		token = la.lexical();
 		analisaExpressao();
-		semantic.expressionToPostfix(expression);
+		
+		semantic.setTableOfSymbols(table);
+		String aux = semantic.expressionToPostfix(expression);
+		String type = semantic.returnTypeOfExpression(aux);
+		semantic.whoCallsMe(type, attributionToken.getLexema());
+		System.out.println("Tipo da Expressão:" + type);
 		expression.clear();
 	}
 
@@ -313,8 +318,14 @@ public class SyntacticAnalyzer {
 	private void analisaEnquanto() throws SyntacticException, SemanticException {
 		token = la.lexical();
 		analisaExpressao();
-		semantic.expressionToPostfix(expression);
+		
+		semantic.setTableOfSymbols(table);
+		String aux = semantic.expressionToPostfix(expression);
+		String type = semantic.returnTypeOfExpression(aux);
+		semantic.whoCallsMe(type, Constants.ENQUANTO_LEXEMA);
+		System.out.println("(ENQUANTO)Tipo da Expressão:" + type);
 		expression.clear();
+		
 		if (token.getSymbol().equals(Constants.FACA_SIMBOLO)) {
 			token = la.lexical();
 			analisaComandoSimples();
@@ -327,8 +338,14 @@ public class SyntacticAnalyzer {
 	private void analisaSe() throws SyntacticException, SemanticException {
 		token = la.lexical();
 		analisaExpressao();
-		semantic.expressionToPostfix(expression);
+		
+		semantic.setTableOfSymbols(table);
+		String aux = semantic.expressionToPostfix(expression);
+		String type = semantic.returnTypeOfExpression(aux);
+		semantic.whoCallsMe(type, Constants.SE_LEXEMA);
+		System.out.println("(SE)Tipo da Expressão:" + type);
 		expression.clear();
+		
 		if (token.getSymbol().equals(Constants.ENTAO_SIMBOLO)) {
 			token = la.lexical();
 			analisaComandoSimples();
