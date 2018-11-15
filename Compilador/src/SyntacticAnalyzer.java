@@ -4,11 +4,7 @@ import java.util.List;
 import Constants.*;
 import Exceptions.SemanticException;
 import Exceptions.SyntacticException;
-import Symbols.Function;
-import Symbols.Procedure;
-import Symbols.Symbol;
-import Symbols.TableOfSymbols;
-import Symbols.Variable;
+
 
 public class SyntacticAnalyzer {
 
@@ -24,7 +20,6 @@ public class SyntacticAnalyzer {
 		la = new LexicalAnalyzer(file);
 		semantic = new SemanticAnalyzer();
 		//generator = new CodeGenerator();
-		//table = new TableOfSymbols();
 		syntactic();
 	}
 
