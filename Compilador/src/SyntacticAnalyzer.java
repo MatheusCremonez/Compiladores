@@ -17,7 +17,6 @@ public class SyntacticAnalyzer {
 	private LexicalAnalyzer la;
 	private SemanticAnalyzer semantic;
 	//private CodeGenerator generator;
-	private TableOfSymbols table;
 	private Token token;
 	private List<Token> expression = new ArrayList<Token>();
 
@@ -25,14 +24,13 @@ public class SyntacticAnalyzer {
 		la = new LexicalAnalyzer(file);
 		semantic = new SemanticAnalyzer();
 		//generator = new CodeGenerator();
-		table = new TableOfSymbols();
+		//table = new TableOfSymbols();
 		syntactic();
 	}
 
 	public void syntactic() {
 		try {
 			analisadorSintatico();			
-			table.debugTable();
 		} catch (SyntacticException e) {
 			errorLine = token.getLine();
 			setMessage(e.getMessage());
@@ -52,7 +50,7 @@ public class SyntacticAnalyzer {
 		if (token.getSymbol().equals(Constants.PROGRAMA_SIMBOLO)) {
 			token = la.lexical();
 			if (token.getSymbol().equals(Constants.IDENTIFICADOR_SIMBOLO)) {
-				table.insert(new Symbol(token.getLexema()));
+				semantic.insert(token, Constants.PROGRAMA);
 				token = la.lexical();
 				if (token.getSymbol().equals(Constants.PONTO_VIRGULA_SIMBOLO)) {
 					analisaBloco();
@@ -112,26 +110,23 @@ public class SyntacticAnalyzer {
 	private void analisaVariaveis() throws SyntacticException, SemanticException {
 		do {
 			if (token.getSymbol().equals(Constants.IDENTIFICADOR_SIMBOLO)) {
-				if ( ! table.search(token.getLexema())) {
-					table.insert(new Variable(token.getLexema()));
-					token = la.lexical();
-					if (token.getSymbol().equals(Constants.VIRGULA_SIMBOLO)
-							|| token.getSymbol().equals(Constants.DOIS_PONTOS_SIMBOLO)) {
-						if (token.getSymbol().equals(Constants.VIRGULA_SIMBOLO)) {
-							token = la.lexical();
-							if (token.getSymbol().equals(Constants.DOIS_PONTOS_SIMBOLO)) {
-								throw new SyntacticException(Constants.IDENTIFICADOR_LEXEMA,
-										Constants.IDENTIFICADOR_SIMBOLO, token.getLexema(), token.getSymbol(),
-										token.getLine());
-							}
+				semantic.searchInTableOfSymbols(token);
+				semantic.insert(token, Constants.VARIAVEL);
+				token = la.lexical();
+				if (token.getSymbol().equals(Constants.VIRGULA_SIMBOLO)
+						|| token.getSymbol().equals(Constants.DOIS_PONTOS_SIMBOLO)) {
+					if (token.getSymbol().equals(Constants.VIRGULA_SIMBOLO)) {
+						token = la.lexical();
+						if (token.getSymbol().equals(Constants.DOIS_PONTOS_SIMBOLO)) {
+							throw new SyntacticException(Constants.IDENTIFICADOR_LEXEMA,
+									Constants.IDENTIFICADOR_SIMBOLO, token.getLexema(), token.getSymbol(),
+									token.getLine());
 						}
-					} else {
-						throw new SyntacticException(Constants.PONTO_VIRGULA_LEXEMA, Constants.PONTO_VIRGULA_SIMBOLO,
-								Constants.DOIS_PONTOS_LEXEMA, Constants.DOIS_PONTOS_SIMBOLO, token.getLexema(),
-								token.getSymbol(), token.getLine());
 					}
 				} else {
-					throw new SemanticException("Já existe uma variável com o mesmo nome da variável da linha: " + token.getLine());
+					throw new SyntacticException(Constants.PONTO_VIRGULA_LEXEMA, Constants.PONTO_VIRGULA_SIMBOLO,
+							Constants.DOIS_PONTOS_LEXEMA, Constants.DOIS_PONTOS_SIMBOLO, token.getLexema(),
+							token.getSymbol(), token.getLine());
 				}
 				
 			} else {
@@ -152,7 +147,7 @@ public class SyntacticAnalyzer {
 					Constants.BOOLEANO_SIMBOLO, token.getLexema(), token.getSymbol(), token.getLine());
 		}
 		else {
-			table.insertTypeOnVariable(token.getLexema());
+			semantic.insertTypeOnVariable(token);
 		}
 		token = la.lexical();
 	}
@@ -237,7 +232,6 @@ public class SyntacticAnalyzer {
 		token = la.lexical();
 		analisaExpressao();
 		
-		semantic.setTableOfSymbols(table);
 		String aux = semantic.expressionToPostfix(expression);
 		String type = semantic.returnTypeOfExpression(aux);
 		semantic.whoCallsMe(type, attributionToken.getLexema());
@@ -246,21 +240,20 @@ public class SyntacticAnalyzer {
 	}
 
 	private void chamadaProcedimento(Token auxToken) throws SemanticException {
-		if (table.searchProcedure(auxToken.getLexema())) {
-			// OK é um procedimento
-		} else {
-			throw new SemanticException("Procedimento '" + auxToken.getLexema() + "' não está declarado.\nLinha: " + auxToken.getLine());
-		}
+		semantic.searchProcedure(auxToken);
+		// se houver erro, dentro do semântico lancará a exceção. Caso seja um procedimento
+		// válido, continuará a excecução
+		// OK é um procedimento, aqui terá algum tipo de geração de código 
 	}
 
-	private void chamadaFuncao(int index) throws SemanticException{
-		String symbolLexema = table.getSymbol(index).getLexema();
-		if (table.searchFunction(symbolLexema)) {
-			// OK é uma função
-			token = la.lexical();
-		} else {
-			throw new SemanticException("Função '" + symbolLexema + "' não está declarada.\nLinha: " + token.getLine());
-		}
+	private void chamadaFuncao(int index) throws SemanticException {
+		String symbolLexema = semantic.getLexemaOfSymbol(index);
+		semantic.searchFunction(new Token("", symbolLexema, token.getLine()));
+		// se houver erro, dentro do semântico lancará a exceção. Caso seja uma funcao
+		// válida, continuará a excecução
+		// OK é uma função
+		token = la.lexical();
+		
 	}
 
 	private void analisaLeia() throws SyntacticException, SemanticException {
@@ -268,16 +261,13 @@ public class SyntacticAnalyzer {
 		if (token.getSymbol().equals(Constants.ABRE_PARENTESES_SIMBOLO)) {
 			token = la.lexical();
 			if (token.getSymbol().equals(Constants.IDENTIFICADOR_SIMBOLO)) {
-				if (table.searchVariable(token.getLexema())) {
+				semantic.searchVariable(token);
+				token = la.lexical();
+				if (token.getSymbol().equals(Constants.FECHA_PARENTESES_SIMBOLO)) {
 					token = la.lexical();
-					if (token.getSymbol().equals(Constants.FECHA_PARENTESES_SIMBOLO)) {
-						token = la.lexical();
-					} else {
-						throw new SyntacticException(Constants.FECHA_PARENTESES_LEXEMA, Constants.FECHA_PARENTESES_SIMBOLO,
-								token.getLexema(), token.getSymbol(), token.getLine());
-					}
 				} else {
-					throw new SemanticException("A variável atribuída ao método 'leia' não está definida.\nLinha: " + token.getLine());
+					throw new SyntacticException(Constants.FECHA_PARENTESES_LEXEMA, Constants.FECHA_PARENTESES_SIMBOLO,
+							token.getLexema(), token.getSymbol(), token.getLine());
 				}
 			} else {
 				throw new SyntacticException(Constants.IDENTIFICADOR_LEXEMA, Constants.IDENTIFICADOR_SIMBOLO,
@@ -294,16 +284,14 @@ public class SyntacticAnalyzer {
 		if (token.getSymbol().equals(Constants.ABRE_PARENTESES_SIMBOLO)) {
 			token = la.lexical();
 			if (token.getSymbol().equals(Constants.IDENTIFICADOR_SIMBOLO)) {
-				if (table.searchVariable(token.getLexema()) || table.searchFunction(token.getLexema())) {
+				semantic.searchVariableOrFunction(token);	
+				
+				token = la.lexical();
+				if (token.getSymbol().equals(Constants.FECHA_PARENTESES_SIMBOLO)) {
 					token = la.lexical();
-					if (token.getSymbol().equals(Constants.FECHA_PARENTESES_SIMBOLO)) {
-						token = la.lexical();
-					} else {
-						throw new SyntacticException(Constants.FECHA_PARENTESES_LEXEMA, Constants.FECHA_PARENTESES_SIMBOLO,
-								token.getLexema(), token.getSymbol(), token.getLine());
-					}
 				} else {
-					throw new SemanticException("A variável ou função atribuída ao método 'escreva' não está definida.\nLinha: " + token.getLine());
+					throw new SyntacticException(Constants.FECHA_PARENTESES_LEXEMA, Constants.FECHA_PARENTESES_SIMBOLO,
+							token.getLexema(), token.getSymbol(), token.getLine());
 				}
 			} else {
 				throw new SyntacticException(Constants.IDENTIFICADOR_LEXEMA, Constants.IDENTIFICADOR_SIMBOLO,
@@ -319,7 +307,6 @@ public class SyntacticAnalyzer {
 		token = la.lexical();
 		analisaExpressao();
 		
-		semantic.setTableOfSymbols(table);
 		String aux = semantic.expressionToPostfix(expression);
 		String type = semantic.returnTypeOfExpression(aux);
 		semantic.whoCallsMe(type, Constants.ENQUANTO_LEXEMA);
@@ -339,7 +326,6 @@ public class SyntacticAnalyzer {
 		token = la.lexical();
 		analisaExpressao();
 		
-		semantic.setTableOfSymbols(table);
 		String aux = semantic.expressionToPostfix(expression);
 		String type = semantic.returnTypeOfExpression(aux);
 		semantic.whoCallsMe(type, Constants.SE_LEXEMA);
@@ -363,65 +349,59 @@ public class SyntacticAnalyzer {
 	private void analisaDeclaracaoProcedimento() throws SyntacticException, SemanticException {
 		token = la.lexical();
 		if (token.getSymbol().equals(Constants.IDENTIFICADOR_SIMBOLO)) {
-			if (! table.searchProcedure(token.getLexema())) {
-				table.insert(new Procedure(token.getLexema()));
-				token = la.lexical();
-				if (token.getSymbol().equals(Constants.PONTO_VIRGULA_SIMBOLO)) {
-					analisaBloco();
-				} else {
-					throw new SyntacticException(Constants.PONTO_VIRGULA_LEXEMA, Constants.PONTO_VIRGULA_SIMBOLO, token.getLexema(),
-							token.getSymbol(), token.getLine());
-				}
+			semantic.searchProcedureWithTheSameName(token);
+			semantic.insert(token, Constants.PROCEDIMENTO);
+			token = la.lexical();
+			if (token.getSymbol().equals(Constants.PONTO_VIRGULA_SIMBOLO)) {
+				analisaBloco();
 			} else {
-				throw new SemanticException("Já existe um procedimento com o mesmo nome do procedimento da linha: " + token.getLine());
+				throw new SyntacticException(Constants.PONTO_VIRGULA_LEXEMA, Constants.PONTO_VIRGULA_SIMBOLO, token.getLexema(),
+						token.getSymbol(), token.getLine());
 			}
 		}
 		else {
 			throw new SyntacticException(Constants.IDENTIFICADOR_LEXEMA, Constants.IDENTIFICADOR_SIMBOLO, token.getLexema(),
 					token.getSymbol(), token.getLine());
 		}
-		table.cleanLevel();
+		semantic.cleanTableLevel();
 	}
 	
 	private void analisaDeclaracaoFuncao() throws SyntacticException, SemanticException {
 		token = la.lexical();
 		if (token.getSymbol().equals(Constants.IDENTIFICADOR_SIMBOLO)) {
-			if(! table.searchFunction(token.getLexema())) {
-				table.insert(new Function(token.getLexema()));
+			semantic.searchFunctionWithTheSameName(token);
+			semantic.insert(token, Constants.FUNCAO);
+			token = la.lexical();
+			
+			if (token.getSymbol().equals(Constants.DOIS_PONTOS_SIMBOLO)) {
 				token = la.lexical();
-				
-				if (token.getSymbol().equals(Constants.DOIS_PONTOS_SIMBOLO)) {
-					token = la.lexical();
-		
-					if(token.getSymbol().equals(Constants.INTEIRO_SIMBOLO) || token.getSymbol().equals(Constants.BOOLEANO_SIMBOLO)) {
-						if (token.getSymbol().equals(Constants.INTEIRO_SIMBOLO)) {
-							table.insertTypeOnFunction(Constants.INTEIRO_LEXEMA);
-						} else {
-							table.insertTypeOnFunction(Constants.BOOLEANO_LEXEMA);
-						}
-						token = la.lexical();
-						
-						if (token.getSymbol().equals(Constants.PONTO_VIRGULA_SIMBOLO)) {
-							analisaBloco();
-						}
+	
+				if(token.getSymbol().equals(Constants.INTEIRO_SIMBOLO) || token.getSymbol().equals(Constants.BOOLEANO_SIMBOLO)) {
+					if (token.getSymbol().equals(Constants.INTEIRO_SIMBOLO)) {
+						semantic.insertTypeOnFunction(Constants.INTEIRO_LEXEMA);
 					} else {
-						throw new SyntacticException(Constants.INTEIRO_LEXEMA, Constants.INTEIRO_SIMBOLO,
-								Constants.BOOLEANO_LEXEMA, Constants.BOOLEANO_SIMBOLO, token.getLexema(), token.getSymbol(),
-								token.getLine());
+						semantic.insertTypeOnFunction(Constants.BOOLEANO_LEXEMA);
+					}
+					token = la.lexical();
+					
+					if (token.getSymbol().equals(Constants.PONTO_VIRGULA_SIMBOLO)) {
+						analisaBloco();
 					}
 				} else {
-					throw new SyntacticException(Constants.DOIS_PONTOS_LEXEMA, Constants.DOIS_PONTOS_SIMBOLO, token.getLexema(),
-							token.getSymbol(), token.getLine());
+					throw new SyntacticException(Constants.INTEIRO_LEXEMA, Constants.INTEIRO_SIMBOLO,
+							Constants.BOOLEANO_LEXEMA, Constants.BOOLEANO_SIMBOLO, token.getLexema(), token.getSymbol(),
+							token.getLine());
 				}
 			} else {
-				throw new SemanticException("Já existe uma função com o mesmo nome da função da linha: " + token.getLine());
+				throw new SyntacticException(Constants.DOIS_PONTOS_LEXEMA, Constants.DOIS_PONTOS_SIMBOLO, token.getLexema(),
+						token.getSymbol(), token.getLine());
 			}
 			
 		} else {
 			throw new SyntacticException(Constants.IDENTIFICADOR_LEXEMA, Constants.IDENTIFICADOR_SIMBOLO, token.getLexema(),
 					token.getSymbol(), token.getLine());
 		}
-		table.cleanLevel();
+		semantic.cleanTableLevel();
 	}
 
 	private void analisaExpressao() throws SyntacticException, SemanticException {
@@ -464,18 +444,15 @@ public class SyntacticAnalyzer {
 
 	private void analisaFator() throws SyntacticException, SemanticException {
 		if (token.getSymbol().equals(Constants.IDENTIFICADOR_SIMBOLO)) {
-			int index = table.searchSymbol(token.getLexema());
-			if (index != (-1)) {
-				if (table.getSymbol(index) instanceof Function && (table.getSymbol(index).getType() == Constants.INTEIRO_LEXEMA || table.getSymbol(index).getType() == Constants.BOOLEANO_LEXEMA)) {
-					chamadaFuncao(index);
-				}
-				else {
-					expression.add(token);
-					token = la.lexical();
-				}
-			} else {
-				throw new SemanticException("Variável ou Função '" + token.getLexema() + "' não está definida no escopo atual. \n Linha: " + token.getLine());
+			int index = semantic.searchSymbol(token);
+			if (semantic.isValidFunction(index)) {
+				chamadaFuncao(index);
 			}
+			else {
+				expression.add(token);
+				token = la.lexical();
+			}
+			
 		} else if (token.getSymbol().equals(Constants.NUMERO_SIMBOLO)) {
 			expression.add(token);
 			token = la.lexical();

@@ -134,6 +134,7 @@ public class GraphicInterface extends JFrame {
 					fileText.requestFocus();
 					setFileLines();
 					fileText.getHighlighter().removeAllHighlights();
+					consoleText.setText("");
 					
 				} catch (FileNotFoundException e) {
 					e.printStackTrace();

@@ -3,15 +3,117 @@ import java.util.Arrays;
 import java.util.List;
 import Constants.*;
 import Exceptions.SemanticException;
+import Symbols.Function;
+import Symbols.Procedure;
+import Symbols.Symbol;
 import Symbols.TableOfSymbols;
+import Symbols.Variable;
 
 public class SemanticAnalyzer {
-	TableOfSymbols tableOfSymbols = new TableOfSymbols();
+	private TableOfSymbols tableOfSymbols;
 	
-	public void setTableOfSymbols(TableOfSymbols table) {
-		tableOfSymbols = table;
+	public SemanticAnalyzer() {
+		tableOfSymbols = new TableOfSymbols();
 	}
 	
+	/* Métodos envolvidos com a Tabela de Símbolos */
+	
+	/* Métodos de inserção */
+	public void insert(Token token, String type) {
+		if (Constants.VARIAVEL.equals(type)) {
+			tableOfSymbols.insert(new Variable(token.getLexema()));
+		} else if (Constants.FUNCAO.equals(type)) {
+			tableOfSymbols.insert(new Function(token.getLexema()));
+		} else if (Constants.PROCEDIMENTO.equals(type)) {
+			tableOfSymbols.insert(new Procedure(token.getLexema()));
+		} else {
+			tableOfSymbols.insert(new Symbol(token.getLexema()));	
+		}
+	}
+	
+	public void insertTypeOnFunction(String type) {
+		tableOfSymbols.insertTypeOnFunction(type);
+	}
+	
+	public void insertTypeOnVariable(Token token) {
+		tableOfSymbols.insertTypeOnVariable(token.getLexema());
+	}
+	
+	/* Métodos de busca */
+	public void searchFunction(Token token) throws SemanticException {
+		if (!(tableOfSymbols.searchFunction(token.getLexema()))) {
+			throw new SemanticException("Função '" + token.getLexema() + "' não está declarada.\nLinha: " + token.getLine());
+		}
+	}
+	
+	public void searchFunctionWithTheSameName(Token token) throws SemanticException {
+		if (tableOfSymbols.searchFunction(token.getLexema())) {
+			throw new SemanticException("Já existe uma função com o mesmo nome da função da linha: " + token.getLine());
+		}
+	}
+	
+	public void searchInTableOfSymbols(Token token) throws SemanticException {
+		if ( tableOfSymbols.search(token.getLexema())) {
+			throw new SemanticException("Já existe uma variável com o mesmo nome da variável da linha: " + token.getLine());
+		}
+	}
+	
+	public void searchProcedure(Token token) throws SemanticException {
+		if (!(tableOfSymbols.searchProcedure(token.getLexema()))) {
+			throw new SemanticException("Procedimento '" + token.getLexema() + "' não está declarado.\nLinha: " + token.getLine());
+		}
+	}
+	
+	public void searchProcedureWithTheSameName(Token token) throws SemanticException {
+		if (tableOfSymbols.searchProcedure(token.getLexema())) {
+			throw new SemanticException("Já existe um procedimento com o mesmo nome do procedimento da linha: " + token.getLine());
+		}
+	}
+	
+	public int searchSymbol(Token token) throws SemanticException {
+		int index = tableOfSymbols.searchSymbol(token.getLexema());
+		
+		if (index >= 0) {
+			return index;
+		} 
+		
+		throw new SemanticException("Variável ou Função '" + token.getLexema() + "' não está definida no escopo atual. \n Linha: " + token.getLine());
+	}
+	
+	public void searchVariable(Token token) throws SemanticException {
+		if (!(tableOfSymbols.searchVariable(token.getLexema()))) {
+			throw new SemanticException("A variável " + token.getLexema() + " não está definida.\nLinha: " + token.getLine());
+		}
+	}
+	
+	public void searchVariableOrFunction(Token token) throws SemanticException {
+		if (!(tableOfSymbols.searchVariable(token.getLexema()) || tableOfSymbols.searchFunction(token.getLexema()))) {
+			throw new SemanticException("A variável ou função " + token.getLexema() + " não está definida.\nLinha: " + token.getLine());
+		}
+	}
+	
+	/* Métodos de recuperação */
+	public String getLexemaOfSymbol(int index) {
+		return tableOfSymbols.getSymbol(index).getLexema();
+	}
+	
+	/* Outros métodos sobre a tabela de simbolos */
+	public boolean isValidFunction(int index) {
+		if (tableOfSymbols.getSymbol(index) instanceof Function && 
+			(tableOfSymbols.getSymbol(index).getType() == Constants.INTEIRO_LEXEMA 
+			|| tableOfSymbols.getSymbol(index).getType() == Constants.BOOLEANO_LEXEMA)) {
+			return true;
+		}
+			
+		return false;
+	}
+	
+	public void cleanTableLevel() {
+		tableOfSymbols.cleanLevel();
+	}
+	
+	
+	/* Métodos Semânticos */
 	public String expressionToPostfix(List<Token> expression) {
 		List<String> stack = new ArrayList<String>();
 		String output = "";

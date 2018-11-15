@@ -1,6 +1,7 @@
 package Constants;
 
 public final class Constants {
+	/* CONSTANTES PARA ANÁLISE LÉXICA */
 	public static final String FIM_ARQUIVO = "final de arquivo";
 	public static final String ERRO = "ERRO";
 	
@@ -137,5 +138,11 @@ public final class Constants {
 	public static final String DIFERENTE = "!=";
 	public static final String E = "e";
 	public static final String OU = "ou";
+	
+	/* CONSTANTES PARA TABELA DE SÍMBOLOS */
+	public static final String VARIAVEL = "variavel";
+	public static final String FUNCAO = "funcao";
+	public static final String PROCEDIMENTO = "procedimento";
+	public static final String PROGRAMA = "programa";
 	
 }
