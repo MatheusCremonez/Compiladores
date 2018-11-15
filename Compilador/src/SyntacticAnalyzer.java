@@ -14,25 +14,30 @@ public class SyntacticAnalyzer {
 
 	private String message;
 	private int errorLine;
+	
 	private LexicalAnalyzer la;
 	private SemanticAnalyzer semantic;
-	//private CodeGenerator generator;
+	private CodeGenerator generator;
 	private TableOfSymbols table;
 	private Token token;
 	private List<Token> expression = new ArrayList<Token>();
+	
+	//É as nominações para onde será realizado o pulo (L0, L1, etc)
+	private int rotulo = 0;
 
 	public SyntacticAnalyzer(String file) {
 		la = new LexicalAnalyzer(file);
 		semantic = new SemanticAnalyzer();
-		//generator = new CodeGenerator();
+		generator = new CodeGenerator();
 		table = new TableOfSymbols();
 		syntactic();
 	}
 
 	public void syntactic() {
 		try {
-			analisadorSintatico();			
-			table.debugTable();
+			analisadorSintatico();
+			generator.debugCode();
+			//table.debugTable();
 		} catch (SyntacticException e) {
 			errorLine = token.getLine();
 			setMessage(e.getMessage());
@@ -50,6 +55,7 @@ public class SyntacticAnalyzer {
 	private void analisadorSintatico() throws SyntacticException, SemanticException {
 		token = la.lexical();
 		if (token.getSymbol().equals(Constants.PROGRAMA_SIMBOLO)) {
+			generator.createCode("START", Constants.EMPTY, Constants.EMPTY);
 			token = la.lexical();
 			if (token.getSymbol().equals(Constants.IDENTIFICADOR_SIMBOLO)) {
 				table.insert(new Symbol(token.getLexema()));
@@ -59,6 +65,8 @@ public class SyntacticAnalyzer {
 					if (token.getSymbol().equals(Constants.PONTO_SIMBOLO)) {
 						token = la.lexical();
 						if (token.getSymbol().equals(Constants.FIM_ARQUIVO)) { 
+							generator.createCode("HLT", Constants.EMPTY, Constants.EMPTY);
+							generator.createFile();
 							setMessage("Compilação sintática realizada com sucesso.");
 						} else {
 							throw new SyntacticException("Trecho de código inesperado na linha: " + token.getLine());
@@ -259,12 +267,14 @@ public class SyntacticAnalyzer {
 	}
 
 	private void analisaLeia() throws SyntacticException, SemanticException {
+		generator.createCode("RD", "", "");
 		token = la.lexical();
 		if (token.getSymbol().equals(Constants.ABRE_PARENTESES_SIMBOLO)) {
 			token = la.lexical();
 			if (token.getSymbol().equals(Constants.IDENTIFICADOR_SIMBOLO)) {
 				if (table.searchVariable(token.getLexema())) {
 					token = la.lexical();
+					//generator.createCode("STR", , "");
 					if (token.getSymbol().equals(Constants.FECHA_PARENTESES_SIMBOLO)) {
 						token = la.lexical();
 					} else {
@@ -290,6 +300,8 @@ public class SyntacticAnalyzer {
 			token = la.lexical();
 			if (token.getSymbol().equals(Constants.IDENTIFICADOR_SIMBOLO)) {
 				if (table.searchVariable(token.getLexema()) || table.searchFunction(token.getLexema())) {
+					//generator.createCode("LDV", , "");
+					generator.createCode("PRN", "", "");
 					token = la.lexical();
 					if (token.getSymbol().equals(Constants.FECHA_PARENTESES_SIMBOLO)) {
 						token = la.lexical();
@@ -311,13 +323,26 @@ public class SyntacticAnalyzer {
 	}
 
 	private void analisaEnquanto() throws SyntacticException, SemanticException {
+		int auxrot1, auxrot2;
+		
+		auxrot1 = rotulo;
+		generator.createCode("L" + rotulo, "NULL", "");
+		rotulo++;
+		
 		token = la.lexical();
 		analisaExpressao();
 		semantic.expressionToPostfix(expression);
 		expression.clear();
 		if (token.getSymbol().equals(Constants.FACA_SIMBOLO)) {
+			auxrot2 = rotulo;
+			generator.createCode("JMPF", "L" + rotulo, "");
+			rotulo++;
+				
 			token = la.lexical();
 			analisaComandoSimples();
+			
+			generator.createCode("JMP", "L" + auxrot1, "");
+			generator.createCode("L" + auxrot2,"NULL", "");
 		} else {
 			throw new SyntacticException(Constants.FACA_LEXEMA, Constants.FACA_SIMBOLO, token.getLexema(),
 					token.getSymbol(), token.getLine());
@@ -325,18 +350,34 @@ public class SyntacticAnalyzer {
 	}
 
 	private void analisaSe() throws SyntacticException, SemanticException {
+		int auxrot1, auxrot2;
+		
 		token = la.lexical();
 		analisaExpressao();
 		semantic.expressionToPostfix(expression);
 		expression.clear();
 		if (token.getSymbol().equals(Constants.ENTAO_SIMBOLO)) {
+			auxrot1 = rotulo;
+			generator.createCode("JMPF", "L" + rotulo, "");
+			rotulo++;
+			
 			token = la.lexical();
 			analisaComandoSimples();
 			if (token.getSymbol().equals(Constants.SENAO_SIMBOLO)) {
+				auxrot2 = rotulo;
+				generator.createCode("JMP", "L" + rotulo, "");
+				rotulo++;
+				
+				generator.createCode("L" + auxrot1, "NULL", "");
+				
 				token = la.lexical();
 				analisaComandoSimples();
+				
+				generator.createCode("L" + auxrot2, "NULL", "");
 			}
-			
+			else {
+				generator.createCode("L" + auxrot1, "NULL", "");
+			}
 		} else {
 			throw new SyntacticException(Constants.ENTAO_LEXEMA, Constants.ENTAO_SIMBOLO, token.getLexema(),
 					token.getSymbol(), token.getLine());

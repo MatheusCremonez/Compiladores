@@ -138,4 +138,8 @@ public final class Constants {
 	public static final String E = "e";
 	public static final String OU = "ou";
 	
+	/* OUTRAS CONSTANTES */
+	
+	public static final String EMPTY = "";
+	
 }
