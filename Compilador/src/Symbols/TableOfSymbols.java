@@ -135,7 +135,7 @@ public class TableOfSymbols {
 	}	
 	
 	public void cleanLevel() {
-		for(int i = (stackOfSymbols.size() - 1); i >= 0 ; i--) {
+		for(int i = (stackOfSymbols.size() - 1); i > 0 ; i--) {
 			if (stackOfSymbols.get(i) instanceof Function || stackOfSymbols.get(i) instanceof Procedure) {
 				if (stackOfSymbols.get(i).isNotClosed()) {
 					stackOfSymbols.get(i).setClosed(true);
