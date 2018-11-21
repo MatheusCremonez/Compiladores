@@ -5,11 +5,13 @@ public class Symbol {
 	private String lexema;
 	private boolean closed;
 	private String type;
+	private int label;
 	
-	public Symbol(String lexema) {
+	public Symbol(String lexema, int label) {
 		this.setLexema(lexema);
 		this.setClosed(false);
 		this.setType(null);
+		this.setLabel(label);
 	}
 	
 	public boolean isClosed() {
@@ -38,5 +40,13 @@ public class Symbol {
 
 	public void setLexema(String lexema) {
 		this.lexema = lexema;
+	}
+
+	public int getLabel() {
+		return label;
+	}
+
+	public void setLabel(int label) {
+		this.label = label;
 	}
 }

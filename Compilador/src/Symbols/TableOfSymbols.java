@@ -111,6 +111,18 @@ public class TableOfSymbols {
 		return lookProgramName(lexema);
 	}
 	
+	public int searchProcedureLabel (String lexema) {
+		for (int i = (stackOfSymbols.size() - 1); i >= 0; i--) {
+			if (stackOfSymbols.get(i) instanceof Procedure) {
+				if(lexema.equals(stackOfSymbols.get(i).getLexema())) {
+					return stackOfSymbols.get(i).getLabel();
+				}
+			}
+		}
+		
+		return -1;
+	}
+	
 	public boolean searchFunction(String lexema) {
 		for (int i = (stackOfSymbols.size() - 1); i >= 0; i--) {
 			if (stackOfSymbols.get(i) instanceof Function) {
@@ -121,6 +133,18 @@ public class TableOfSymbols {
 		}
 		
 		return lookProgramName(lexema);
+	}
+	
+	public int searchFunctionLabel(String lexema) {
+		for (int i = (stackOfSymbols.size() - 1); i >= 0; i--) {
+			if (stackOfSymbols.get(i) instanceof Function) {
+				if(lexema.equals(stackOfSymbols.get(i).getLexema())) {
+					return stackOfSymbols.get(i).getLabel();
+				}
+			}
+		}
+		
+		return -1;
 	}
 	
 	public String searchTypeOfVariableOrFunction(String lexema) {

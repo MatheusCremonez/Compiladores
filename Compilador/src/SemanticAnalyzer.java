@@ -22,12 +22,16 @@ public class SemanticAnalyzer {
 	public void insert(Token token, String type) {
 		if (Constants.VARIAVEL.equals(type)) {
 			tableOfSymbols.insert(new Variable(token.getLexema()));
-		} else if (Constants.FUNCAO.equals(type)) {
-			tableOfSymbols.insert(new Function(token.getLexema()));
-		} else if (Constants.PROCEDIMENTO.equals(type)) {
-			tableOfSymbols.insert(new Procedure(token.getLexema()));
 		} else {
-			tableOfSymbols.insert(new Symbol(token.getLexema()));	
+			tableOfSymbols.insert(new Symbol(token.getLexema(), -1));	
+		}
+	}
+	
+	public void insert(Token token, String type, int label) {
+		if (Constants.PROCEDIMENTO.equals(type)) {
+			tableOfSymbols.insert(new Procedure(token.getLexema(), label));
+		} else if (Constants.FUNCAO.equals(type)) {
+			tableOfSymbols.insert(new Function(token.getLexema(), label));
 		}
 	}
 	
@@ -46,6 +50,16 @@ public class SemanticAnalyzer {
 		}
 	}
 	
+	public int searchFunctionLabel(Token token) throws SemanticException {
+		int labelResult = tableOfSymbols.searchFunctionLabel(token.getLexema());
+		
+		if (labelResult == -1) {
+			throw new SemanticException("Função '" + token.getLexema() + "' não está declarada.\nLinha: " + token.getLine());
+		} else {
+			return labelResult;
+		}
+	}
+	
 	public void searchFunctionWithTheSameName(Token token) throws SemanticException {
 		if (tableOfSymbols.searchFunction(token.getLexema())) {
 			throw new SemanticException("Já existe uma função com o mesmo nome da função da linha: " + token.getLine());
@@ -61,6 +75,16 @@ public class SemanticAnalyzer {
 	public void searchProcedure(Token token) throws SemanticException {
 		if (!(tableOfSymbols.searchProcedure(token.getLexema()))) {
 			throw new SemanticException("Procedimento '" + token.getLexema() + "' não está declarado.\nLinha: " + token.getLine());
+		}
+	}
+	
+	public int searchProcedureLabel(Token token) throws SemanticException {
+		int labelResult = tableOfSymbols.searchProcedureLabel(token.getLexema());
+		
+		if (labelResult == -1) {
+			throw new SemanticException("Procedimento '" + token.getLexema() + "' não está declarado.\nLinha: " + token.getLine());
+		} else {
+			return labelResult;
 		}
 	}
 	
@@ -86,9 +110,16 @@ public class SemanticAnalyzer {
 		}
 	}
 	
-	public void searchVariableOrFunction(Token token) throws SemanticException {
+	public boolean searchVariableOrFunction(Token token) throws SemanticException {
 		if (!(tableOfSymbols.searchVariable(token.getLexema()) || tableOfSymbols.searchFunction(token.getLexema()))) {
 			throw new SemanticException("A variável ou função " + token.getLexema() + " não está definida.\nLinha: " + token.getLine());
+		} else {
+			//Variável
+			if(tableOfSymbols.searchVariable(token.getLexema())){
+				return false;
+			}
+			//Função
+			return true;
 		}
 	}
 	

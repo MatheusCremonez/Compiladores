@@ -18,7 +18,7 @@ public class SyntacticAnalyzer {
 	private List<Token> expression = new ArrayList<Token>();
 	
 	//É as nominações para onde será realizado o pulo (L0, L1, etc)
-	private int rotulo = 0;
+	private int label = 0;
 
 	public SyntacticAnalyzer(String file) {
 		la = new LexicalAnalyzer(file);
@@ -157,9 +157,15 @@ public class SyntacticAnalyzer {
 	}
 
 	private void analisaSubrotinas() throws SyntacticException, SemanticException {
+		int auxrot = 0, flag = 0;
+		
 		if ((token.getSymbol().equals(Constants.PROCEDIMENTO_SIMBOLO))
 				|| (token.getSymbol().equals(Constants.FUNCAO_SIMBOLO))) {
-			// terá questões semanticas aqui no futuro
+			
+			auxrot = label;
+			generator.createCode("JMP", "L" + label, "");
+			label++;
+			flag = 1;
 		}
 
 		while ((token.getSymbol().equals(Constants.PROCEDIMENTO_SIMBOLO))
@@ -177,6 +183,10 @@ public class SyntacticAnalyzer {
 				throw new SyntacticException(Constants.PONTO_VIRGULA_LEXEMA, Constants.PONTO_VIRGULA_SIMBOLO,
 						token.getLexema(), token.getSymbol(), token.getLine());
 			}
+		}
+		
+		if(flag == 1) {
+			generator.createCode("L" + auxrot,"NULL", "");
 		}
 	}
 
@@ -247,7 +257,9 @@ public class SyntacticAnalyzer {
 		semantic.searchProcedure(auxToken);
 		// se houver erro, dentro do semântico lancará a exceção. Caso seja um procedimento
 		// válido, continuará a excecução
-		// OK é um procedimento, aqui terá algum tipo de geração de código 
+		
+		int labelResult = semantic.searchProcedureLabel(auxToken);
+		generator.createCode("CALL", "L" + labelResult, "");
 	}
 
 	private void chamadaFuncao(int index) throws SemanticException {
@@ -255,9 +267,11 @@ public class SyntacticAnalyzer {
 		semantic.searchFunction(new Token("", symbolLexema, token.getLine()));
 		// se houver erro, dentro do semântico lancará a exceção. Caso seja uma funcao
 		// válida, continuará a excecução
-		// OK é uma função
-		token = la.lexical();
 		
+		int labelResult = semantic.searchFunctionLabel(new Token("", symbolLexema, token.getLine()));
+		generator.createCode("CALL", "L" + labelResult, "");
+		
+		token = la.lexical();
 	}
 
 	private void analisaLeia() throws SyntacticException, SemanticException {
@@ -291,7 +305,13 @@ public class SyntacticAnalyzer {
 			token = la.lexical();
 			if (token.getSymbol().equals(Constants.IDENTIFICADOR_SIMBOLO)) {
 
-				semantic.searchVariableOrFunction(token);	
+				boolean isFunction = semantic.searchVariableOrFunction(token);	
+				
+				if(isFunction) {
+					
+					int labelResult = semantic.searchFunctionLabel(token);
+					generator.createCode("CALL", "L" + labelResult, "");
+				}
 				
 				token = la.lexical();
 				if (token.getSymbol().equals(Constants.FECHA_PARENTESES_SIMBOLO)) {
@@ -314,9 +334,9 @@ public class SyntacticAnalyzer {
 	private void analisaEnquanto() throws SyntacticException, SemanticException {
 		int auxrot1, auxrot2;
 		
-		auxrot1 = rotulo;
-		generator.createCode("L" + rotulo, "NULL", "");
-		rotulo++;
+		auxrot1 = label;
+		generator.createCode("L" + label, "NULL", "");
+		label++;
 		
 		token = la.lexical();
 		analisaExpressao();
@@ -328,9 +348,9 @@ public class SyntacticAnalyzer {
 		expression.clear();
 		
 		if (token.getSymbol().equals(Constants.FACA_SIMBOLO)) {
-			auxrot2 = rotulo;
-			generator.createCode("JMPF", "L" + rotulo, "");
-			rotulo++;
+			auxrot2 = label;
+			generator.createCode("JMPF", "L" + label, "");
+			label++;
 				
 			token = la.lexical();
 			analisaComandoSimples();
@@ -356,16 +376,16 @@ public class SyntacticAnalyzer {
 		expression.clear();
 		
 		if (token.getSymbol().equals(Constants.ENTAO_SIMBOLO)) {
-			auxrot1 = rotulo;
-			generator.createCode("JMPF", "L" + rotulo, "");
-			rotulo++;
+			auxrot1 = label;
+			generator.createCode("JMPF", "L" + label, "");
+			label++;
 			
 			token = la.lexical();
 			analisaComandoSimples();
 			if (token.getSymbol().equals(Constants.SENAO_SIMBOLO)) {
-				auxrot2 = rotulo;
-				generator.createCode("JMP", "L" + rotulo, "");
-				rotulo++;
+				auxrot2 = label;
+				generator.createCode("JMP", "L" + label, "");
+				label++;
 				
 				generator.createCode("L" + auxrot1, "NULL", "");
 				
@@ -387,7 +407,11 @@ public class SyntacticAnalyzer {
 		token = la.lexical();
 		if (token.getSymbol().equals(Constants.IDENTIFICADOR_SIMBOLO)) {
 			semantic.searchProcedureWithTheSameName(token);
-			semantic.insert(token, Constants.PROCEDIMENTO);
+			semantic.insert(token, Constants.PROCEDIMENTO, label);
+			
+			generator.createCode("L" + label, "NULL", "");
+			label++;
+			
 			token = la.lexical();
 			if (token.getSymbol().equals(Constants.PONTO_VIRGULA_SIMBOLO)) {
 				analisaBloco();
@@ -407,7 +431,11 @@ public class SyntacticAnalyzer {
 		token = la.lexical();
 		if (token.getSymbol().equals(Constants.IDENTIFICADOR_SIMBOLO)) {
 			semantic.searchFunctionWithTheSameName(token);
-			semantic.insert(token, Constants.FUNCAO);
+			semantic.insert(token, Constants.FUNCAO, label);
+			
+			generator.createCode("L" + label, "NULL", "");
+			label++;
+			
 			token = la.lexical();
 			
 			if (token.getSymbol().equals(Constants.DOIS_PONTOS_SIMBOLO)) {

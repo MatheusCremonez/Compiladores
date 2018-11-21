@@ -3,7 +3,7 @@ package Symbols;
 public class Variable extends Symbol {
 	
 	public Variable(String lexema) {
-		super(lexema);
+		super(lexema, -1);
 	}	
 	
 }
