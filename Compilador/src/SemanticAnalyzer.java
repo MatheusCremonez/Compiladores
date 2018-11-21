@@ -19,15 +19,14 @@ public class SemanticAnalyzer {
 	/* Métodos envolvidos com a Tabela de Símbolos */
 	
 	/* Métodos de inserção */
-	public void insert(Token token, String type) {
-		if (Constants.VARIAVEL.equals(type)) {
-			tableOfSymbols.insert(new Variable(token.getLexema()));
-		} else {
-			tableOfSymbols.insert(new Symbol(token.getLexema(), -1));	
-		}
+	
+	//Programa
+	public void insertProgram(Token token) {
+			tableOfSymbols.insert(new Symbol(token.getLexema(), -1, -1));	
 	}
 	
-	public void insert(Token token, String type, int label) {
+	//Procedimento ou Função
+	public void insertProcOrFunc(Token token, String type, int label) {
 		if (Constants.PROCEDIMENTO.equals(type)) {
 			tableOfSymbols.insert(new Procedure(token.getLexema(), label));
 		} else if (Constants.FUNCAO.equals(type)) {
@@ -35,15 +34,23 @@ public class SemanticAnalyzer {
 		}
 	}
 	
+	//Variável
+	public void insertVariable(Token token, int position) {
+			tableOfSymbols.insert(new Variable(token.getLexema(), position));
+	}
+	
+	//Tipo Função
 	public void insertTypeOnFunction(String type) {
 		tableOfSymbols.insertTypeOnFunction(type);
 	}
 	
+	//Tipo Variável
 	public void insertTypeOnVariable(Token token) {
 		tableOfSymbols.insertTypeOnVariable(token.getLexema());
 	}
 	
 	/* Métodos de busca */
+	
 	public void searchFunction(Token token) throws SemanticException {
 		if (!(tableOfSymbols.searchFunction(token.getLexema()))) {
 			throw new SemanticException("Função '" + token.getLexema() + "' não está declarada.\nLinha: " + token.getLine());
@@ -145,6 +152,7 @@ public class SemanticAnalyzer {
 	
 	
 	/* Métodos Semânticos */
+	
 	public String expressionToPostfix(List<Token> expression) {
 		List<String> stack = new ArrayList<String>();
 		String output = "";
@@ -412,7 +420,10 @@ public class SemanticAnalyzer {
 			}
 		}
 	}
-
 	
-}
+	//Debug Tabela de Simbolos
+	public void debugTable() {
+		tableOfSymbols.debugTable();
+	}
 
+}

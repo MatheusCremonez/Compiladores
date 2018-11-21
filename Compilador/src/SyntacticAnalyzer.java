@@ -17,8 +17,11 @@ public class SyntacticAnalyzer {
 	private Token token;
 	private List<Token> expression = new ArrayList<Token>();
 	
-	//É as nominações para onde será realizado o pulo (L0, L1, etc)
+	//São as nominações para onde será realizado o pulo (Ex: L"0", L"1", etc)
 	private int label = 0;
+	
+	//São as posições na memória que está alocado a variável
+	private int position = 0;
 
 	public SyntacticAnalyzer(String file) {
 		la = new LexicalAnalyzer(file);
@@ -30,7 +33,8 @@ public class SyntacticAnalyzer {
 	public void syntactic() {
 		try {
 			analisadorSintatico();
-			generator.debugCode();
+			//generator.debugCode();
+			//semantic.debugTable();
 		} catch (SyntacticException e) {
 			errorLine = token.getLine();
 			setMessage(e.getMessage());
@@ -51,7 +55,7 @@ public class SyntacticAnalyzer {
 			generator.createCode("START", Constants.EMPTY, Constants.EMPTY);
 			token = la.lexical();
 			if (token.getSymbol().equals(Constants.IDENTIFICADOR_SIMBOLO)) {
-				semantic.insert(token, Constants.PROGRAMA);
+				semantic.insertProgram(token);
 				token = la.lexical();
 				if (token.getSymbol().equals(Constants.PONTO_VIRGULA_SIMBOLO)) {
 					analisaBloco();
@@ -114,8 +118,11 @@ public class SyntacticAnalyzer {
 	private void analisaVariaveis() throws SyntacticException, SemanticException {
 		do {
 			if (token.getSymbol().equals(Constants.IDENTIFICADOR_SIMBOLO)) {
+				
 				semantic.searchInTableOfSymbols(token);
-				semantic.insert(token, Constants.VARIAVEL);
+				semantic.insertVariable(token, position);
+				position++;
+				
 				token = la.lexical();
 				if (token.getSymbol().equals(Constants.VIRGULA_SIMBOLO)
 						|| token.getSymbol().equals(Constants.DOIS_PONTOS_SIMBOLO)) {
@@ -407,7 +414,7 @@ public class SyntacticAnalyzer {
 		token = la.lexical();
 		if (token.getSymbol().equals(Constants.IDENTIFICADOR_SIMBOLO)) {
 			semantic.searchProcedureWithTheSameName(token);
-			semantic.insert(token, Constants.PROCEDIMENTO, label);
+			semantic.insertProcOrFunc(token, Constants.PROCEDIMENTO, label);
 			
 			generator.createCode("L" + label, "NULL", "");
 			label++;
@@ -425,13 +432,15 @@ public class SyntacticAnalyzer {
 					token.getSymbol(), token.getLine());
 		}
 		semantic.cleanTableLevel();
+		
+		generator.createCode("RETURN", "", "");
 	}
 	
 	private void analisaDeclaracaoFuncao() throws SyntacticException, SemanticException {
 		token = la.lexical();
 		if (token.getSymbol().equals(Constants.IDENTIFICADOR_SIMBOLO)) {
 			semantic.searchFunctionWithTheSameName(token);
-			semantic.insert(token, Constants.FUNCAO, label);
+			semantic.insertProcOrFunc(token, Constants.FUNCAO, label);
 			
 			generator.createCode("L" + label, "NULL", "");
 			label++;

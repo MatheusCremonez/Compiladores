@@ -6,12 +6,14 @@ public class Symbol {
 	private boolean closed;
 	private String type;
 	private int label;
+	private int position;
 	
-	public Symbol(String lexema, int label) {
+	public Symbol(String lexema, int label, int position) {
 		this.setLexema(lexema);
 		this.setClosed(false);
 		this.setType(null);
 		this.setLabel(label);
+		this.setPosition(position);
 	}
 	
 	public boolean isClosed() {
@@ -48,5 +50,13 @@ public class Symbol {
 
 	public void setLabel(int label) {
 		this.label = label;
+	}
+
+	public int getPosition() {
+		return position;
+	}
+
+	public void setPosition(int position) {
+		this.position = position;
 	}
 }

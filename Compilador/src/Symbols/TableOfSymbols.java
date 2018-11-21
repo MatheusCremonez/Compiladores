@@ -177,7 +177,7 @@ public class TableOfSymbols {
 	
 	public void debugTable() {
 		for(int i = 0; i < stackOfSymbols.size(); i++) {
-			System.out.println(stackOfSymbols.get(i).getLexema() + " " + stackOfSymbols.get(i).getType());
+			System.out.println(stackOfSymbols.get(i).getLexema() + " " + stackOfSymbols.get(i).getType() + " " + stackOfSymbols.get(i).getPosition());
 		}
 	}
 	
