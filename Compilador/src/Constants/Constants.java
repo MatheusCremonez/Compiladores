@@ -144,5 +144,10 @@ public final class Constants {
 	public static final String FUNCAO = "funcao";
 	public static final String PROCEDIMENTO = "procedimento";
 	public static final String PROGRAMA = "programa";
+
+	/* OUTRAS CONSTANTES */
+	
+	public static final String EMPTY = "";
+
 	
 }
