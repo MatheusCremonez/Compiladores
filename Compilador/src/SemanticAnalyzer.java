@@ -421,6 +421,26 @@ public class SemanticAnalyzer {
 		}
 	}
 	
+	//Formata a expressão para usar na geração de código
+	public String formatExpression(String expression) {
+		String[] aux = expression.split(" ");
+		String newExpression = "";
+		int auxPosition;
+		
+		for(int i = 0; i < aux.length; i++) {
+			auxPosition = tableOfSymbols.searchPositionOfVariable(aux[i]);
+			
+			if(auxPosition != -1) {
+				newExpression = newExpression.concat("p" + auxPosition + " ");
+			}
+			else {
+				newExpression = newExpression.concat(aux[i] + " ");
+			}
+		}
+		
+		return newExpression;
+	}
+	
 	//Debug Tabela de Simbolos
 	public void debugTable() {
 		tableOfSymbols.debugTable();

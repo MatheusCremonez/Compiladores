@@ -156,6 +156,17 @@ public class TableOfSymbols {
 			}
 		}
 		return null;
+	}
+	
+	public int searchPositionOfVariable(String variable) {
+		for (int i = (stackOfSymbols.size() - 1); i >= 0; i--) {
+			if (stackOfSymbols.get(i) instanceof Variable) {
+				if(variable.equals(stackOfSymbols.get(i).getLexema())) {
+					return stackOfSymbols.get(i).getPosition();
+				}
+			}
+		}
+		return -1;
 	}	
 	
 	public void cleanLevel() {

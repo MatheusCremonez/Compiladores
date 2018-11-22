@@ -254,15 +254,13 @@ public class SyntacticAnalyzer {
 		analisaExpressao();
 		
 		String aux = semantic.expressionToPostfix(expression);
+		
+		String newExpression = semantic.formatExpression(aux);
+		System.out.println("Expressao: " + newExpression);
+		generator.createCode(newExpression);
+		
 		String type = semantic.returnTypeOfExpression(aux);
-		
-		//Realizar a transformação da expressão pós fixa para um jeito específico de ser usado na geração de código abaixo
-		//(Semantico)
-		
-		generator.createCode(aux);
-		
 		semantic.whoCallsMe(type, attributionToken.getLexema());
-		
 		
 		System.out.println("Tipo da Expressão:" + type);
 		expression.clear();
