@@ -48,7 +48,7 @@ public class CodeGenerator {
 			} else if (aux[a].equals("-u")) {
 				code = code.concat("INV" + " ").concat("" + " ").concat("" + "\r\n");
 			} else if (aux[a].equals("+u")) {
-				//do nothing
+				// do nothing
 			} else if (aux[a].equals("nao")) {
 				code = code.concat("NEG" + " ").concat("" + " ").concat("" + "\r\n");
 			} else {
@@ -58,7 +58,6 @@ public class CodeGenerator {
 	}
 
 	public void createFile() {
-
 		try {
 			File directory = new File("..\\Testes\\CodigoFinalVM", "code.txt");
 			directory.createNewFile();
