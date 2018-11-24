@@ -1,0 +1,5 @@
+START  
+JMPF L0 
+L0 NULL 
+PRN  
+HLT  

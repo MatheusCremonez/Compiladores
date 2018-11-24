@@ -9,8 +9,14 @@ import Symbols.Symbol;
 import Symbols.TableOfSymbols;
 import Symbols.Variable;
 
+
+
 public class SemanticAnalyzer {
 	private TableOfSymbols tableOfSymbols;
+	private ArrayList<Token> functionTokenList = new ArrayList<Token>();
+	private int lineWithoutReturn;
+	private int line;
+	private boolean error;
 	
 	public SemanticAnalyzer() {
 		tableOfSymbols = new TableOfSymbols();
@@ -170,7 +176,7 @@ public class SemanticAnalyzer {
 				stack.remove(i);
 			}
 		}
-		System.out.println("Saída: " + output);
+		// System.out.println("Saída: " + output);
 		return output;
 	}
 	
@@ -381,7 +387,105 @@ public class SemanticAnalyzer {
 			}
 		}
 	}
+	
+	/* Métodos envolvendo o retorno de função */
+	
+	public void insertTokenOnFunctionList(Token token) {
+		functionTokenList.add(token);
+	}
+	
+	public void verifyFunctionList(String label) {
+		Token auxToken = null;
+		
+		boolean conditionalThenReturn = false;
+		boolean conditionalElseReturn = false;
+		int thenPosition = -1;
+		int elsePosition = thenPosition;
+		
+		for(int i = 0; i < functionTokenList.size(); i++) {
+			if(Constants.SE_SIMBOLO.equals(functionTokenList.get(i).getSymbol())
+			   && functionTokenList.get(i).getLexema().contains(label)) {
+				functionTokenList.remove(i);
+				i--;
+			} else if (Constants.ENTAO_SIMBOLO.equals(functionTokenList.get(i).getSymbol()) 
+					&& functionTokenList.get(i).getLexema().contains(label)) {
+				lineWithoutReturn = functionTokenList.get(i).getLine();
+				if(functionTokenList.size() > (i + 1)) {
+					if (Constants.IDENTIFICADOR_SIMBOLO.equals(functionTokenList.get(i + 1).getSymbol())) {
+						conditionalThenReturn = true;
+						auxToken = functionTokenList.get(i + 1);
+					}	
+				} else {
+					lineWithoutReturn = functionTokenList.get(i).getLine();
+				}
+				thenPosition = i;
+			}  else if (Constants.SENAO_SIMBOLO.equals(functionTokenList.get(i).getSymbol()) 
+					&& functionTokenList.get(i).getLexema().contains(label)) {
+				if(functionTokenList.size() > (i + 1)) {
+					if (Constants.IDENTIFICADOR_SIMBOLO.equals(functionTokenList.get(i + 1).getSymbol())) {
+						conditionalElseReturn = true;
+						elsePosition = i + 1;
+						auxToken = functionTokenList.get(i + 1);
+					} 	
+				} else {
+					lineWithoutReturn = functionTokenList.get(i).getLine();
+					elsePosition = i;
+				}
+				
+			}
+		}
+		
+		if(elsePosition == (-1)) elsePosition = functionTokenList.size() - 1;
+		
+		removeIf(elsePosition, thenPosition, (conditionalThenReturn && conditionalElseReturn), auxToken);
+	}
+	
+	public boolean thisFunctionHasReturn(String nameOfFunction) throws SemanticException{
+		if (functionTokenList.size() == 1) {
+			if (Constants.IDENTIFICADOR_SIMBOLO.equals(functionTokenList.get(0).getSymbol())) {
+				return true;
+			}
+		}
 
+		error = true;
+		if (lineWithoutReturn != 0)	line = lineWithoutReturn;
+		
+		throw new SemanticException("Nem todos os caminhos possíveis da função possuem retorno."
+				+ "\nLinha: " + line);
+	}
+	
+	private void removeIf(int start, int end, boolean functionReturn, Token tokenFunction) {
+		for(int i = start; i >= end; i--) {
+			functionTokenList.remove(i);
+		}
+		
+		if(functionReturn && tokenFunction != null) {
+			functionTokenList.add(tokenFunction);
+		}
+	}
+	
+	public void clearFunctionList() {
+		functionTokenList.clear();
+	}
+
+	
+	public void debugTableFunction() {
+		for(int i = 0; i < functionTokenList.size(); i++) {
+			System.out.println(functionTokenList.get(i).getLexema());
+		}
+	}
+	//
+
+	public void setLine(int line) {
+		this.line = line;
+	}
+	public int getLine() {
+		return line;
+	}
+
+	public boolean hasError() {
+		return error;
+	}
 	
 }
 

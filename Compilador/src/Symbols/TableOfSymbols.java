@@ -147,8 +147,8 @@ public class TableOfSymbols {
 				stackOfSymbols.remove(i);
 			}
 		}
-		System.out.println("Tabela Atualizada");
-		debugTable();
+//		System.out.println("Tabela Atualizada");
+//		debugTable();
 	}
 	
 	public void debugTable() {
