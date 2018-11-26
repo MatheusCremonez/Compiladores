@@ -268,7 +268,6 @@ public class SyntacticAnalyzer {
 		String aux = semantic.expressionToPostfix(expression);
 
 		String newExpression = semantic.formatExpression(aux);
-		System.out.println("Expressao: " + newExpression);
 		generator.createCode(newExpression);
 
 		String type = semantic.returnTypeOfExpression(aux);
@@ -375,9 +374,13 @@ public class SyntacticAnalyzer {
 		analisaExpressao();
 
 		String aux = semantic.expressionToPostfix(expression);
+		
+		String newExpression = semantic.formatExpression(aux);
+		generator.createCode(newExpression);
+
+		
 		String type = semantic.returnTypeOfExpression(aux);
 		semantic.whoCallsMe(type, Constants.ENQUANTO_LEXEMA);
-		// System.out.println("(ENQUANTO)Tipo da Expressão:" + type);
 		expression.clear();
 
 		if (token.getSymbol().equals(Constants.FACA_SIMBOLO)) {
@@ -408,6 +411,10 @@ public class SyntacticAnalyzer {
 		analisaExpressao();
 
 		String aux = semantic.expressionToPostfix(expression);
+		
+		String newExpression = semantic.formatExpression(aux);
+		generator.createCode(newExpression);
+		
 		String type = semantic.returnTypeOfExpression(aux);
 		semantic.whoCallsMe(type, Constants.SE_LEXEMA);
 		expression.clear();
