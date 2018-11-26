@@ -1,0 +1,13 @@
+programa p;
+var a: inteiro;
+funcao f1: inteiro;
+inicio
+	se a > 0
+	entao	se a < 10
+		entao f1 := 0
+		senao f1 := 1
+	senao f1 := 2
+fim;
+inicio
+	leia(a)
+fim.

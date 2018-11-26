@@ -23,6 +23,10 @@ public class SyntacticAnalyzer {
 	//São as posições na memória que está alocado a variável
 	private int position = 0;
 
+	private boolean flagFunction = false;
+	private String nameOfFunction;
+	private int auxLabel = 0;
+
 	public SyntacticAnalyzer(String file) {
 		la = new LexicalAnalyzer(file);
 		semantic = new SemanticAnalyzer();
@@ -46,6 +50,8 @@ public class SyntacticAnalyzer {
 		if (la.error) {
 			setMessage(la.getMessage());
 			errorLine = la.getLine();
+		} else if (semantic.hasError()) {
+			errorLine = semantic.getLine();
 		}
 	}
 
@@ -62,9 +68,12 @@ public class SyntacticAnalyzer {
 					if (token.getSymbol().equals(Constants.PONTO_SIMBOLO)) {
 						token = la.lexical();
 						if (token.getSymbol().equals(Constants.FIM_ARQUIVO)) { 
+
 							generator.createCode("HLT", Constants.EMPTY, Constants.EMPTY);
 							generator.createFile();
-							setMessage("Compilação sintática realizada com sucesso.");
+
+							setMessage("Compilação realizada com sucesso.");
+
 							semantic.cleanTableLevel();
 						} else {
 							throw new SyntacticException("Trecho de código inesperado na linha: " + token.getLine());
@@ -250,13 +259,16 @@ public class SyntacticAnalyzer {
 	}
 
 	private void analisaAtribuicao(Token attributionToken) throws SyntacticException, SemanticException {
+		if (flagFunction && nameOfFunction.equals(attributionToken.getLexema())) {
+			semantic.insertTokenOnFunctionList(attributionToken);
+		}
+		
 		token = la.lexical();
 		analisaExpressao();
 		
 		String aux = semantic.expressionToPostfix(expression);
 		String type = semantic.returnTypeOfExpression(aux);
 		semantic.whoCallsMe(type, attributionToken.getLexema());
-		System.out.println("Tipo da Expressão:" + type);
 		expression.clear();
 	}
 
@@ -351,7 +363,7 @@ public class SyntacticAnalyzer {
 		String aux = semantic.expressionToPostfix(expression);
 		String type = semantic.returnTypeOfExpression(aux);
 		semantic.whoCallsMe(type, Constants.ENQUANTO_LEXEMA);
-		System.out.println("(ENQUANTO)Tipo da Expressão:" + type);
+		// System.out.println("(ENQUANTO)Tipo da Expressão:" + type);
 		expression.clear();
 		
 		if (token.getSymbol().equals(Constants.FACA_SIMBOLO)) {
@@ -372,6 +384,11 @@ public class SyntacticAnalyzer {
 
 	private void analisaSe() throws SyntacticException, SemanticException {
 		int auxrot1, auxrot2;
+
+		auxLabel++;
+		if (flagFunction) {
+			semantic.insertTokenOnFunctionList(new Token(token.getSymbol(), token.getLexema() + auxLabel, token.getLine()));
+		}
 		
 		token = la.lexical();
 		analisaExpressao();
@@ -379,22 +396,30 @@ public class SyntacticAnalyzer {
 		String aux = semantic.expressionToPostfix(expression);
 		String type = semantic.returnTypeOfExpression(aux);
 		semantic.whoCallsMe(type, Constants.SE_LEXEMA);
-		System.out.println("(SE)Tipo da Expressão:" + type);
 		expression.clear();
 		
 		if (token.getSymbol().equals(Constants.ENTAO_SIMBOLO)) {
 			auxrot1 = label;
 			generator.createCode("JMPF", "L" + label, "");
 			label++;
+
+			if (flagFunction) {
+				semantic.insertTokenOnFunctionList(new Token(token.getSymbol(), token.getLexema() + auxLabel, token.getLine()));
+			}
 			
 			token = la.lexical();
 			analisaComandoSimples();
 			if (token.getSymbol().equals(Constants.SENAO_SIMBOLO)) {
+
 				auxrot2 = label;
 				generator.createCode("JMP", "L" + label, "");
 				label++;
 				
 				generator.createCode("L" + auxrot1, "NULL", "");
+
+				if (flagFunction) {
+					semantic.insertTokenOnFunctionList(new Token(token.getSymbol(), token.getLexema() + auxLabel, token.getLine()));
+				}
 				
 				token = la.lexical();
 				analisaComandoSimples();
@@ -408,6 +433,8 @@ public class SyntacticAnalyzer {
 			throw new SyntacticException(Constants.ENTAO_LEXEMA, Constants.ENTAO_SIMBOLO, token.getLexema(),
 					token.getSymbol(), token.getLine());
 		}
+		semantic.verifyFunctionList(String.valueOf(auxLabel));
+		auxLabel--;
 	}
 	
 	private void analisaDeclaracaoProcedimento() throws SyntacticException, SemanticException {
@@ -437,6 +464,8 @@ public class SyntacticAnalyzer {
 	}
 	
 	private void analisaDeclaracaoFuncao() throws SyntacticException, SemanticException {
+		semantic.clearFunctionList();
+		flagFunction = !flagFunction;
 		token = la.lexical();
 		if (token.getSymbol().equals(Constants.IDENTIFICADOR_SIMBOLO)) {
 			semantic.searchFunctionWithTheSameName(token);
@@ -445,6 +474,8 @@ public class SyntacticAnalyzer {
 			generator.createCode("L" + label, "NULL", "");
 			label++;
 			
+			nameOfFunction = token.getLexema();
+			semantic.setLine(token.getLine());
 			token = la.lexical();
 			
 			if (token.getSymbol().equals(Constants.DOIS_PONTOS_SIMBOLO)) {
@@ -476,6 +507,12 @@ public class SyntacticAnalyzer {
 					token.getSymbol(), token.getLine());
 		}
 		semantic.cleanTableLevel();
+		flagFunction = !flagFunction;
+		semantic.thisFunctionHasReturn(nameOfFunction);
+		
+		System.out.println("------final table-------");
+		semantic.debugTableFunction();
+		System.out.println("------------------------");
 	}
 
 	private void analisaExpressao() throws SyntacticException, SemanticException {
