@@ -58,7 +58,7 @@ public class SyntacticAnalyzer {
 					if (token.getSymbol().equals(Constants.PONTO_SIMBOLO)) {
 						token = la.lexical();
 						if (token.getSymbol().equals(Constants.FIM_ARQUIVO)) { 
-							setMessage("Compilação sintática realizada com sucesso.");
+							setMessage("Compilação realizada com sucesso.");
 							semantic.cleanTableLevel();
 						} else {
 							throw new SyntacticException("Trecho de código inesperado na linha: " + token.getLine());

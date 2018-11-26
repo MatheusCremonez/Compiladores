@@ -409,7 +409,6 @@ public class SemanticAnalyzer {
 				i--;
 			} else if (Constants.ENTAO_SIMBOLO.equals(functionTokenList.get(i).getSymbol()) 
 					&& functionTokenList.get(i).getLexema().contains(label)) {
-				lineWithoutReturn = functionTokenList.get(i).getLine();
 				if(functionTokenList.size() > (i + 1)) {
 					if (Constants.IDENTIFICADOR_SIMBOLO.equals(functionTokenList.get(i + 1).getSymbol())) {
 						conditionalThenReturn = true;
@@ -441,10 +440,16 @@ public class SemanticAnalyzer {
 	}
 	
 	public boolean thisFunctionHasReturn(String nameOfFunction) throws SemanticException{
-		if (functionTokenList.size() == 1) {
-			if (Constants.IDENTIFICADOR_SIMBOLO.equals(functionTokenList.get(0).getSymbol())) {
-				return true;
-			}
+		int aux = 0;
+		
+		for(int i = 0 ; i < functionTokenList.size(); i++ ) {
+			if (nameOfFunction.equals(functionTokenList.get(i).getLexema())) {
+				aux++;
+			}	
+		}
+		
+		if (aux == functionTokenList.size()) {
+			return true;
 		}
 
 		error = true;
