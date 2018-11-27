@@ -128,7 +128,9 @@ public class SemanticAnalyzer {
 			String parcel = expression.get(a).getLexema();
 			
 			if (Constants.NUMERO_SIMBOLO.equals(expression.get(a).getSymbol()) ||
-				Constants.IDENTIFICADOR_SIMBOLO.equals(expression.get(a).getSymbol())) {
+				Constants.IDENTIFICADOR_SIMBOLO.equals(expression.get(a).getSymbol()) || 
+				Constants.VERDADEIRO_SIMBOLO.equals(expression.get(a).getSymbol()) ||
+				Constants.FALSO_SIMBOLO.equals(expression.get(a).getSymbol())) {
 				output = output.concat(parcel + " ");
 			} else if (Constants.ABRE_PARENTESES_SIMBOLO.equals(expression.get(a).getSymbol())) { 
 				stack.add(parcel);
