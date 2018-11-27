@@ -196,14 +196,7 @@ public class GraphicInterface extends JFrame {
 
 		@Override
 		public void keyReleased(KeyEvent e) {
-			if(e.getKeyCode() == KeyEvent.VK_BACK_SPACE) {
-				setFileLines();
-			}
-			
-			if(e.getKeyCode() == KeyEvent.VK_CONTROL) {
-					setFileLines();
-			}
-			
+			setFileLines();
 		}
 
 		@Override

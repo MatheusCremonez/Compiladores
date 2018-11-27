@@ -52,6 +52,9 @@ public class LexicalAnalyzer {
 						error = true;
 						throw new LexicalException("Há algum caracter inválido na linha " + line + ".");
 					}
+					if (caracter == '\n') {
+						line++;
+					}
 					caracter = leCaracter();
 				}
 				if (caracter == '}') {

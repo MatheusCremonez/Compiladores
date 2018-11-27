@@ -251,6 +251,7 @@ public class SyntacticAnalyzer {
 		token = la.lexical();
 
 		if (token.getSymbol().equals(Constants.ATRIBUICAO_SIMBOLO)) {
+			semantic.searchVariableOrFunction(aux);
 			analisaAtribuicao(aux);
 		} else {
 			chamadaProcedimento(aux);
@@ -453,7 +454,9 @@ public class SyntacticAnalyzer {
 			throw new SyntacticException(Constants.ENTAO_LEXEMA, Constants.ENTAO_SIMBOLO, token.getLexema(),
 					token.getSymbol(), token.getLine());
 		}
-		semantic.verifyFunctionList(String.valueOf(auxLabel));
+		if (flagFunction) {
+			semantic.verifyFunctionList(String.valueOf(auxLabel));
+		}
 		auxLabel--;
 	}
 
