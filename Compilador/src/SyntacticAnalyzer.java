@@ -125,11 +125,14 @@ public class SyntacticAnalyzer {
 	}
 
 	private void analisaVariaveis() throws SyntacticException, SemanticException {
+		int countVariable = 0;
+		
 		do {
 			if (token.getSymbol().equals(Constants.IDENTIFICADOR_SIMBOLO)) {
 
 				semantic.searchInTableOfSymbols(token);
 				semantic.insertVariable(token, position);
+				countVariable++;
 				position++;
 
 				token = la.lexical();
@@ -156,6 +159,7 @@ public class SyntacticAnalyzer {
 
 		} while (!(token.getSymbol().equals(Constants.DOIS_PONTOS_SIMBOLO)));
 
+		generator.createCode("ALLOC", countVariable);
 		token = la.lexical();
 		analisaTipo();
 	}
