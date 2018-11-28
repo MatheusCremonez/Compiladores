@@ -1,10 +1,14 @@
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 public class CodeGenerator {
 
 	private String code = "";
+	private int variableInMemory = 0;
+	private List<Integer> variableAlloc = new ArrayList<Integer>();
 
 	public void createCode(String value1, String value2, String value3) {
 
@@ -59,11 +63,26 @@ public class CodeGenerator {
 				} else {
 					code = code.concat("LDC" + " ").concat(aux[a]).concat("\r\n");	
 				}
-				
 			}
 		}
 	}
 
+	public void createCode(String command, int countVariable) {
+		if (command == "ALLOC") {
+			code = code.concat("ALLOC" + " ").concat(variableInMemory + " ").concat(countVariable + "\r\n");
+			variableInMemory = variableInMemory + countVariable;
+			variableAlloc.add(countVariable);
+		}
+		else {
+			int position = variableAlloc.size() - 1;
+			int countVariableToDalloc = variableAlloc.get(position);
+			
+			code = code.concat("DALLOC" + " ").concat(variableInMemory + " ").concat(countVariableToDalloc + "\r\n");
+			variableInMemory = variableInMemory - countVariableToDalloc;
+			variableAlloc.remove(position);
+		}
+	}
+	
 	public void createFile() {
 		try {
 			File directory = new File("..\\Testes\\CodigoFinalVM", "code.txt");
