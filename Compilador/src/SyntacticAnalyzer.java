@@ -21,6 +21,9 @@ public class SyntacticAnalyzer {
 
 	// São as posições na memória que está alocado a variável
 	private int position = 0;
+	
+	//Variáveis declaradas para o ALLOC
+	private int countVariable = 0;
 
 	private boolean flagFunction = false;
 	private List<String> nameOfFunction = new ArrayList<String>();
@@ -102,6 +105,10 @@ public class SyntacticAnalyzer {
 		analisaEtVariaveis();
 		analisaSubrotinas();
 		analisaComandos();
+		
+		if(!flagFunction) {
+			generator.createCode("DALLOC", -1);
+		}
 	}
 
 	private void analisaEtVariaveis() throws SyntacticException, SemanticException {
@@ -123,10 +130,11 @@ public class SyntacticAnalyzer {
 			}
 		}
 		
+		generator.createCode("ALLOC", countVariable);
+		countVariable = 0;
 	}
 
 	private void analisaVariaveis() throws SyntacticException, SemanticException {
-		int countVariable = 0;
 		do {
 			if (token.getSymbol().equals(Constants.IDENTIFICADOR_SIMBOLO)) {
 
@@ -158,8 +166,7 @@ public class SyntacticAnalyzer {
 			}
 
 		} while (!(token.getSymbol().equals(Constants.DOIS_PONTOS_SIMBOLO)));
-
-		generator.createCode("ALLOC", countVariable);
+		
 		token = la.lexical();
 		analisaTipo();
 	}
@@ -247,7 +254,6 @@ public class SyntacticAnalyzer {
 		} else {
 			analisaComandos();
 		}
-
 	}
 
 	private void analisaAtribChprocedimento() throws SyntacticException, SemanticException {

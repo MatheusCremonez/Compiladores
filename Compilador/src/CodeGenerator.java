@@ -77,8 +77,8 @@ public class CodeGenerator {
 			int position = variableAlloc.size() - 1;
 			int countVariableToDalloc = variableAlloc.get(position);
 			
-			code = code.concat("DALLOC" + " ").concat(variableInMemory + " ").concat(countVariableToDalloc + "\r\n");
 			variableInMemory = variableInMemory - countVariableToDalloc;
+			code = code.concat("DALLOC" + " ").concat(variableInMemory + " ").concat(countVariableToDalloc + "\r\n");
 			variableAlloc.remove(position);
 		}
 	}
