@@ -69,7 +69,7 @@ public class CodeGenerator {
 
 	public void createCode(String command, int countVariable) {
 		if (command == "ALLOC") {
-			code = code.concat("ALLOC" + " ").concat(variableInMemory + " ").concat(countVariable + "\r\n");
+			code = code.concat(command + " ").concat(variableInMemory + " ").concat(countVariable + "\r\n");
 			variableInMemory = variableInMemory + countVariable;
 			variableAlloc.add(countVariable);
 		}
@@ -78,7 +78,7 @@ public class CodeGenerator {
 			int countVariableToDalloc = variableAlloc.get(position);
 			
 			variableInMemory = variableInMemory - countVariableToDalloc;
-			code = code.concat("DALLOC" + " ").concat(variableInMemory + " ").concat(countVariableToDalloc + "\r\n");
+			code = code.concat(command + " ").concat(variableInMemory + " ").concat(countVariableToDalloc + "\r\n");
 			variableAlloc.remove(position);
 		}
 	}
