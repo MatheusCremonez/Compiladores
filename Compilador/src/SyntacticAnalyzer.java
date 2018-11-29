@@ -288,9 +288,15 @@ public class SyntacticAnalyzer {
 			semantic.insertTokenOnFunctionList(attributionToken);
 		}
 		
-		if (!((nameOfFunction.get(nameOfFunction.size() - 1)).equals(attributionToken.getLexema()))) {
-			generator.createCode("STR", semantic.positionOfVariable(attributionToken.getLexema()), Constants.EMPTY);	
+		if (nameOfFunction.size() > 0) {
+			if (!((nameOfFunction.get(nameOfFunction.size() - 1)).equals(attributionToken.getLexema()))) {
+				generator.createCode("STR", semantic.positionOfVariable(attributionToken.getLexema()), Constants.EMPTY);	
+			}
+		} else {
+			generator.createCode("STR", semantic.positionOfVariable(attributionToken.getLexema()), Constants.EMPTY);
 		}
+		
+		
 	}
 
 	private void chamadaProcedimento(Token auxToken) throws SemanticException {
