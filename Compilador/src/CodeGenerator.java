@@ -73,13 +73,20 @@ public class CodeGenerator {
 			variableInMemory = variableInMemory + countVariable;
 			variableAlloc.add(countVariable);
 		}
-		else {
-			int position = variableAlloc.size() - 1;
-			int countVariableToDalloc = variableAlloc.get(position);
+		else {		
 			
-			variableInMemory = variableInMemory - countVariableToDalloc;
-			code = code.concat(command + " ").concat(variableInMemory + " ").concat(countVariableToDalloc + "\r\n");
-			variableAlloc.remove(position);
+			if (countVariable == 0) {
+				code = code.concat(command + "\r\n");
+			} else {
+				int position = variableAlloc.size() - 1;
+				int countVariableToDalloc = variableAlloc.get(position);
+				
+				variableInMemory = variableInMemory - countVariableToDalloc;
+				code = code.concat(command + " ").concat(variableInMemory + " ").concat(countVariableToDalloc + "\r\n");
+				variableAlloc.remove(position);	
+			}		
+				
+			
 		}
 	}
 	

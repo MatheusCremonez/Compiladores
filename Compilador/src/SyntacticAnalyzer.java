@@ -585,7 +585,7 @@ public class SyntacticAnalyzer {
 			variableOfAlloc.remove(variableOfAlloc.size() - 1);
 		}
 		else {
-			generator.createCode("RETURNF", -1);
+			generator.createCode("RETURNF", 0);
 			variableOfAlloc.remove(variableOfAlloc.size() - 1);
 		}
 		

@@ -1,0 +1,11 @@
+programa p;
+var a: inteiro;
+
+funcao f1: inteiro;
+inicio
+	f1:=99;
+fim;
+
+inicio
+	escreva(f1);
+fim.
