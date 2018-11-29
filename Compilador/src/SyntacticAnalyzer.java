@@ -23,7 +23,7 @@ public class SyntacticAnalyzer {
 	private int position = 0;
 
 	private boolean flagFunction = false;
-	private String nameOfFunction;
+	private List<String> nameOfFunction = new ArrayList<String>();
 	private int auxLabel = 0;
 
 	public SyntacticAnalyzer(String file) {
@@ -122,11 +122,11 @@ public class SyntacticAnalyzer {
 						token.getLexema(), token.getSymbol(), token.getLine());
 			}
 		}
+		
 	}
 
 	private void analisaVariaveis() throws SyntacticException, SemanticException {
 		int countVariable = 0;
-		
 		do {
 			if (token.getSymbol().equals(Constants.IDENTIFICADOR_SIMBOLO)) {
 
@@ -256,17 +256,15 @@ public class SyntacticAnalyzer {
 
 		if (token.getSymbol().equals(Constants.ATRIBUICAO_SIMBOLO)) {
 			semantic.searchVariableOrFunction(aux);
+			
 			analisaAtribuicao(aux);
+			
 		} else {
 			chamadaProcedimento(aux);
 		}
 	}
 
 	private void analisaAtribuicao(Token attributionToken) throws SyntacticException, SemanticException {
-		if (flagFunction && nameOfFunction.equals(attributionToken.getLexema())) {
-			semantic.insertTokenOnFunctionList(attributionToken);
-		}
-		
 		token = la.lexical();
 		analisaExpressao();
 
@@ -278,9 +276,15 @@ public class SyntacticAnalyzer {
 		String type = semantic.returnTypeOfExpression(aux);
 		semantic.whoCallsMe(type, attributionToken.getLexema());
 
-		System.out.println("Tipo da Expressão:" + type);
-
 		expression.clear();
+		
+		if (flagFunction && (nameOfFunction.get(nameOfFunction.size() - 1)).equals(attributionToken.getLexema())) {
+			semantic.insertTokenOnFunctionList(attributionToken);
+		}
+		
+		if (!((nameOfFunction.get(nameOfFunction.size() - 1)).equals(attributionToken.getLexema()))) {
+			generator.createCode("STR", semantic.positionOfVariable(attributionToken.getLexema()), Constants.EMPTY);	
+		}
 	}
 
 	private void chamadaProcedimento(Token auxToken) throws SemanticException {
@@ -312,10 +316,10 @@ public class SyntacticAnalyzer {
 			token = la.lexical();
 			if (token.getSymbol().equals(Constants.IDENTIFICADOR_SIMBOLO)) {
 				semantic.searchVariable(token);
+				generator.createCode("STR", semantic.positionOfVariable(token.getLexema()), Constants.EMPTY);
 				token = la.lexical();
 				if (token.getSymbol().equals(Constants.FECHA_PARENTESES_SIMBOLO)) {
 					token = la.lexical();
-					// generator.createCode("STR", , "");
 				} else {
 					throw new SyntacticException(Constants.FECHA_PARENTESES_LEXEMA, Constants.FECHA_PARENTESES_SIMBOLO,
 							token.getLexema(), token.getSymbol(), token.getLine());
@@ -500,7 +504,7 @@ public class SyntacticAnalyzer {
 			generator.createCode("L" + label, "NULL", "");
 			label++;
 			
-			nameOfFunction = token.getLexema();
+			nameOfFunction.add(token.getLexema());
 			semantic.setLine(token.getLine());
 
 			token = la.lexical();
@@ -536,7 +540,8 @@ public class SyntacticAnalyzer {
 		}
 		semantic.cleanTableLevel();
 		flagFunction = !flagFunction;
-		semantic.thisFunctionHasReturn(nameOfFunction);
+		semantic.thisFunctionHasReturn(nameOfFunction.get(nameOfFunction.size() - 1));
+		nameOfFunction.remove(nameOfFunction.size() - 1);
 		
 		System.out.println("------final table-------");
 		semantic.debugTableFunction();

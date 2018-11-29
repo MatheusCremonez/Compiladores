@@ -507,12 +507,13 @@ public class SemanticAnalyzer {
 		for(int i = 0 ; i < functionTokenList.size(); i++ ) {
 			if (nameOfFunction.equals(functionTokenList.get(i).getLexema())) {
 				aux++;
+				if (aux == functionTokenList.size()) {
+					return true;
+				}
 			}	
 		}
 		
-		if (aux == functionTokenList.size()) {
-			return true;
-		}
+		
 
 		error = true;
 		if (lineWithoutReturn != 0)	line = lineWithoutReturn;
