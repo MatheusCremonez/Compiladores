@@ -22,9 +22,10 @@ public class SyntacticAnalyzer {
 	// São as posições na memória que está alocado a variável
 	private int position = 0;
 	
-	//Variáveis declaradas para o ALLOC
 	private int countVariable = 0;
 
+	private List<Integer> variableOfAlloc = new ArrayList<Integer>();
+	
 	private boolean flagFunction = false;
 	private List<String> nameOfFunction = new ArrayList<String>();
 	private int auxLabel = 0;
@@ -106,9 +107,14 @@ public class SyntacticAnalyzer {
 		analisaSubrotinas();
 		analisaComandos();
 		
-		if(!flagFunction) {
+		if(!flagFunction && (variableOfAlloc.get(variableOfAlloc.size() - 1) > 0)) {
 			generator.createCode("DALLOC", -1);
+			variableOfAlloc.remove(variableOfAlloc.size() - 1);
 		}
+		else if (!flagFunction && (variableOfAlloc.get(variableOfAlloc.size() - 1) == 0)) {
+			variableOfAlloc.remove(variableOfAlloc.size() - 1);
+		}
+
 	}
 
 	private void analisaEtVariaveis() throws SyntacticException, SemanticException {
@@ -130,11 +136,15 @@ public class SyntacticAnalyzer {
 			}
 		}
 		
-		generator.createCode("ALLOC", countVariable);
+		variableOfAlloc.add(countVariable);
 		countVariable = 0;
+		
+		if(variableOfAlloc.get(variableOfAlloc.size() - 1) > 0) {
+			generator.createCode("ALLOC", variableOfAlloc.get(variableOfAlloc.size() - 1));
+		}
 	}
 
-	private void analisaVariaveis() throws SyntacticException, SemanticException {
+	private void analisaVariaveis() throws SyntacticException, SemanticException {	
 		do {
 			if (token.getSymbol().equals(Constants.IDENTIFICADOR_SIMBOLO)) {
 
@@ -496,6 +506,14 @@ public class SyntacticAnalyzer {
 		}
 		semantic.cleanTableLevel();
 
+		if (variableOfAlloc.get(variableOfAlloc.size() - 1) > 0) {
+			generator.createCode("DALLOC", -1);
+			variableOfAlloc.remove(variableOfAlloc.size() - 1);
+		}
+		else {
+			variableOfAlloc.remove(variableOfAlloc.size() - 1);
+		}
+		
 		generator.createCode("RETURN", "", "");
 	}
 
@@ -548,6 +566,15 @@ public class SyntacticAnalyzer {
 		flagFunction = !flagFunction;
 		semantic.thisFunctionHasReturn(nameOfFunction.get(nameOfFunction.size() - 1));
 		nameOfFunction.remove(nameOfFunction.size() - 1);
+		
+		if(variableOfAlloc.get(variableOfAlloc.size() - 1) > 0) {
+			generator.createCode("RETURNF", -1);
+			variableOfAlloc.remove(variableOfAlloc.size() - 1);
+		}
+		else {
+			generator.createCode("RETURNF", -1);
+			variableOfAlloc.remove(variableOfAlloc.size() - 1);
+		}
 		
 		System.out.println("------final table-------");
 		semantic.debugTableFunction();
