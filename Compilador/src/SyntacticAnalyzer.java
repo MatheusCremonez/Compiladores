@@ -26,6 +26,7 @@ public class SyntacticAnalyzer {
 
 	private List<Integer> variableOfAlloc = new ArrayList<Integer>();
 	
+	private boolean flagProcedure = false;
 	private boolean flagFunction = false;
 	private List<String> nameOfFunction = new ArrayList<String>();
 	private int auxLabel = 0;
@@ -107,12 +108,14 @@ public class SyntacticAnalyzer {
 		analisaSubrotinas();
 		analisaComandos();
 		
-		if(!flagFunction && (variableOfAlloc.get(variableOfAlloc.size() - 1) > 0)) {
-			generator.createCode("DALLOC", -1);
-			variableOfAlloc.remove(variableOfAlloc.size() - 1);
-		}
-		else if (!flagFunction && (variableOfAlloc.get(variableOfAlloc.size() - 1) == 0)) {
-			variableOfAlloc.remove(variableOfAlloc.size() - 1);
+		if(variableOfAlloc.size() > 0 && !flagProcedure) {
+			if(!flagFunction && (variableOfAlloc.get(variableOfAlloc.size() - 1) > 0)) {
+				generator.createCode("DALLOC", -1);
+				variableOfAlloc.remove(variableOfAlloc.size() - 1);
+			}
+			else if (!flagFunction && (variableOfAlloc.get(variableOfAlloc.size() - 1) == 0)) {
+				variableOfAlloc.remove(variableOfAlloc.size() - 1);
+			}
 		}
 
 	}
@@ -491,6 +494,8 @@ public class SyntacticAnalyzer {
 	}
 
 	private void analisaDeclaracaoProcedimento() throws SyntacticException, SemanticException {
+		flagProcedure = true;
+		
 		token = la.lexical();
 		if (token.getSymbol().equals(Constants.IDENTIFICADOR_SIMBOLO)) {
 			semantic.searchProcedureWithTheSameName(token);
@@ -521,6 +526,8 @@ public class SyntacticAnalyzer {
 		}
 		
 		generator.createCode("RETURN", "", "");
+		
+		flagProcedure = false;
 	}
 
 	private void analisaDeclaracaoFuncao() throws SyntacticException, SemanticException {
