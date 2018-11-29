@@ -146,7 +146,25 @@ namespace VirtualMachine
                 firstAttribute = dataGridView1.Rows[linhaInstrucao].Cells[2].Value.ToString();
                 secondAttribute = dataGridView1.Rows[linhaInstrucao].Cells[3].Value.ToString();
 
+                if (instructionName.Equals("RETURNF"))
+                {
+                    // salvo o topo da pilha numa variável
+                    String auxStashTop = arrayStash[topoDaPilha].ToString();
+                    arrayStash.RemoveAt(topoDaPilha);
+                    topoDaPilha--;
 
+                    // realizo o dalloc se houver os dois atributos
+                    if (firstAttribute != "" && secondAttribute != "")
+                    {
+                        topoDaPilha = instruction.execute("DALLOC", "", "", arrayStash, topoDaPilha);
+                    }
+                    // realizo o return
+                    linhaInstrucao = Convert.ToInt32(arrayStash[topoDaPilha]);
+                    topoDaPilha = instruction.execute("RETURN", "", "", arrayStash, topoDaPilha);
+                    // devolvo o valor da função pro topo da pilha
+
+                    topoDaPilha = instruction.execute("LDC", auxStashTop, "", arrayStash, topoDaPilha);
+                }
                 if (instructionName.Equals("RETURN"))
                 {
                     dataGridView1.ClearSelection();
@@ -165,7 +183,14 @@ namespace VirtualMachine
 
                 if (instructionName.Equals("JMP") || instructionName.Equals("JMPF"))
                 {
-                    int newInstructionLine = instruction.executeJump(dataGridView1, instructionName, firstAttribute, Convert.ToString(arrayStash[topoDaPilha]));
+                    int newInstructionLine;
+                    if (instructionName.Equals("JMP"))
+                    {
+                        newInstructionLine = instruction.executeJump(dataGridView1, instructionName, firstAttribute, "");
+                    } else {
+                        newInstructionLine = instruction.executeJump(dataGridView1, instructionName, firstAttribute, Convert.ToString(arrayStash[topoDaPilha]));
+                    }
+                    
                     if (newInstructionLine != (-1))
                     {
                         linhaInstrucao = newInstructionLine;
@@ -244,7 +269,7 @@ namespace VirtualMachine
                     else
                     {
                         dataGridView1.Rows[linhaInstrucao].Selected = true;
-                        if (!instructionName.Equals("RETURN"))
+                        if (!instructionName.Equals("RETURN") && !instructionName.Equals("RETURNF"))
                         {
                             linhaInstrucao++;
                         }
@@ -310,7 +335,25 @@ namespace VirtualMachine
                 instructionName = dataGridView1.Rows[linhaInstrucaoStep].Cells[1].Value.ToString();
                 firstAttribute = dataGridView1.Rows[linhaInstrucaoStep].Cells[2].Value.ToString();
                 secondAttribute = dataGridView1.Rows[linhaInstrucaoStep].Cells[3].Value.ToString();
+                if (instructionName.Equals("RETURNF"))
+                {
+                    // salvo o topo da pilha numa variável
+                    String auxStashTop = arrayStashStep[topoDaPilhaStep].ToString();
+                    arrayStashStep.RemoveAt(topoDaPilhaStep);
+                    topoDaPilhaStep--;
 
+                    // realizo o dalloc se houver os dois atributos
+                    if (firstAttribute != "" && secondAttribute != "")
+                    {
+                        topoDaPilhaStep = instructionStep.execute("DALLOC", "", "", arrayStashStep, topoDaPilhaStep);
+                    }
+                    // realizo o return
+                    linhaInstrucaoStep = Convert.ToInt32(arrayStashStep[topoDaPilhaStep]);
+                    topoDaPilhaStep = instructionStep.execute("RETURN", "", "", arrayStashStep, topoDaPilhaStep);
+                    // devolvo o valor da função pro topo da pilha
+
+                    topoDaPilhaStep = instructionStep.execute("LDC", auxStashTop, "", arrayStashStep, topoDaPilhaStep);
+                }
                 if (instructionName.Equals("RETURN"))
                 {
                     dataGridView1.ClearSelection();
@@ -429,7 +472,7 @@ namespace VirtualMachine
                     else
                     {
                         dataGridView1.Rows[linhaInstrucaoStep].Selected = true;
-                        if(!instructionName.Equals("RETURN"))
+                        if(!instructionName.Equals("RETURN") && !instructionName.Equals("RETURNF"))
                         {
                             linhaInstrucaoStep++;
                         }  
@@ -702,6 +745,9 @@ namespace VirtualMachine
                     case "RETURN":
                         array.RemoveAt(topoPilha);
                         return topoPilha - 1;
+
+                    case "RETURNF":
+                        return topoPilha;
 
                     case "HLT":
                         array.Clear();
