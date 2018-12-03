@@ -156,7 +156,7 @@ namespace VirtualMachine
                     // realizo o dalloc se houver os dois atributos
                     if (firstAttribute != "" && secondAttribute != "")
                     {
-                        topoDaPilha = instruction.execute("DALLOC", "", "", arrayStash, topoDaPilha);
+                        topoDaPilha = instruction.execute("DALLOC", firstAttribute, secondAttribute, arrayStash, topoDaPilha);
                     }
                     // realizo o return
                     linhaInstrucao = Convert.ToInt32(arrayStash[topoDaPilha]);
@@ -345,7 +345,7 @@ namespace VirtualMachine
                     // realizo o dalloc se houver os dois atributos
                     if (firstAttribute != "" && secondAttribute != "")
                     {
-                        topoDaPilhaStep = instructionStep.execute("DALLOC", "", "", arrayStashStep, topoDaPilhaStep);
+                        topoDaPilhaStep = instructionStep.execute("DALLOC", firstAttribute, secondAttribute, arrayStashStep, topoDaPilhaStep);
                     }
                     // realizo o return
                     linhaInstrucaoStep = Convert.ToInt32(arrayStashStep[topoDaPilhaStep]);

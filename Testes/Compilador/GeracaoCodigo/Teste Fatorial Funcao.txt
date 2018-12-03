@@ -1,0 +1,20 @@
+programa exemplo6;
+var x,y: inteiro;
+
+funcao f1: inteiro;
+var z: inteiro;
+inicio
+	z:=x;
+	x:=x-1;
+	se z>1
+		entao inicio
+			y:=f1*z;
+		           fim
+		senao y:=1;
+	f1:=y;
+fim;
+
+inicio
+	leia(x);
+	escreva(f1)
+fim.
