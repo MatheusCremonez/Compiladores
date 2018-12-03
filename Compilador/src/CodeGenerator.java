@@ -60,8 +60,10 @@ public class CodeGenerator {
 					code = code.concat("LDC").concat(" 1").concat("\r\n");
 				} else if(aux[a].equals("falso")) {
 					code = code.concat("LDC").concat(" 0").concat("\r\n");
+				} else if(aux[a].equals("")){
+					// do nothing
 				} else {
-					code = code.concat("LDC" + " ").concat(aux[a]).concat("\r\n");	
+					code = code.concat("LDC" + " ").concat(aux[a]).concat("\r\n");
 				}
 			}
 		}

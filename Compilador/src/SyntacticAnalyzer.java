@@ -308,8 +308,6 @@ public class SyntacticAnalyzer {
 		} else {
 			generator.createCode("STR", semantic.positionOfVariable(attributionToken.getLexema()), Constants.EMPTY);
 		}
-		
-		
 	}
 
 	private void chamadaProcedimento(Token auxToken) throws SemanticException {
