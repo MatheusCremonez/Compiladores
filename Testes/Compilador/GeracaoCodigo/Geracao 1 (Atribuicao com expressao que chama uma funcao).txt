@@ -1,0 +1,14 @@
+programa teste;
+var a, b, c: inteiro;
+
+funcao f1: inteiro;
+inicio
+	f1 := 10
+fim;
+
+inicio
+	leia(b);
+	leia(c);
+	a := f1 + b + c;
+	escreva(a);
+fim.

@@ -437,13 +437,16 @@ public class SemanticAnalyzer {
 		int auxPosition;
 
 		for (int i = 0; i < aux.length; i++) {
-			auxPosition = tableOfSymbols.searchPositionOfVariable(aux[i]);
+			if(!tableOfSymbols.searchFunction(aux[i])) {
+				auxPosition = tableOfSymbols.searchPositionOfVariable(aux[i]);
 
-			if (auxPosition != -1) {
-				newExpression = newExpression.concat("p" + auxPosition + " ");
-			} else {
-				newExpression = newExpression.concat(aux[i] + " ");
+				if (auxPosition != -1) {
+					newExpression = newExpression.concat("p" + auxPosition + " ");
+				} else {
+					newExpression = newExpression.concat(aux[i] + " ");
+				}
 			}
+			
 		}
 
 		return newExpression;

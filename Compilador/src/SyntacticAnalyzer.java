@@ -638,6 +638,7 @@ public class SyntacticAnalyzer {
 		if (token.getSymbol().equals(Constants.IDENTIFICADOR_SIMBOLO)) {
 			int index = semantic.searchSymbol(token);
 			if (semantic.isValidFunction(index)) {
+				expression.add(token);
 				chamadaFuncao(index);
 			} else {
 				expression.add(token);
