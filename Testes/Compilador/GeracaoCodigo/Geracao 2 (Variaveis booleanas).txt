@@ -1,0 +1,9 @@
+programa p;
+var a, b, c: booleano;
+
+inicio
+	b := verdadeiro;
+	c := falso;
+	a := b ou c;
+	escreva(a);
+fim.

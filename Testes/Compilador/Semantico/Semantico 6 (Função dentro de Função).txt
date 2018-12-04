@@ -1,0 +1,16 @@
+programa p;
+
+funcao f1: inteiro;
+	funcao f2: inteiro;
+	inicio
+		se 2 > 1 entao f2 := 1
+		senao f2 := 2
+	fim;
+
+inicio
+	f1 := f2;
+fim;
+
+inicio
+	escreva(f1)
+fim.

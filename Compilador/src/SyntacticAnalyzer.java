@@ -26,12 +26,15 @@ public class SyntacticAnalyzer {
 
 	private List<Integer> variableOfAlloc = new ArrayList<Integer>();
 	
-	private boolean flagProcedure = false;
-	private boolean flagFunction = false;
+	private List<Boolean> flagProcedureList = new ArrayList<Boolean>();
+	private List<Boolean> flagFunctionList = new ArrayList<Boolean>();
 	private List<String> nameOfFunction = new ArrayList<String>();
 	private int auxLabel = 0;
 
 	public SyntacticAnalyzer(String file) {
+		flagFunctionList.add(false);
+		flagProcedureList.add(false);
+		
 		la = new LexicalAnalyzer(file);
 		semantic = new SemanticAnalyzer();
 		generator = new CodeGenerator();
@@ -106,12 +109,12 @@ public class SyntacticAnalyzer {
 		analisaSubrotinas();
 		analisaComandos();
 		
-		if(variableOfAlloc.size() > 0 && !flagProcedure) {
-			if(!flagFunction && (variableOfAlloc.get(variableOfAlloc.size() - 1) > 0)) {
+		if(variableOfAlloc.size() > 0 && !flagProcedureList.get(flagFunctionList.size() - 1)) {
+			if(!flagFunctionList.get(flagFunctionList.size() - 1) && (variableOfAlloc.get(variableOfAlloc.size() - 1) > 0)) {
 				generator.createCode(Constants.DALLOC, -1);
 				variableOfAlloc.remove(variableOfAlloc.size() - 1);
 			}
-			else if (!flagFunction && (variableOfAlloc.get(variableOfAlloc.size() - 1) == 0)) {
+			else if (!flagFunctionList.get(flagFunctionList.size() - 1) && (variableOfAlloc.get(variableOfAlloc.size() - 1) == 0)) {
 				variableOfAlloc.remove(variableOfAlloc.size() - 1);
 			}
 		}
@@ -295,7 +298,7 @@ public class SyntacticAnalyzer {
 
 		expression.clear();
 		
-		if (flagFunction && (nameOfFunction.get(nameOfFunction.size() - 1)).equals(attributionToken.getLexema())) {
+		if (flagFunctionList.get(flagFunctionList.size() - 1) && (nameOfFunction.get(nameOfFunction.size() - 1)).equals(attributionToken.getLexema())) {
 			semantic.insertTokenOnFunctionList(attributionToken);
 		}
 		
@@ -433,7 +436,7 @@ public class SyntacticAnalyzer {
 		int auxrot1, auxrot2;
 
 		auxLabel++;
-		if (flagFunction) {
+		if (flagFunctionList.get(flagFunctionList.size() - 1)) {
 			semantic.insertTokenOnFunctionList(new Token(token.getSymbol(), token.getLexema() + auxLabel, token.getLine()));
 		}
 		
@@ -454,7 +457,7 @@ public class SyntacticAnalyzer {
 			generator.createCode(Constants.JMPF, Constants.LABEL + label, Constants.EMPTY);
 			label++;
 
-			if (flagFunction) {
+			if (flagFunctionList.get(flagFunctionList.size() - 1)) {
 				semantic.insertTokenOnFunctionList(new Token(token.getSymbol(), token.getLexema() + auxLabel, token.getLine()));
 			}
 			
@@ -468,7 +471,7 @@ public class SyntacticAnalyzer {
 
 				generator.createCode(Constants.LABEL + auxrot1, Constants.NULL, Constants.EMPTY);
 
-				if (flagFunction) {
+				if (flagFunctionList.get(flagFunctionList.size() - 1)) {
 					semantic.insertTokenOnFunctionList(new Token(token.getSymbol(), token.getLexema() + auxLabel, token.getLine()));
 				}
 		
@@ -483,14 +486,14 @@ public class SyntacticAnalyzer {
 			throw new SyntacticException(Constants.ENTAO_LEXEMA, Constants.ENTAO_SIMBOLO, token.getLexema(),
 					token.getSymbol(), token.getLine());
 		}
-		if (flagFunction) {
+		if (flagFunctionList.get(flagFunctionList.size() - 1)) {
 			semantic.verifyFunctionList(String.valueOf(auxLabel));
 		}
 		auxLabel--;
 	}
 
 	private void analisaDeclaracaoProcedimento() throws SyntacticException, SemanticException {
-		flagProcedure = true;
+		flagProcedureList.add(true);
 		
 		token = la.lexical();
 		if (token.getSymbol().equals(Constants.IDENTIFICADOR_SIMBOLO)) {
@@ -523,12 +526,11 @@ public class SyntacticAnalyzer {
 		
 		generator.createCode(Constants.RETURN, Constants.EMPTY, Constants.EMPTY);
 		
-		flagProcedure = false;
+		flagProcedureList.remove(flagFunctionList.size() - 1);
 	}
 
 	private void analisaDeclaracaoFuncao() throws SyntacticException, SemanticException {
-		semantic.clearFunctionList();
-		flagFunction = !flagFunction;
+		flagFunctionList.add(true);
 		token = la.lexical();
 		if (token.getSymbol().equals(Constants.IDENTIFICADOR_SIMBOLO)) {
 			semantic.searchFunctionWithTheSameName(token);
@@ -572,7 +574,7 @@ public class SyntacticAnalyzer {
 					token.getLexema(), token.getSymbol(), token.getLine());
 		}
 		semantic.cleanTableLevel();
-		flagFunction = !flagFunction;
+		flagFunctionList.remove(flagFunctionList.size() - 1);
 		semantic.thisFunctionHasReturn(nameOfFunction.get(nameOfFunction.size() - 1));
 		nameOfFunction.remove(nameOfFunction.size() - 1);
 		
@@ -584,7 +586,7 @@ public class SyntacticAnalyzer {
 			generator.createCode(Constants.RETURNF, 0);
 			variableOfAlloc.remove(variableOfAlloc.size() - 1);
 		}
-
+		semantic.clearFunctionList();
 	}
 
 	private void analisaExpressao() throws SyntacticException, SemanticException {

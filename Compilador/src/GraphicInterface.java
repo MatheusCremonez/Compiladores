@@ -173,6 +173,7 @@ public class GraphicInterface extends JFrame {
 		public void actionPerformed(ActionEvent event) {
 
 			if (event.getSource() == compileButton) {
+				setFileLines();
 				errorLine = 0;
 				consoleText.setText(null);
 				fileText.getHighlighter().removeAllHighlights();
@@ -191,12 +192,10 @@ public class GraphicInterface extends JFrame {
 
 		@Override
 		public void keyPressed(KeyEvent e) {
-				setFileLines();
 		}
 
 		@Override
-		public void keyReleased(KeyEvent e) {
-			setFileLines();
+		public void keyReleased(KeyEvent e) {			
 		}
 
 		@Override
