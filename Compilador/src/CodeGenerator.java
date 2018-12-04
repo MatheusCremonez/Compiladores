@@ -4,6 +4,8 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+import Constants.Constants;
+
 public class CodeGenerator {
 
 	private String code = "";
@@ -23,54 +25,54 @@ public class CodeGenerator {
 			if (aux[a].contains("p")) {
 
 				String[] value = aux[a].split("p");
-				code = code.concat("LDV" + " ").concat(value[1]).concat("\r\n");
+				code = code.concat(Constants.LDV + " ").concat(value[1]).concat("\r\n");
 
-			} else if (aux[a].equals("+")) {
-				code = code.concat("ADD").concat("\r\n");
-			} else if (aux[a].equals("-")) {
-				code = code.concat("SUB").concat("\r\n");
-			} else if (aux[a].equals("*")) {
-				code = code.concat("MULT").concat("\r\n");
-			} else if (aux[a].equals("div")) {
-				code = code.concat("DIVI").concat("\r\n");
-			} else if (aux[a].equals("e")) {
-				code = code.concat("AND").concat("\r\n");
-			} else if (aux[a].equals("ou")) {
-				code = code.concat("OR").concat("\r\n");
-			} else if (aux[a].equals("<")) {
-				code = code.concat("CME").concat("\r\n");
-			} else if (aux[a].equals(">")) {
-				code = code.concat("CMA").concat("\r\n");
-			} else if (aux[a].equals("=")) {
-				code = code.concat("CEQ").concat("\r\n");
-			} else if (aux[a].equals("!=")) {
-				code = code.concat("CDIF").concat("\r\n");
-			} else if (aux[a].equals("<=")) {
-				code = code.concat("CMEQ").concat("\r\n");
-			} else if (aux[a].equals(">=")) {
-				code = code.concat("CMAQ").concat("\r\n");
-			} else if (aux[a].equals("-u")) {
-				code = code.concat("INV").concat("\r\n");
-			} else if (aux[a].equals("+u")) {
+			} else if (aux[a].equals(Constants.MAIS)) {
+				code = code.concat(Constants.ADD).concat("\r\n");
+			} else if (aux[a].equals(Constants.MENOS)) {
+				code = code.concat(Constants.SUB).concat("\r\n");
+			} else if (aux[a].equals(Constants.MULTIPLICACAO)) {
+				code = code.concat(Constants.MULT).concat("\r\n");
+			} else if (aux[a].equals(Constants.DIVISAO)) {
+				code = code.concat(Constants.DIVI).concat("\r\n");
+			} else if (aux[a].equals(Constants.E)) {
+				code = code.concat(Constants.AND).concat("\r\n");
+			} else if (aux[a].equals(Constants.OU)) {
+				code = code.concat(Constants.OR).concat("\r\n");
+			} else if (aux[a].equals(Constants.MENOR)) {
+				code = code.concat(Constants.CME).concat("\r\n");
+			} else if (aux[a].equals(Constants.MAIOR)) {
+				code = code.concat(Constants.CMA).concat("\r\n");
+			} else if (aux[a].equals(Constants.IGUAL)) {
+				code = code.concat(Constants.CEQ).concat("\r\n");
+			} else if (aux[a].equals(Constants.DIFERENTE)) {
+				code = code.concat(Constants.CDIF).concat("\r\n");
+			} else if (aux[a].equals(Constants.MENOR_IGUAL)) {
+				code = code.concat(Constants.CMEQ).concat("\r\n");
+			} else if (aux[a].equals(Constants.MAIOR_IGUAL)) {
+				code = code.concat(Constants.CMAQ).concat("\r\n");
+			} else if (aux[a].equals(Constants.MENOS_UNARIO)) {
+				code = code.concat(Constants.INV).concat("\r\n");
+			} else if (aux[a].equals(Constants.MAIS_UNARIO)) {
 				// do nothing
-			} else if (aux[a].equals("nao")) {
-				code = code.concat("NEG").concat("\r\n");
+			} else if (aux[a].equals(Constants.NAO)) {
+				code = code.concat(Constants.NEG).concat("\r\n");
 			} else {
-				if(aux[a].equals("verdadeiro")) {
-					code = code.concat("LDC").concat(" 1").concat("\r\n");
-				} else if(aux[a].equals("falso")) {
-					code = code.concat("LDC").concat(" 0").concat("\r\n");
-				} else if(aux[a].equals("")){
+				if(aux[a].equals(Constants.VERDADEIRO_LEXEMA)) {
+					code = code.concat(Constants.LDC).concat(" 1").concat("\r\n");
+				} else if(aux[a].equals(Constants.FALSO_LEXEMA)) {
+					code = code.concat(Constants.LDC).concat(" 0").concat("\r\n");
+				} else if(aux[a].equals(Constants.EMPTY)){
 					// do nothing
 				} else {
-					code = code.concat("LDC" + " ").concat(aux[a]).concat("\r\n");
+					code = code.concat(Constants.LDC + " ").concat(aux[a]).concat("\r\n");
 				}
 			}
 		}
 	}
 
 	public void createCode(String command, int countVariable) {
-		if (command == "ALLOC") {
+		if (Constants.ALLOC.equals(command)) {
 			code = code.concat(command + " ").concat(variableInMemory + " ").concat(countVariable + "\r\n");
 			variableInMemory = variableInMemory + countVariable;
 			variableAlloc.add(countVariable);

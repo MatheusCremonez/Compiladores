@@ -41,8 +41,6 @@ public class SyntacticAnalyzer {
 	public void syntactic() {
 		try {
 			analisadorSintatico();
-			// generator.debugCode();
-			// semantic.debugTable();
 		} catch (SyntacticException e) {
 			errorLine = token.getLine();
 			setMessage(e.getMessage());
@@ -62,7 +60,7 @@ public class SyntacticAnalyzer {
 	private void analisadorSintatico() throws SyntacticException, SemanticException {
 		token = la.lexical();
 		if (token.getSymbol().equals(Constants.PROGRAMA_SIMBOLO)) {
-			generator.createCode("START", Constants.EMPTY, Constants.EMPTY);
+			generator.createCode(Constants.START, Constants.EMPTY, Constants.EMPTY);
 			token = la.lexical();
 			if (token.getSymbol().equals(Constants.IDENTIFICADOR_SIMBOLO)) {
 				semantic.insertProgram(token);
@@ -74,7 +72,7 @@ public class SyntacticAnalyzer {
 
 						if (token.getSymbol().equals(Constants.FIM_ARQUIVO)) { 
 
-							generator.createCode("HLT", Constants.EMPTY, Constants.EMPTY);
+							generator.createCode(Constants.HLT, Constants.EMPTY, Constants.EMPTY);
 							generator.createFile();
 
 							setMessage("Compilação realizada com sucesso.");
@@ -110,7 +108,7 @@ public class SyntacticAnalyzer {
 		
 		if(variableOfAlloc.size() > 0 && !flagProcedure) {
 			if(!flagFunction && (variableOfAlloc.get(variableOfAlloc.size() - 1) > 0)) {
-				generator.createCode("DALLOC", -1);
+				generator.createCode(Constants.DALLOC, -1);
 				variableOfAlloc.remove(variableOfAlloc.size() - 1);
 			}
 			else if (!flagFunction && (variableOfAlloc.get(variableOfAlloc.size() - 1) == 0)) {
@@ -143,7 +141,7 @@ public class SyntacticAnalyzer {
 		countVariable = 0;
 		
 		if(variableOfAlloc.get(variableOfAlloc.size() - 1) > 0) {
-			generator.createCode("ALLOC", variableOfAlloc.get(variableOfAlloc.size() - 1));
+			generator.createCode(Constants.ALLOC, variableOfAlloc.get(variableOfAlloc.size() - 1));
 		}
 	}
 
@@ -202,7 +200,7 @@ public class SyntacticAnalyzer {
 				|| (token.getSymbol().equals(Constants.FUNCAO_SIMBOLO))) {
 
 			auxrot = label;
-			generator.createCode("JMP", "L" + label, "");
+			generator.createCode(Constants.JMP, Constants.LABEL + label, Constants.EMPTY);
 			label++;
 			flag = 1;
 		}
@@ -225,7 +223,7 @@ public class SyntacticAnalyzer {
 		}
 
 		if (flag == 1) {
-			generator.createCode("L" + auxrot, "NULL", "");
+			generator.createCode(Constants.LABEL + auxrot, Constants.NULL, Constants.EMPTY);
 		}
 	}
 
@@ -303,10 +301,10 @@ public class SyntacticAnalyzer {
 		
 		if (nameOfFunction.size() > 0) {
 			if (!((nameOfFunction.get(nameOfFunction.size() - 1)).equals(attributionToken.getLexema()))) {
-				generator.createCode("STR", semantic.positionOfVariable(attributionToken.getLexema()), Constants.EMPTY);	
+				generator.createCode(Constants.STR, semantic.positionOfVariable(attributionToken.getLexema()), Constants.EMPTY);	
 			}
 		} else {
-			generator.createCode("STR", semantic.positionOfVariable(attributionToken.getLexema()), Constants.EMPTY);
+			generator.createCode(Constants.STR, semantic.positionOfVariable(attributionToken.getLexema()), Constants.EMPTY);
 		}
 	}
 
@@ -317,29 +315,29 @@ public class SyntacticAnalyzer {
 		// válido, continuará a excecução
 
 		int labelResult = semantic.searchProcedureLabel(auxToken);
-		generator.createCode("CALL", "L" + labelResult, "");
+		generator.createCode(Constants.CALL, Constants.LABEL + labelResult, Constants.EMPTY);
 	}
 
 	private void chamadaFuncao(int index) throws SemanticException {
 		String symbolLexema = semantic.getLexemaOfSymbol(index);
-		semantic.searchFunction(new Token("", symbolLexema, token.getLine()));
+		semantic.searchFunction(new Token(Constants.EMPTY, symbolLexema, token.getLine()));
 		// se houver erro, dentro do semântico lancará a exceção. Caso seja uma funcao
 		// válida, continuará a excecução
 
-		int labelResult = semantic.searchFunctionLabel(new Token("", symbolLexema, token.getLine()));
-		generator.createCode("CALL", "L" + labelResult, "");
+		int labelResult = semantic.searchFunctionLabel(new Token(Constants.EMPTY, symbolLexema, token.getLine()));
+		generator.createCode(Constants.CALL, Constants.LABEL + labelResult, Constants.EMPTY);
 
 		token = la.lexical();
 	}
 
 	private void analisaLeia() throws SyntacticException, SemanticException {
-		generator.createCode("RD", "", "");
+		generator.createCode(Constants.RD, Constants.EMPTY, Constants.EMPTY);
 		token = la.lexical();
 		if (token.getSymbol().equals(Constants.ABRE_PARENTESES_SIMBOLO)) {
 			token = la.lexical();
 			if (token.getSymbol().equals(Constants.IDENTIFICADOR_SIMBOLO)) {
 				semantic.searchVariable(token);
-				generator.createCode("STR", semantic.positionOfVariable(token.getLexema()), Constants.EMPTY);
+				generator.createCode(Constants.STR, semantic.positionOfVariable(token.getLexema()), Constants.EMPTY);
 				token = la.lexical();
 				if (token.getSymbol().equals(Constants.FECHA_PARENTESES_SIMBOLO)) {
 					token = la.lexical();
@@ -367,18 +365,18 @@ public class SyntacticAnalyzer {
 
 				if (isFunction) {
 					int labelResult = semantic.searchFunctionLabel(token);
-					generator.createCode("CALL", "L" + labelResult, "");
+					generator.createCode(Constants.CALL, Constants.LABEL + labelResult, Constants.EMPTY);
 				} else {
 					// LDV de Variável para o PRN
 					String positionOfVariable = semantic.positionOfVariable(token.getLexema());
-					generator.createCode("LDV", positionOfVariable, "");
+					generator.createCode(Constants.LDV, positionOfVariable, Constants.EMPTY);
 				}
 
 				token = la.lexical();
 
 				if (token.getSymbol().equals(Constants.FECHA_PARENTESES_SIMBOLO)) {
 
-					generator.createCode("PRN", "", "");
+					generator.createCode(Constants.PRN, Constants.EMPTY, Constants.EMPTY);
 					token = la.lexical();
 
 				} else {
@@ -399,7 +397,7 @@ public class SyntacticAnalyzer {
 		int auxrot1, auxrot2;
 
 		auxrot1 = label;
-		generator.createCode("L" + label, "NULL", "");
+		generator.createCode(Constants.LABEL + label, Constants.NULL, Constants.EMPTY);
 		label++;
 
 		token = la.lexical();
@@ -417,14 +415,14 @@ public class SyntacticAnalyzer {
 
 		if (token.getSymbol().equals(Constants.FACA_SIMBOLO)) {
 			auxrot2 = label;
-			generator.createCode("JMPF", "L" + label, "");
+			generator.createCode(Constants.JMPF, Constants.LABEL + label, Constants.EMPTY);
 			label++;
 
 			token = la.lexical();
 			analisaComandoSimples();
 
-			generator.createCode("JMP", "L" + auxrot1, "");
-			generator.createCode("L" + auxrot2, "NULL", "");
+			generator.createCode(Constants.JMP, Constants.LABEL + auxrot1, Constants.EMPTY);
+			generator.createCode(Constants.LABEL + auxrot2, Constants.NULL, Constants.EMPTY);
 		} else {
 			throw new SyntacticException(Constants.FACA_LEXEMA, Constants.FACA_SIMBOLO, token.getLexema(),
 					token.getSymbol(), token.getLine());
@@ -453,7 +451,7 @@ public class SyntacticAnalyzer {
 
 		if (token.getSymbol().equals(Constants.ENTAO_SIMBOLO)) {
 			auxrot1 = label;
-			generator.createCode("JMPF", "L" + label, "");
+			generator.createCode(Constants.JMPF, Constants.LABEL + label, Constants.EMPTY);
 			label++;
 
 			if (flagFunction) {
@@ -465,10 +463,10 @@ public class SyntacticAnalyzer {
 			if (token.getSymbol().equals(Constants.SENAO_SIMBOLO)) {
 
 				auxrot2 = label;
-				generator.createCode("JMP", "L" + label, "");
+				generator.createCode(Constants.JMP, Constants.LABEL + label, Constants.EMPTY);
 				label++;
 
-				generator.createCode("L" + auxrot1, "NULL", "");
+				generator.createCode(Constants.LABEL + auxrot1, Constants.NULL, Constants.EMPTY);
 
 				if (flagFunction) {
 					semantic.insertTokenOnFunctionList(new Token(token.getSymbol(), token.getLexema() + auxLabel, token.getLine()));
@@ -477,9 +475,9 @@ public class SyntacticAnalyzer {
 				token = la.lexical();
 				analisaComandoSimples();
 
-				generator.createCode("L" + auxrot2, "NULL", "");
+				generator.createCode(Constants.LABEL + auxrot2, Constants.NULL, Constants.EMPTY);
 			} else {
-				generator.createCode("L" + auxrot1, "NULL", "");
+				generator.createCode(Constants.LABEL + auxrot1, Constants.NULL, Constants.EMPTY);
 			}
 		} else {
 			throw new SyntacticException(Constants.ENTAO_LEXEMA, Constants.ENTAO_SIMBOLO, token.getLexema(),
@@ -499,7 +497,7 @@ public class SyntacticAnalyzer {
 			semantic.searchProcedureWithTheSameName(token);
 			semantic.insertProcOrFunc(token, Constants.PROCEDIMENTO, label);
 
-			generator.createCode("L" + label, "NULL", "");
+			generator.createCode(Constants.LABEL + label, Constants.NULL, Constants.EMPTY);
 			label++;
 
 			token = la.lexical();
@@ -516,14 +514,14 @@ public class SyntacticAnalyzer {
 		semantic.cleanTableLevel();
 
 		if (variableOfAlloc.get(variableOfAlloc.size() - 1) > 0) {
-			generator.createCode("DALLOC", -1);
+			generator.createCode(Constants.DALLOC, -1);
 			variableOfAlloc.remove(variableOfAlloc.size() - 1);
 		}
 		else {
 			variableOfAlloc.remove(variableOfAlloc.size() - 1);
 		}
 		
-		generator.createCode("RETURN", "", "");
+		generator.createCode(Constants.RETURN, Constants.EMPTY, Constants.EMPTY);
 		
 		flagProcedure = false;
 	}
@@ -536,7 +534,7 @@ public class SyntacticAnalyzer {
 			semantic.searchFunctionWithTheSameName(token);
 			semantic.insertProcOrFunc(token, Constants.FUNCAO, label);
 
-			generator.createCode("L" + label, "NULL", "");
+			generator.createCode(Constants.LABEL + label, Constants.NULL, Constants.EMPTY);
 			label++;
 			
 			nameOfFunction.add(token.getLexema());
@@ -579,17 +577,14 @@ public class SyntacticAnalyzer {
 		nameOfFunction.remove(nameOfFunction.size() - 1);
 		
 		if(variableOfAlloc.get(variableOfAlloc.size() - 1) > 0) {
-			generator.createCode("RETURNF", -1);
+			generator.createCode(Constants.RETURNF, -1);
 			variableOfAlloc.remove(variableOfAlloc.size() - 1);
 		}
 		else {
-			generator.createCode("RETURNF", 0);
+			generator.createCode(Constants.RETURNF, 0);
 			variableOfAlloc.remove(variableOfAlloc.size() - 1);
 		}
-		
-		System.out.println("------final table-------");
-		semantic.debugTableFunction();
-		System.out.println("------------------------");
+
 	}
 
 	private void analisaExpressao() throws SyntacticException, SemanticException {
