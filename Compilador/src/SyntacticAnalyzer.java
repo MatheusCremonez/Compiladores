@@ -109,12 +109,13 @@ public class SyntacticAnalyzer {
 		analisaSubrotinas();
 		analisaComandos();
 		
-		if(variableOfAlloc.size() > 0 && !flagProcedureList.get(flagFunctionList.size() - 1)) {
-			if(!flagFunctionList.get(flagFunctionList.size() - 1) && (variableOfAlloc.get(variableOfAlloc.size() - 1) > 0)) {
+		if(variableOfAlloc.size() > 0 && (!flagProcedureList.get(flagProcedureList.size() - 1)) && (!flagFunctionList.get(flagFunctionList.size() - 1))) {
+			if(variableOfAlloc.get(variableOfAlloc.size() - 1) > 0) {
+				position = position - variableOfAlloc.get(variableOfAlloc.size() - 1);
 				generator.createCode(Constants.DALLOC, -1);
 				variableOfAlloc.remove(variableOfAlloc.size() - 1);
 			}
-			else if (!flagFunctionList.get(flagFunctionList.size() - 1) && (variableOfAlloc.get(variableOfAlloc.size() - 1) == 0)) {
+			else {
 				variableOfAlloc.remove(variableOfAlloc.size() - 1);
 			}
 		}
@@ -327,9 +328,6 @@ public class SyntacticAnalyzer {
 		// se houver erro, dentro do semântico lancará a exceção. Caso seja uma funcao
 		// válida, continuará a excecução
 
-		int labelResult = semantic.searchFunctionLabel(new Token(Constants.EMPTY, symbolLexema, token.getLine()));
-		generator.createCode(Constants.CALL, Constants.LABEL + labelResult, Constants.EMPTY);
-
 		token = la.lexical();
 	}
 
@@ -517,6 +515,7 @@ public class SyntacticAnalyzer {
 		semantic.cleanTableLevel();
 
 		if (variableOfAlloc.get(variableOfAlloc.size() - 1) > 0) {
+			position = position - variableOfAlloc.get(variableOfAlloc.size() - 1);
 			generator.createCode(Constants.DALLOC, -1);
 			variableOfAlloc.remove(variableOfAlloc.size() - 1);
 		}
@@ -526,7 +525,7 @@ public class SyntacticAnalyzer {
 		
 		generator.createCode(Constants.RETURN, Constants.EMPTY, Constants.EMPTY);
 		
-		flagProcedureList.remove(flagFunctionList.size() - 1);
+		flagProcedureList.remove(flagProcedureList.size() - 1);
 	}
 
 	private void analisaDeclaracaoFuncao() throws SyntacticException, SemanticException {
@@ -579,6 +578,7 @@ public class SyntacticAnalyzer {
 		nameOfFunction.remove(nameOfFunction.size() - 1);
 		
 		if(variableOfAlloc.get(variableOfAlloc.size() - 1) > 0) {
+			position = position - variableOfAlloc.get(variableOfAlloc.size() - 1);
 			generator.createCode(Constants.RETURNF, -1);
 			variableOfAlloc.remove(variableOfAlloc.size() - 1);
 		}

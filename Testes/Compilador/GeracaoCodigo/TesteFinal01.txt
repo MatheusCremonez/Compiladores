@@ -1,0 +1,66 @@
+   {entrada: 11-12-13-14-5-10-5-6-7-8-9-10-11-12} 
+ 
+ 
+programa teste1; 
+ 
+ 
+var t1: inteiro;    n,soma: inteiro; bool: booleano; flin,i: inteiro; 
+ 
+procedimento veja; 
+	var b,c:booleano; i: inteiro; 
+ 
+	procedimento som; 
+		var i:inteiro; 
+		inicio 
+			leia(i); 
+                  se i = 10 
+                  entao som; 
+			soma:=t1+t1*flin; 
+		fim; 
+ 
+	inicio 
+inicio  
+	     leia(n);  
+             c:= 1<=2; 
+	     b:=nao verdadeiro ou falso; 
+	     bool:=nao(nao(n <= 0)); 
+			
+	     enquanto bool e (nao bool) faca n:=-n; 
+			t1:=n; 
+			flin:=t1; 
+			se bool ou (nao bool) entao 
+			   enquanto (flin > 0) faca 
+				inicio 
+                                        som; 
+					i:=soma+soma;				 
+			                escreva(i); 
+ 
+ 
+					flin:=+(flin+(-1)); 
+				fim 
+fim; 
+	fim; 
+ 
+inicio 
+	t1:=-(-5 div 2); 
+	escreva(t1); 
+	veja; 
+	n:=-1; 
+	i:=2; 
+	inicio 
+		bool:= (i < 121); 
+		se bool entao inicio n:=n div i + t1 * 10 - 100 fim 
+		senao n:=201 
+	fim; 
+      escreva(n); 
+	n:=n div 999 div 3 div 5 div 1; 
+	inicio 
+		escreva(n); 
+	fim; 
+fim. 
+
+
+{saida
+
+2 264 242 220 198 176 154 132 110 88 66 44 10 0
+}

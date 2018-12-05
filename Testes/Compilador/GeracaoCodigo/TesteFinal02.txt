@@ -1,0 +1,59 @@
+ {entrada: 1-15-2-21-(2ou3-4)} 
+ 
+ 
+programa testefinal2; 
+	var a,w : inteiro; 
+ 
+funcao dobro:inteiro; 
+	var b: booleano; x: inteiro; 
+	funcao igual:booleano; 
+		inicio 
+			se a >= 5 entao igual:=verdadeiro e verdadeiro ou falso 
+				       senao igual:=falso; 
+		fim; 
+inicio 
+	leia(a); 
+	se igual entao x := a*a 
+		     senao x := a; 
+dobro:= x; 
+fim; 
+ 
+funcao metade:inteiro; 
+	var b : booleano; 
+	funcao igual:booleano; 
+	inicio 
+		se a >= 5 entao igual := -3 < -1 
+			       senao igual := 45 div 3 >= 100*4; 
+	fim; 
+inicio 
+	leia(a); 
+	se igual entao metade := a div 2 + 31 
+		     senao metade := a; 
+fim; 
+ 
+funcao fatorial:inteiro; {calcula fatorial de um numero lido} 
+inicio 
+  w := w - 1; 
+  se w = 0 
+  entao fatorial := 1 
+  senao fatorial := w * fatorial; 
+   
+fim { fatorial }; 
+ 
+funcao ler:inteiro; 
+	inicio 
+		leia(a); 
+		ler := a; 
+	fim; 
+ 
+inicio 
+	se ler = 1 entao escreva(metade); 
+	se ler = 2 entao escreva(dobro); 
+        se ler = 3 entao inicio 
+                           leia(w); 
+                        escreva(fatorial); 
+                         fim 
+fim. 
+{saida
+38 441 (6 pra entrada 3 4)
+}

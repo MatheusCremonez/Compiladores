@@ -445,6 +445,9 @@ public class SemanticAnalyzer {
 				} else {
 					newExpression = newExpression.concat(aux[i] + " ");
 				}
+			} else {
+				int labelResult = tableOfSymbols.searchFunctionLabel(aux[i]);
+				newExpression = newExpression.concat("funcao" + labelResult + " ");
 			}
 			
 		}

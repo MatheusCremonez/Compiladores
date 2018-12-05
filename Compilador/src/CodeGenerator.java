@@ -27,6 +27,11 @@ public class CodeGenerator {
 				String[] value = aux[a].split("p");
 				code = code.concat(Constants.LDV + " ").concat(value[1]).concat("\r\n");
 
+			} else if (aux[a].contains("funcao")) {
+
+				String[] value = aux[a].split("funcao");
+				code = code.concat(Constants.CALL + " ").concat(Constants.LABEL + value[1]).concat("\r\n");
+				
 			} else if (aux[a].equals(Constants.MAIS)) {
 				code = code.concat(Constants.ADD).concat("\r\n");
 			} else if (aux[a].equals(Constants.MENOS)) {

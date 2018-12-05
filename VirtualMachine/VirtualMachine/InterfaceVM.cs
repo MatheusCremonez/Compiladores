@@ -581,7 +581,7 @@ namespace VirtualMachine
                     case "DIVI":
                         x = Convert.ToInt32(array[topoPilha]);
                         y = Convert.ToInt32(array[topoPilha - 1]);
-                        array[topoPilha - 1] = x / y;
+                        array[topoPilha - 1] = y / x;
                         array.RemoveAt(topoPilha);
                         return topoPilha - 1;
 
