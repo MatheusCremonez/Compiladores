@@ -174,6 +174,7 @@ public class SemanticAnalyzer {
 
 		for (int a = 0; a < expression.size(); a++) {
 			String parcel = expression.get(a).getLexema();
+			this.line = expression.get(a).getLine();
 			
 			if (Constants.NUMERO_SIMBOLO.equals(expression.get(a).getSymbol()) ||
 				Constants.IDENTIFICADOR_SIMBOLO.equals(expression.get(a).getSymbol()) || 
@@ -311,20 +312,23 @@ public class SemanticAnalyzer {
 				}
 
 				throw new SemanticException(
-						"Operações aritméticas(+ | - | * | div) devem envolver duas variáveis inteiras");
+						"Operações aritméticas(+ | - | * | div) devem envolver duas variáveis inteiras.\n"
+						+ "Linha: " + line);
 			} else if (isRelationalOperator(operator)) {
 				if (firstType == "0" && secondType == "0") {
 					return "1";
 				}
 
 				throw new SemanticException(
-						"Operações relacionais(!= | = | < | <= | > | >=) devem envolver duas variáveis inteiras");
+						"Operações relacionais(!= | = | < | <= | > | >=) devem envolver duas variáveis inteiras.\n"
+						+ "Linha: " + line);
 			} else {
 				if (firstType == "1" && secondType == "1") {
 					return "1";
 				}
 
-				throw new SemanticException("Operações lógicas(e | ou) devem envolver duas variáveis booleanas");
+				throw new SemanticException("Operações lógicas(e | ou) devem envolver duas variáveis booleanas.\n"
+						+ "Linha: " + line);
 			}
 		} else {
 			if (isUnaryMathOperator(operator)) {
@@ -333,14 +337,16 @@ public class SemanticAnalyzer {
 				}
 
 				throw new SemanticException(
-						"Operações envolvendo operadores unários(+ | -) devem ser com variáveis inteiras.\n");
+						"Operações envolvendo operadores unários(+ | -) devem ser com variáveis inteiras.\n"
+						+ "Linha: " + line);
 			} else {
 				if (firstType == "1") {
 					return "1";
 				}
 
 				throw new SemanticException(
-						"Operações envolvendo operador unário(NÃO) devem ser com variáveis booleanas.\n");
+						"Operações envolvendo operador unário(NÃO) devem ser com variáveis booleanas.\n"
+						+ "Linha: " + line);
 			}
 		}
 	}
